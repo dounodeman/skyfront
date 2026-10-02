@@ -6,12 +6,13 @@ An original low-poly 3D air combat game set in 1944–1953. You take off from yo
 pilots who use the same realistic flight model as you, and bomb enemy bases and ground units to drain
 their tickets. Land on your own runway to rearm and repair.
 
-The aircraft models, island terrain, textures and sound (Web Audio) are generated in code. Built with
-TypeScript and Three.js.
+The island terrain, textures and sound (Web Audio) are generated in code, as are most aircraft models.
+Built with TypeScript and Three.js.
 
 ## Aircraft
 - **Late props:** P-51D Mustang, Bf 109 K-4, Yak-9U
 - **Early jets** (unlock with career score): Me 262 A-1a, MiG-15bis, F-86F Sabre
+- **Bonus:** B-58A Hustler, a Mach 2 delta bomber with a radar-aimed tail gun that fires backward (unlocks at 6,000)
 
 ## Controls (remappable in-game)
 
@@ -31,7 +32,8 @@ flaps. Win by draining the enemy's tickets: shoot down aircraft and destroy base
 enemy airfield. To rearm and repair, land on your own runway and come to a full stop.
 
 ## Files
-- `index.html` is the whole game in one file. You can also download it and open it locally, no server needed.
+- `index.html`, `assets/` and `media/` are the game (the production build). It needs a web server, so
+  play it at the link above or run it from source.
 - `skyfront-source.zip` is the full TypeScript source. To run it from source:
   ```
   unzip skyfront-source.zip -d skyfront && cd skyfront
