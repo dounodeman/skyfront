@@ -14,13 +14,23 @@ Built with TypeScript and Three.js.
 - **Early jets** (unlock with career score): Me 262 A-1a, MiG-15bis, F-86F Sabre
 - **Bonus:** B-58A Hustler, a Mach 2 delta bomber with a radar-aimed tail gun that fires backward (unlocks at 6,000)
 
+## Payloads
+In the hangar, pick a payload for your plane: guns only, rockets or bombs. With bombs you can tick
+**Air spawn** to start in the air at bomber altitude (3,000 m for props, 4,500 m for jets, 9,000 m for the
+B-58) instead of on the runway. AI attackers carry bombs or rockets too, and AI bombers start in the air.
+
+The B-58 can swap its four 1000 lb bombs for a **nuclear bomb**. Taking it removes the belly fuel pod, so
+you carry 40% less fuel. The bomb air-bursts about 550 m above the ground and destroys everything within
+about 1.3 km, friend or foe, including a whole base. The shock front damages everything out to about
+2.6 km, so drop it from high altitude and run.
+
 ## Controls (remappable in-game)
 
 | Action | Key |
 |---|---|
 | Steer (mouse-aim) | Move the mouse; click the game first to capture it |
 | Pitch / yaw / roll (manual) | W S / A D / Q E |
-| Fire / bomb | Left mouse or Space / Middle mouse or B |
+| Fire / bomb or rockets (hold) | Left mouse or Space / Middle mouse or B |
 | Throttle up (WEP above 100%) / down | Shift / Ctrl |
 | Gear / flaps / brakes | G / F / H (hold) |
 | Free look / cycle view | C (hold) / V |
