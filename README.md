@@ -67,6 +67,13 @@ lowers the render resolution and plants fewer trees.
 5. Win by draining the enemy's tickets or shooting down every enemy aircraft. Each player and AI pilot
    gets **one life**.
 
+**Three teams.** Every match has three sides, each with its own airfield, bases, ground forces, colours and
+national markings: the **United States** (west, blue), **Western Europe** (south, gold,
+ringed roundel) and **Russia** (east, red, star). Everyone fights everyone. You fly for the nation that built the
+aircraft you pick, and the AI pilots on each team fly their own nation's types. The match ends when only one team
+is left, or when yours is knocked out (tickets gone or no aircraft left). Teams, nations and aircraft assignments
+live in `src/world/layout.ts` (`TEAMS`, `AIRCRAFT_TEAM`, `AIRFIELDS`, `BASES`, `UNIT_GROUPS`).
+
 **Tickets** (each team starts with 500)
 
 | Event | Tickets lost |
@@ -95,10 +102,15 @@ Friendly airfield flak shoots at enemies who chase you home.
 | Bf 109 K-4 | 2× WGr. 21 | 1× 250 kg |
 | Yak-9U | 6× RS-82 | 2× 100 kg |
 | Me 262 | 24× R4M | 2× 250 kg |
+| F9F-2 | 6× HVAR 5" | 2× 1000 lb |
 | F-86F | 8× HVAR 5" | 2× 1000 lb |
 | MiG-15bis | 2× ARS-212 | 2× 250 kg |
 | B-58A | — | 4× 1000 lb + fuel pod, **or** a nuclear bomb with the fuel pod removed |
 | Tu-22 | — | 8× 500 kg + bay fuel tank, **or** a nuclear bomb with the bay tank removed |
+| Il-28 | — | 6× 500 kg, **or** a nuclear bomb (RDS-4) |
+| B-66B | — | 12× 1000 lb, **or** a nuclear bomb (Mk 7) |
+| Su-15 | 4× R-8M homing missiles, **or** 32× S-5 57 mm (two 16-tube pods) | — |
+| F-102A | 6× AIM-4 Falcon homing missiles, **or** 24× Mk 4 FFAR 2.75" (bay doors) | — |
 
 Hold the bomb key (**B** / middle mouse) to fire rockets in pairs (the R4M fires in salvos of six). Rockets
 burn for about a second, then fall like a shell, so aim a little high at long range. With **Settings →
@@ -106,7 +118,7 @@ Bomb/rocket impact marker** on, a diamond shows where they'll hit. Stores add dr
 gone. Landing to rearm reloads the payload you took off with. AI attackers carry bombs or rockets too, and
 AI bombers start in the air.
 
-**Nuclear bomb (B-58 and Tu-22):** taking it removes the fuel pod (B-58, 40% less fuel) or the bomb-bay tank (Tu-22, 20% less fuel). The bomb
+**Nuclear bomb (B-58, Tu-22, Il-28 and B-66):** taking it removes the fuel pod (B-58, 40% less fuel) or the bomb-bay tank (Tu-22, 20% less fuel). The bomb
 air-bursts about 550 m above the ground. Everything within about 1.3 km is destroyed: buildings, units,
 AA guns and aircraft, enemy *and* friendly, including a whole base or airfield. The shock front damages
 everything out to about 2.6 km. Drop it from high altitude and run: the fall takes 30–45 s, and the B-58
@@ -121,15 +133,39 @@ so AI pilots never fly it. It pulls only about 3 g, so outrun fighters rather th
 on the tail and a radar-aimed twin 23mm tail gun that works like the B-58's. It is heavier, slower and
 thirstier than the B-58 and rolls sluggishly, so plan the bomb run early. Player-only, unlocks at 7,000.
 
-**Afterburners (B-58, Tu-22):** push the throttle past the 100% detent (hold **Shift**) and the afterburners
-light after about a second: thrust goes up by half (B-58) or 45% (Tu-22), fuel burn roughly triples, and a
+**Early jet bombers (bonus, outside the era):** two straight-forward twin-jet bombers with no afterburners and a radar-aimed tail gun
+that works like the B-58's. Both fly a level bomb run, so they're slow to turn and climb; hold the brakes (**H**, an airbrake in flight) to get down for landing.
+Unlike the supersonic bombers above, AI pilots fly them too: they cruise at 2,200–3,200 m, bomb in a shallow level run, then head home
+and land, defended only by their tail gunner.
+- **Il-28 Beagle** (Soviet, 1948): a light straight-wing bomber with two VK-1 engines in wing nacelles, a glazed bombardier nose, two fixed
+  forward 23mm guns and a twin 23mm tail turret. Agile for a bomber, but it tops out near 900 km/h. Unlocks at 3,500.
+- **B-66B Destroyer** (American, 1954): a swept-wing bomber with two J71 engines in underwing pods and a twin 20mm radar-aimed tail gun.
+  Faster and with a bigger bomb load than the Il-28, but heavy and slow to roll. Unlocks at 5,000.
+
+**Early Cold War interceptors (bonus, outside the era):** the missiles of the day aren't in the game, so both fight with what they can
+carry in it.
+- **Su-15 Flagon** (Soviet, 1965): a Mach 2 delta with two afterburning R-11 engines and two fixed 23mm UPK-23 gun pods, so it plays like a
+  very fast gun fighter. It climbs superbly but has a heavy wing, so it loses a turning fight. Pick **4× R-8M** homing missiles or S-5 rocket pods as its payload. Unlocks at 8,000.
+- **F-102A Delta Dagger** (American, 1956): a single-engine area-ruled delta with no guns at all. Its weapons are six homing AIM-4 Falcon
+  missiles (default) or a 24-rocket Mk 4 FFAR pack in the bay doors, both fired with the bomb key (**B** / middle mouse). Easy to fly and
+  fast, but few shots. Player-only (AI pilots can't fight with missiles or rockets), unlocks at 7,500.
+
+**F9F-2 Panther (Korean War):** Grumman's straight-wing Navy jet: one J42 engine, four 20mm nose cannons and wingtip tanks. Forgiving and fast in a dive, but its unswept wing hits compressibility early and its single engine gives only modest thrust, so keep your speed up and use the cannons. Unlocks at 3,400.
+
+**Homing missiles (AIM-4, R-8M):** point the nose at an enemy within the seeker cone (about 25-30°, up to 4.5-5.5 km) and a red bracket
+and `MISSILE LOCK` with the range appear. Press the bomb key to fire one missile; with no lock nothing launches. The missile boosts,
+turns toward where the target will be (it can only turn so hard, so a tight break at close range can shake it), and explodes by proximity.
+If the target leaves its view, it flies on unguided.
+
+**Afterburners (Su-15, F-102A, B-58, Tu-22):** push the throttle past the 100% detent (hold **Shift**) and the afterburners
+light after about a second: thrust goes up by 45-65% depending on the engine, fuel burn roughly triples, and a
 flame trails each engine. The HUD shows `AB` next to the throttle. Back the throttle off to shut them down.
 Top speed and climb need the afterburners; cruise on dry thrust to save fuel.
 
 **Score and unlocks:** you earn score for air kills (100), assists (40), ground units (30–60), buildings,
 destroying bases (200), disabling the enemy airfield (300), safe landings (50), winning (250) and surviving
 (50). You start with the three props. The Me 262 unlocks at 1,200 career score, the MiG-15bis at 2,600,
-the F-86F at 4,500, the B-58A Hustler at 6,000 and the Tu-22 at 7,000. Progress is saved in your browser's localStorage. **Settings → Unlock all aircraft**
+the F9F-2 Panther at 3,400, the Il-28 at 3,500, the F-86F at 4,500, the B-66B at 5,000, the B-58A Hustler at 6,000, the Tu-22 at 7,000, the F-102A at 7,500 and the Su-15 at 8,000. Progress is saved in your browser's localStorage. **Settings → Unlock all aircraft**
 skips the grind.
 
 ---
@@ -252,7 +288,7 @@ The B-58 uses one: `public/media/b58.glb`, loaded by `src/aircraft/b58.ts`. To c
 /Applications/Blender.app/Contents/MacOS/Blender --background --factory-startup --python tools/b58/export_glb.py
 ```
 
-The fighters and the Tu-22 are built from one Blender script, `tools/aircraft/model.py` (a design per aircraft),
+The fighters, the Tu-22, the Il-28, the B-66 and the two interceptors are built from one Blender script, `tools/aircraft/model.py` (a design per aircraft),
 exported by `tools/aircraft/export_glb.py` and loaded by `src/aircraft/glbAircraft.ts`. Add `-- tu22` to
 export just one.
 
