@@ -102,6 +102,7 @@ Friendly airfield flak shoots at enemies who chase you home.
 | Bf 109 K-4 | 2× WGr. 21 | 1× 250 kg |
 | Yak-9U | 6× RS-82 | 2× 100 kg |
 | Me 262 | 24× R4M | 2× 250 kg |
+| F9F-2 | 6× HVAR 5" | 2× 1000 lb |
 | F-86F | 8× HVAR 5" | 2× 1000 lb |
 | MiG-15bis | 2× ARS-212 | 2× 250 kg |
 | B-58A | — | 4× 1000 lb + fuel pod, **or** a nuclear bomb with the fuel pod removed |
@@ -138,6 +139,8 @@ carry in it.
   missiles (default) or a 24-rocket Mk 4 FFAR pack in the bay doors, both fired with the bomb key (**B** / middle mouse). Easy to fly and
   fast, but few shots. Player-only (AI pilots can't fight with missiles or rockets), unlocks at 7,500.
 
+**F9F-2 Panther (Korean War):** Grumman's straight-wing Navy jet: one J42 engine, four 20mm nose cannons and wingtip tanks. Forgiving and fast in a dive, but its unswept wing hits compressibility early and its single engine gives only modest thrust, so keep your speed up and use the cannons. Unlocks at 3,400.
+
 **Homing missiles (AIM-4, R-8M):** point the nose at an enemy within the seeker cone (about 25-30°, up to 4.5-5.5 km) and a red bracket
 and `MISSILE LOCK` with the range appear. Press the bomb key to fire one missile; with no lock nothing launches. The missile boosts,
 turns toward where the target will be (it can only turn so hard, so a tight break at close range can shake it), and explodes by proximity.
@@ -151,7 +154,7 @@ Top speed and climb need the afterburners; cruise on dry thrust to save fuel.
 **Score and unlocks:** you earn score for air kills (100), assists (40), ground units (30–60), buildings,
 destroying bases (200), disabling the enemy airfield (300), safe landings (50), winning (250) and surviving
 (50). You start with the three props. The Me 262 unlocks at 1,200 career score, the MiG-15bis at 2,600,
-the F-86F at 4,500, the B-58A Hustler at 6,000, the Tu-22 at 7,000, the F-102A at 7,500 and the Su-15 at 8,000. Progress is saved in your browser's localStorage. **Settings → Unlock all aircraft**
+the F9F-2 Panther at 3,400, the F-86F at 4,500, the B-58A Hustler at 6,000, the Tu-22 at 7,000, the F-102A at 7,500 and the Su-15 at 8,000. Progress is saved in your browser's localStorage. **Settings → Unlock all aircraft**
 skips the grind.
 
 ---
