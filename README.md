@@ -107,6 +107,8 @@ Friendly airfield flak shoots at enemies who chase you home.
 | MiG-15bis | 2× ARS-212 | 2× 250 kg |
 | B-58A | — | 4× 1000 lb + fuel pod, **or** a nuclear bomb with the fuel pod removed |
 | Tu-22 | — | 8× 500 kg + bay fuel tank, **or** a nuclear bomb with the bay tank removed |
+| Il-28 | — | 6× 500 kg, **or** a nuclear bomb (RDS-4) |
+| B-66B | — | 12× 1000 lb, **or** a nuclear bomb (Mk 7) |
 | Su-15 | 4× R-8M homing missiles, **or** 32× S-5 57 mm (two 16-tube pods) | — |
 | F-102A | 6× AIM-4 Falcon homing missiles, **or** 24× Mk 4 FFAR 2.75" (bay doors) | — |
 
@@ -116,7 +118,7 @@ Bomb/rocket impact marker** on, a diamond shows where they'll hit. Stores add dr
 gone. Landing to rearm reloads the payload you took off with. AI attackers carry bombs or rockets too, and
 AI bombers start in the air.
 
-**Nuclear bomb (B-58 and Tu-22):** taking it removes the fuel pod (B-58, 40% less fuel) or the bomb-bay tank (Tu-22, 20% less fuel). The bomb
+**Nuclear bomb (B-58, Tu-22, Il-28 and B-66):** taking it removes the fuel pod (B-58, 40% less fuel) or the bomb-bay tank (Tu-22, 20% less fuel). The bomb
 air-bursts about 550 m above the ground. Everything within about 1.3 km is destroyed: buildings, units,
 AA guns and aircraft, enemy *and* friendly, including a whole base or airfield. The shock front damages
 everything out to about 2.6 km. Drop it from high altitude and run: the fall takes 30–45 s, and the B-58
@@ -130,6 +132,15 @@ so AI pilots never fly it. It pulls only about 3 g, so outrun fighters rather th
 **Tu-22 Blinder (bonus, outside the era):** an early Soviet Mach 1.4 bomber with two afterburning engines
 on the tail and a radar-aimed twin 23mm tail gun that works like the B-58's. It is heavier, slower and
 thirstier than the B-58 and rolls sluggishly, so plan the bomb run early. Player-only, unlocks at 7,000.
+
+**Early jet bombers (bonus, outside the era):** two straight-forward twin-jet bombers with no afterburners and a radar-aimed tail gun
+that works like the B-58's. Both fly a level bomb run, so they're slow to turn and climb; hold the brakes (**H**, an airbrake in flight) to get down for landing.
+Unlike the supersonic bombers above, AI pilots fly them too: they cruise at 2,200–3,200 m, bomb in a shallow level run, then head home
+and land, defended only by their tail gunner.
+- **Il-28 Beagle** (Soviet, 1948): a light straight-wing bomber with two VK-1 engines in wing nacelles, a glazed bombardier nose, two fixed
+  forward 23mm guns and a twin 23mm tail turret. Agile for a bomber, but it tops out near 900 km/h. Unlocks at 3,500.
+- **B-66B Destroyer** (American, 1954): a swept-wing bomber with two J71 engines in underwing pods and a twin 20mm radar-aimed tail gun.
+  Faster and with a bigger bomb load than the Il-28, but heavy and slow to roll. Unlocks at 5,000.
 
 **Early Cold War interceptors (bonus, outside the era):** the missiles of the day aren't in the game, so both fight with what they can
 carry in it.
@@ -154,7 +165,7 @@ Top speed and climb need the afterburners; cruise on dry thrust to save fuel.
 **Score and unlocks:** you earn score for air kills (100), assists (40), ground units (30–60), buildings,
 destroying bases (200), disabling the enemy airfield (300), safe landings (50), winning (250) and surviving
 (50). You start with the three props. The Me 262 unlocks at 1,200 career score, the MiG-15bis at 2,600,
-the F9F-2 Panther at 3,400, the F-86F at 4,500, the B-58A Hustler at 6,000, the Tu-22 at 7,000, the F-102A at 7,500 and the Su-15 at 8,000. Progress is saved in your browser's localStorage. **Settings → Unlock all aircraft**
+the F9F-2 Panther at 3,400, the Il-28 at 3,500, the F-86F at 4,500, the B-66B at 5,000, the B-58A Hustler at 6,000, the Tu-22 at 7,000, the F-102A at 7,500 and the Su-15 at 8,000. Progress is saved in your browser's localStorage. **Settings → Unlock all aircraft**
 skips the grind.
 
 ---
@@ -277,7 +288,7 @@ The B-58 uses one: `public/media/b58.glb`, loaded by `src/aircraft/b58.ts`. To c
 /Applications/Blender.app/Contents/MacOS/Blender --background --factory-startup --python tools/b58/export_glb.py
 ```
 
-The fighters, the Tu-22 and the two interceptors are built from one Blender script, `tools/aircraft/model.py` (a design per aircraft),
+The fighters, the Tu-22, the Il-28, the B-66 and the two interceptors are built from one Blender script, `tools/aircraft/model.py` (a design per aircraft),
 exported by `tools/aircraft/export_glb.py` and loaded by `src/aircraft/glbAircraft.ts`. Add `-- tu22` to
 export just one.
 
