@@ -6,7 +6,7 @@ An original low-poly 3D air combat game set in 1944–1953. You take off from yo
 pilots who use the same realistic flight model as you, and bomb enemy bases and ground units to drain
 their tickets. Land on your own runway to rearm and repair.
 
-The island terrain, textures and sound (Web Audio) are generated in code, as are most aircraft models.
+The island terrain, textures and sound (Web Audio) are generated in code. Aircraft are low-poly models built in Blender (tools/aircraft, tools/b58); the weapons are built in code.
 Built with TypeScript and Three.js.
 
 ## Aircraft
