@@ -32,7 +32,7 @@ about 1.3 km, friend or foe, including a whole base. The shock front damages eve
 | Pitch / yaw / roll (manual) | W S / A D / Q E |
 | Fire / bomb or rockets (hold) | Left mouse or Space / Middle mouse or B |
 | Throttle up (WEP above 100%) / down | Shift / Ctrl |
-| Gear / flaps / brakes | G / F / H (hold) |
+| Gear / flaps / brakes + airbrake | G / F / H (hold) |
 | Free look / cycle view | C (hold) / V |
 | Mouse-aim ↔ manual / minimap zoom | M / N |
 | Pause | Esc |
