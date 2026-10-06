@@ -22,11 +22,10 @@ ground forces only defend their own shores. Maps are plain data in `src/world/ma
 
 **Operation Landfall** (`?map=landfall`) is a mission, not a match. The island is traced from an aerial photo; Russia (MiG-15bis) holds the
 airfield and five camps, the US (F9F-2 Panther, flown from two carriers) lands troops on the south-east beaches. There are no tickets:
-the US wins by capturing all six points before the 30-minute clock runs out, Russia wins by holding on or by sinking a US carrier
+the US wins by capturing all six points with no time limit; Russia wins by sinking a US carrier
 (it takes six Kh-22 hits). Once the US holds two thirds of the points Russia sends two Tu-22 anti-ship bombers every five minutes.
 Ground forces are bought with credits earned from kills: press 1-6 to order troops to a point, 0 for the nearest, U to deploy a
-squad. The other side's commander does the same. Progress autosaves; use "Continue mission" in the menu. Helicopter landings
-(H-34 / Mi-4) are not in yet: the opening squads start on the beaches.
+squad. The other side's commander does the same. Progress autosaves; use "Continue mission" in the menu. US troops are not placed on the island: fly them in by H-34 from a carrier to the Red or Blue Beach landing zone and set them down (the first lift on a beach sets up a landing zone there; only then can squads bought with U be set down on that beach, and they can also deploy at points the US holds). When the computer commands the US, AI H-34s fly its troops in and set up the landing zones.
 
 ---
 
@@ -198,6 +197,28 @@ light after about a second: thrust goes up by 45-65% depending on the engine, fu
 flame trails each engine. The HUD shows `AB` next to the throttle. Back the throttle off to shut them down.
 Top speed and climb need the afterburners; cruise on dry thrust to save fuel.
 
+**Helicopters (first test): H-34 Choctaw (US) and Mi-4AV Hound (Russia).** The AI flies them too (see below). In mouse-aim the throttle keys become a speed lever: zero is a hover, 100% is cruise and the WEP zone is
+full speed. **W** climbs, **S** descends (hold it over flat ground to land), **Q/E** sidestep, **A/D** and the mouse turn
+the nose. In a hover the mouse also tilts the nose up or down about 10° to aim guns and rockets without drifting. Full
+manual (**M**) puts the collective on the throttle keys and cyclic and pedals on the stick keys. The HUD shows collective,
+rotor rpm and vertical speed instead of throttle, engine and G. Loads: troops (12 in the H-34, 14 in the Mi-4), FFAR or
+S-5 rocket pods, and FAB-100 bombs on the Mi-4. To set troops down, land and stop, then press the bomb key; they get out
+as infantry sections of six that march on the nearest objective, shoot at ground units and low aircraft, and count
+toward capturing a point. In Operation Landfall they can only be landed inside a landing zone (`LZ` markers): the US
+beaches (Red and Blue Beach) and any point your side holds firmly. Land back on a carrier deck or your airfield to
+pick up more. The H-34 starts on its own spot on the carrier deck (no catapult). If the engine or main gearbox is lost
+the rotor autorotates: the autopilot glides at about 110 km/h, flares near the ground and cushions the landing. Losing
+the main rotor is fatal; losing the tail rotor spins the fuselage.
+
+**AI helicopters.** Every battle fields AI helicopters of two kinds, flown by the same autopilot as yours. A *troop lift*
+(H-34 or Mi-4 with troops) flies low to a landing zone, lands, sets its troops down and returns to its carrier or airfield
+to load more; outside missions it puts them down on dry land short of the nearest enemy base, and they march on it. A
+*gunship* (armed with rockets and its gun) picks enemy tanks, infantry, trucks and guns (preferring targets near friendly
+troops and away from heavy air defences), makes low rocket and gun passes, then goes home to rearm. In Operation Landfall
+the US sends H-34 troop lifts (two beside you, four when the computer is the US commander) and one gunship; Russia sends two
+Mi-4 gunships. The computer's squads still deploy only at points it holds, so its troops reach the beaches in AI H-34s: shoot
+them down to stop a landing. Shot-down AI helicopters respawn like other AI aircraft.
+
 **Score and unlocks:** you earn score for air kills (100), assists (40), ground units (30–60), buildings,
 destroying bases (200), disabling the enemy airfield (300), safe landings (50), winning (250) and surviving
 (50). You start with the three props. The Me 262 unlocks at 1,200 career score, the MiG-15bis at 2,600,
@@ -218,7 +239,7 @@ Bindings are saved to localStorage.
 | Yaw left / right (rudder) | A / D |
 | Roll left / right | Q / E |
 | Fire guns | Left mouse / Space |
-| Drop bomb / fire rockets (hold) | Middle mouse / B |
+| Drop bomb / fire rockets (hold) / unload troops | Middle mouse / B |
 | Throttle up (WEP above 100%) / down | Shift / Ctrl |
 | Landing gear | G |
 | Flaps: up → combat → takeoff → landing | F |
