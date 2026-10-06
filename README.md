@@ -13,6 +13,15 @@ Built with TypeScript, Three.js and Vite.
 
 ---
 
+## Maps
+
+The main menu has a map picker (the game reloads when you change it). **Skyfront Island** is the original single-island
+map. **Trident Isles** has three equal home islands around an inner sea (US north-west, Russia north-east, Western Europe
+south) with a contested atoll and stepping-stone islets in between; the islands are not linked by land, so for now the
+ground forces only defend their own shores. Maps are plain data in `src/world/maps.ts`; you can also force one with `?map=trident`.
+
+---
+
 ## Play online (GitHub Pages)
 
 This repo includes a GitHub Actions workflow (`.github/workflows/deploy.yml`) that builds the game and
@@ -111,6 +120,8 @@ Friendly airfield flak shoots at enemies who chase you home.
 | B-66B | — | 12× 1000 lb, **or** a nuclear bomb (Mk 7) |
 | Su-15 | 4× R-8M homing missiles, **or** 32× S-5 57 mm (two 16-tube pods) | — |
 | F-102A | 6× AIM-4 Falcon homing missiles, **or** 24× Mk 4 FFAR 2.75" (bay doors) | — |
+| Vulcan B.2 | — | 21× 1000 lb (a row of three per press), **or** one nuclear bomb |
+| Lightning F.6 | 2× Red Top **or** 2× Firestreak homing missiles | — |
 
 Hold the bomb key (**B** / middle mouse) to fire rockets in pairs (the R4M fires in salvos of six). Rockets
 burn for about a second, then fall like a shell, so aim a little high at long range. With **Settings →
@@ -118,7 +129,7 @@ Bomb/rocket impact marker** on, a diamond shows where they'll hit. Stores add dr
 gone. Landing to rearm reloads the payload you took off with. AI attackers carry bombs or rockets too, and
 AI bombers start in the air.
 
-**Nuclear bomb (B-58, Tu-22, Il-28 and B-66):** taking it removes the fuel pod (B-58, 40% less fuel) or the bomb-bay tank (Tu-22, 20% less fuel). The bomb
+**Nuclear bomb (B-58, Tu-22, Il-28, B-66 and Vulcan):** taking it removes the fuel pod (B-58, 40% less fuel) or the bomb-bay tank (Tu-22, 20% less fuel). The bomb
 air-bursts about 550 m above the ground. Everything within about 1.3 km is destroyed: buildings, units,
 AA guns and aircraft, enemy *and* friendly, including a whole base or airfield. The shock front damages
 everything out to about 2.6 km. Drop it from high altitude and run: the fall takes 30–45 s, and the B-58
@@ -142,6 +153,10 @@ and land, defended only by their tail gunner.
 - **B-66B Destroyer** (American, 1954): a swept-wing bomber with two J71 engines in underwing pods and a twin 20mm radar-aimed tail gun.
   Faster and with a bigger bomb load than the Il-28, but heavy and slow to roll. Unlocks at 5,000.
 
+**Avro Vulcan B.2 (bonus, outside the era, Western Europe):** Britain's V-bomber: a huge tailless delta with four Olympus engines buried in the
+wing roots (no afterburners) and no guns at all. Pick **21× 1000 lb bombs** (each press of the bomb key drops a row of three) or the Yellow Sun
+nuclear bomb. It is subsonic, so it relies on altitude, but the big delta wing rolls and turns far better than the other bombers. Player-only, unlocks at 9,000.
+
 **Early Cold War interceptors (bonus, outside the era):** the missiles of the day aren't in the game, so both fight with what they can
 carry in it.
 - **Su-15 Flagon** (Soviet, 1965): a Mach 2 delta with two afterburning R-11 engines and two fixed 23mm UPK-23 gun pods, so it plays like a
@@ -149,15 +164,18 @@ carry in it.
 - **F-102A Delta Dagger** (American, 1956): a single-engine area-ruled delta with no guns at all. Its weapons are six homing AIM-4 Falcon
   missiles (default) or a 24-rocket Mk 4 FFAR pack in the bay doors, both fired with the bomb key (**B** / middle mouse). Easy to fly and
   fast, but few shots. Player-only (AI pilots can't fight with missiles or rockets), unlocks at 7,500.
+- **English Electric Lightning F.6** (British, 1965): Mach 2 with two stacked afterburning Avons, two 30mm Aden cannon in the ventral tank and a
+  Red Top (all-aspect, 6 km) or Firestreak (rear hemisphere, narrower cone, 4 km) missile on each side of the forward fuselage. It climbs like a
+  rocket but carries little fuel. Unlocks at 9,500.
 
 **F9F-2 Panther (Korean War):** Grumman's straight-wing Navy jet: one J42 engine, four 20mm nose cannons and wingtip tanks. Forgiving and fast in a dive, but its unswept wing hits compressibility early and its single engine gives only modest thrust, so keep your speed up and use the cannons. Unlocks at 3,400.
 
-**Homing missiles (AIM-4, R-8M):** point the nose at an enemy within the seeker cone (about 25-30°, up to 4.5-5.5 km) and a red bracket
+**Homing missiles (AIM-4, R-8M, Red Top, Firestreak):** point the nose at an enemy within the seeker cone (about 25-30°, up to 4.5-5.5 km) and a red bracket
 and `MISSILE LOCK` with the range appear. Press the bomb key to fire one missile; with no lock nothing launches. The missile boosts,
 turns toward where the target will be (it can only turn so hard, so a tight break at close range can shake it), and explodes by proximity.
 If the target leaves its view, it flies on unguided.
 
-**Afterburners (Su-15, F-102A, B-58, Tu-22):** push the throttle past the 100% detent (hold **Shift**) and the afterburners
+**Afterburners (Su-15, F-102A, Lightning, B-58, Tu-22):** push the throttle past the 100% detent (hold **Shift**) and the afterburners
 light after about a second: thrust goes up by 45-65% depending on the engine, fuel burn roughly triples, and a
 flame trails each engine. The HUD shows `AB` next to the throttle. Back the throttle off to shut them down.
 Top speed and climb need the afterburners; cruise on dry thrust to save fuel.
@@ -165,7 +183,7 @@ Top speed and climb need the afterburners; cruise on dry thrust to save fuel.
 **Score and unlocks:** you earn score for air kills (100), assists (40), ground units (30–60), buildings,
 destroying bases (200), disabling the enemy airfield (300), safe landings (50), winning (250) and surviving
 (50). You start with the three props. The Me 262 unlocks at 1,200 career score, the MiG-15bis at 2,600,
-the F9F-2 Panther at 3,400, the Il-28 at 3,500, the F-86F at 4,500, the B-66B at 5,000, the B-58A Hustler at 6,000, the Tu-22 at 7,000, the F-102A at 7,500 and the Su-15 at 8,000. Progress is saved in your browser's localStorage. **Settings → Unlock all aircraft**
+the F9F-2 Panther at 3,400, the Il-28 at 3,500, the F-86F at 4,500, the B-66B at 5,000, the B-58A Hustler at 6,000, the Tu-22 at 7,000, the F-102A at 7,500, the Su-15 at 8,000, the Vulcan at 9,000 and the Lightning at 9,500. Progress is saved in your browser's localStorage. **Settings → Unlock all aircraft**
 skips the grind.
 
 ---
@@ -288,9 +306,9 @@ The B-58 uses one: `public/media/b58.glb`, loaded by `src/aircraft/b58.ts`. To c
 /Applications/Blender.app/Contents/MacOS/Blender --background --factory-startup --python tools/b58/export_glb.py
 ```
 
-The fighters, the Tu-22, the Il-28, the B-66 and the two interceptors are built from one Blender script, `tools/aircraft/model.py` (a design per aircraft),
+The fighters, the Tu-22, the Il-28, the B-66, the Vulcan and the interceptors are built from one Blender script, `tools/aircraft/model.py` (a design per aircraft),
 exported by `tools/aircraft/export_glb.py` and loaded by `src/aircraft/glbAircraft.ts`. Add `-- tu22` to
-export just one.
+export just one. `tools/aircraft/preview.py <id> <out_dir>` renders side, front, three-quarter, top and rear views with headless Blender (`pip install bpy`).
 
 The single-file build (`npm run build:single`) only bundles code, so it can't include these files. Once
 the game uses assets, publish the multi-file `dist/` build instead: either the GitHub Actions workflow,
