@@ -20,6 +20,24 @@ map. **Trident Isles** has three equal home islands around an inner sea (US nort
 south) with a contested atoll and stepping-stone islets in between; the islands are not linked by land, so for now the
 ground forces only defend their own shores. Maps are plain data in `src/world/maps.ts`; you can also force one with `?map=trident`.
 
+**Operation Landfall** (`?map=landfall`) is a mission, not a match. The island is traced from an aerial photo; Russia (MiG-15bis) holds the
+airfield and five camps, the US (F9F-2 Panther, flown from two carriers) lands troops on the south-east beaches. There are no tickets:
+the US wins by capturing all six points before the 30-minute clock runs out, Russia wins by holding on or by sinking a US carrier
+(it takes six Kh-22 hits). Once the US holds two thirds of the points Russia sends two Tu-22 anti-ship bombers every five minutes.
+Ground forces are bought with credits earned from kills: press 1-6 to order troops to a point, 0 for the nearest, U to deploy a
+squad. The other side's commander does the same. Progress autosaves; use "Continue mission" in the menu. Helicopter landings
+(H-34 / Mi-4) are not in yet: the opening squads start on the beaches.
+
+---
+
+## Carrier flight deck
+
+Carriers (any ship with a `deck` in `src/world/ships.ts`) run a shared catapult queue. Naval aircraft (the player's and the AI's) can
+start on their team's carrier; AI aircraft park on the deck's `park` spots, creep forward as the line moves, taxi to a free catapult
+track when cleared, hold full power and ride the shuttle. One aircraft is cleared at a time with a short gap between shots. The
+player joins the same line: with power up on a track you are told how many aircraft are ahead, and you fire only when it is your turn
+(a player who is not ready when they reach the front goes to the back). `npm run cattest -- 4 player` simulates a deck headless.
+
 ---
 
 ## Play online (GitHub Pages)
