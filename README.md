@@ -25,7 +25,7 @@ airfield and five camps, the US (F9F-2 Panther, flown from two carriers) lands t
 the US wins by capturing all six points with no time limit; Russia wins by sinking a US carrier
 (it takes six Kh-22 hits). Once the US holds two thirds of the points Russia sends two Tu-22 anti-ship bombers every five minutes.
 Ground forces are bought with credits earned from kills: press 1-6 to order troops to a point, 0 for the nearest, U to deploy a
-squad. The other side's commander does the same. Progress autosaves; use "Continue mission" in the menu. US troops are not placed on the island: fly them in by H-34 from a carrier to the Red or Blue Beach landing zone and set them down (the first lift on a beach sets up a landing zone there; only then can squads bought with U be set down on that beach, and they can also deploy at points the US holds). When the computer commands the US, AI H-34s fly its troops in and set up the landing zones.
+squad. The other side's commander does the same. Progress autosaves; use "Continue mission" in the menu. US troops are not placed on the island: fly them in by H-34 from a carrier to the Red or Blue Beach landing zone and set them down (the first lift on a beach sets up a landing zone there; only then can squads bought with U be set down on that beach, and they can also deploy at points the US holds). When the computer commands the US, AI H-34s fly its troops in and set up the landing zones. Once a beach has its landing zone, the respawn picker offers it as a helicopter spawn point (US only): choose an H-34 and pick the beach under "Helicopter spawn at".
 
 ---
 
