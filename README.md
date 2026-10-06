@@ -29,6 +29,24 @@ squad. The other side's commander does the same. Progress autosaves; use "Contin
 
 ---
 
+## Falklands
+
+**Falklands** (`?map=falklands`) is a symmetric objective battle on two islands: East Falkland (north lobe, the isthmus at Goose Green and the lowland of Lafonia) and West Falkland. Pick any two of the three nations on the menu ("Your side" and "Enemy side"; changing either reloads the game, because the fleets are rebuilt). Each side starts at sea with **two carrier task forces**, one carrier, two cruisers or frigates and five destroyers each (US: Valley Forge, Boston, Adams; Western Europe: Hermes, Type 21, County; Russia: Kiev, Kresta II, Kanin). The task forces sail tracks at least 12 km from the SA-2 battery that can be built on the islands (the SAM's range is 11 km).
+
+Five neutral points sit on the islands. Troops landed by helicopter (the player flies one lift, the AI flies three more per side; Western Europe flies the H-34 here, the US the H-34 and Russia the Mi-4) take a point by holding it alone: the meter swings toward the side whose vehicles or infantry are in the circle, and it is theirs once it is all the way over. Pushing it back through the middle makes the point neutral again (the buff is lost) before the other side can claim it. Armour also lands at each point a side takes and every two minutes at the points it holds, and dead vehicles are replaced from the held points.
+
+| Point | Buff while held |
+| --- | --- |
+| San Carlos | Supply depot: armour reinforcements arrive twice as fast and new troops are 30% tougher |
+| Goose Green | SAM site: an SA-2 battery comes online for the holder |
+| Mount Kent | Early-warning radar: enemy aircraft are tracked out to 9.5 km (normal sight is 3.8 km) through cloud and over hills, and shown on the HUD and minimap |
+| Stanley Airport | Island airfield: spawn and rearm on the island, and land-based fighters join the hangar (US F-86F, F-102A; Western Europe Lightning; Russia MiG-15bis, Su-15). The respawn picker offers "Island airfield" |
+| Fox Bay | Flak battery: three heavy and three light AA guns defend the point |
+
+The installations are built when a point is first taken, belong to whoever holds it, and can be bombed: a wrecked radar, SAM site, depot or flak battery gives no buff until the owner's engineers repair it after four minutes (or the point changes hands). Each point held drains 0.35 enemy tickets per second; a side that holds all five for two minutes wins outright, otherwise the usual ticket rules and a 45-minute clock decide. Carrier jets (F9F-2, Sea Hawk, Yak-38) are the starting fighters. The map data is `buildFalklands()` in `src/world/maps.ts`; the rules are in `src/game/control.ts` and the buff installations in `src/world/outposts.ts`.
+
+---
+
 ## Carrier flight deck
 
 Carriers (any ship with a `deck` in `src/world/ships.ts`) run a shared launch queue (the Valley Forge and HMS Hermes have catapults; Hermes
