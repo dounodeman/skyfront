@@ -31,13 +31,15 @@ squad. The other side's commander does the same. Progress autosaves; use "Contin
 
 ## Carrier flight deck
 
-Carriers (any ship with a `deck` in `src/world/ships.ts`) run a shared catapult queue. Naval aircraft (the player's and the AI's) can
+Carriers (any ship with a `deck` in `src/world/ships.ts`) run a shared launch queue (the Valley Forge and HMS Hermes have catapults; Hermes
+has a flat deck with a bow catapult and a waist catapult on the angled deck. The Kiev's Yak-38s taxi to the launch spot and take off on their
+own power, with no shuttle). Naval aircraft (the player's and the AI's) can
 start on their team's carrier; AI aircraft park on the deck's `park` spots, creep forward as the line moves, taxi to a free catapult
 track when cleared, hold full power and ride the shuttle. One aircraft is cleared at a time with a short gap between shots. The
 player joins the same line: with power up on a track you are told how many aircraft are ahead, and you fire only when it is your turn
 (a player who is not ready when they reach the front goes to the back). An engine that flames out while running up is relit at idle
 before the shot. `npm run cattest -- 4 player f9f2` simulates a deck headless (the last argument picks the aircraft, and with it the
-team's carrier: `seahawk` for HMS Hermes, `yak38` for the Kiev).
+team's carrier: `seahawk` or `buccaneer` for HMS Hermes, `yak38` for the Kiev).
 
 ---
 
@@ -142,6 +144,7 @@ Friendly airfield flak shoots at enemies who chase you home.
 | Vulcan B.2 | — | 21× 1000 lb (a row of three per press), **or** one nuclear bomb |
 | Lightning F.6 | 2× Red Top **or** 2× Firestreak homing missiles | — |
 | Sea Hawk FGA.6 | 16× RP-3 60 lb | 2× 500 lb |
+| Buccaneer S.2 | 4× Martel air-to-surface **or** 4× Sea Eagle anti-ship missiles | 8× 1000 lb (4 in the bay, 4 on pylons), **or** a nuclear bomb (Red Beard) |
 | Yak-38 | 32× S-5 57 mm (two 16-tube pods) | 2× 500 kg |
 
 Hold the bomb key (**B** / middle mouse) to fire rockets in pairs (the R4M fires in salvos of six). Rockets
@@ -193,12 +196,17 @@ carry in it.
 
 **Hawker Sea Hawk FGA.6 (W. Europe, Royal Navy):** a straight-wing naval jet with one Nene, its "trouser leg" jet pipes exiting at the wing
 roots, four 20mm Hispano cannon and RP-3 rockets or 500 lb bombs. Light on the controls and gentle at low speed, slow at the top end. Starts on
-HMS Hermes and leaves over the ski-jump. Unlocks at 3,800.
+HMS Hermes and leaves by catapult. Unlocks at 3,800.
+
+**Blackburn Buccaneer S.2 (W. Europe, Royal Navy):** a two-seat carrier strike jet built to run in at wave-top height: two Spey turbofans
+in wing-root nacelles, a rotating bomb-bay door, four wing pylons and no guns. Carry eight 1000 lb bombs, four Martel air-to-surface
+missiles (lock any enemy ground target or ship, about 9 km), four Sea Eagle anti-ship missiles (ships only, about 12 km) or a nuclear
+bomb. Fast and steady down low, no dogfighter. Starts on HMS Hermes and leaves by catapult; AI pilots fly it as a bomber. Unlocks at 7,200.
 
 **Yakovlev Yak-38 Forger (Russia, Soviet Navy):** the Kiev's VTOL fighter, flown here as a short take-off jet: with take-off flaps (2 or more)
 and the throttle past half, its two lift jets push it up as well, fading out between about 250 and 420 km/h, so it gets off the Kiev's
-catapult stand-in heavy and can come back slowly (they burn extra fuel). Two UPK-23 gun pods, S-5 rocket pods or 500 kg bombs. Small, heavy
-and short-ranged; fast low down but not a turner. True vertical take-off and hover aren't modeled yet. Unlocks at 8,500.
+short deck run unassisted (no catapult), and can come back slowly (they burn extra fuel). Two UPK-23 gun pods, S-5 rocket pods or 500 kg bombs. Small, heavy
+and short-ranged; fast low down but not a turner. Unlocks at 8,500.
 
 **Homing missiles (AIM-4, R-8M, Red Top, Firestreak):** point the nose at an enemy within the seeker cone (about 25-30°, up to 4.5-5.5 km) and a red bracket
 and `MISSILE LOCK` with the range appear. Press the bomb key to fire one missile; with no lock nothing launches. The missile boosts,
@@ -210,12 +218,10 @@ light after about a second: thrust goes up by 45-65% depending on the engine, fu
 flame trails each engine. The HUD shows `AB` next to the throttle. Back the throttle off to shut them down.
 Top speed and climb need the afterburners; cruise on dry thrust to save fuel.
 
-**Helicopters (first test): H-34 Choctaw (US) and Mi-4AV Hound (Russia).** The AI flies them too (see below). In mouse-aim the throttle keys become a speed lever: zero is a hover, 100% is cruise and the WEP zone is
-full speed. **W** climbs, **S** descends (hold it over flat ground to land), **Q/E** sidestep, **A/D** and the mouse turn
-the nose. In a hover the mouse also tilts the nose up or down about 10° to aim guns and rockets without drifting. Full
+**Helicopters (first test): H-34 Choctaw (US) and Mi-4AV Hound (Russia).** The AI flies them too (see below). In mouse-aim the controls are War Thunder style: **Shift/Ctrl** are the collective (climb and descend; let go and the hover assist holds your height, hold Ctrl over flat ground to land), the mouse is the cyclic (aim the nose down to fly forward, up to slow and back off, level to hover; up to 22° down is full speed), **W/S** nudge the cyclic forward and back, **Q/E** sidestep and **A/D** are the pedals. With the cyclic centred the hover assist stops all drift. Full
 manual (**M**) puts the collective on the throttle keys and cyclic and pedals on the stick keys. The HUD shows collective,
 rotor rpm and vertical speed instead of throttle, engine and G. Loads: troops (12 in the H-34, 14 in the Mi-4), FFAR or
-S-5 rocket pods, and FAB-100 bombs on the Mi-4. To set troops down, land and stop, then press the bomb key; they get out
+S-5 rocket pods, four wire-guided AGM-22 (H-34) or 9M17 Falanga (Mi-4) missiles that lock the enemy ground target or ship nearest the nose (bomb key), and FAB-100 bombs on the Mi-4. To set troops down, land and stop, then press the bomb key; they get out
 as infantry sections of six that march on the nearest objective, shoot at ground units and low aircraft, and count
 toward capturing a point. In Operation Landfall they can only be landed inside a landing zone (`LZ` markers): the US
 beaches (Red and Blue Beach) and any point your side holds firmly. Land back on a carrier deck or your airfield to
@@ -235,7 +241,7 @@ them down to stop a landing. Shot-down AI helicopters respawn like other AI airc
 **Score and unlocks:** you earn score for air kills (100), assists (40), ground units (30–60), buildings,
 destroying bases (200), disabling the enemy airfield (300), safe landings (50), winning (250) and surviving
 (50). You start with the three props. The Me 262 unlocks at 1,200 career score, the MiG-15bis at 2,600,
-the F9F-2 Panther at 3,400, the Il-28 at 3,500, the Sea Hawk at 3,800, the F-86F at 4,500, the B-66B at 5,000, the B-58A Hustler at 6,000, the Tu-22 at 7,000, the F-102A at 7,500, the Su-15 at 8,000, the Yak-38 at 8,500, the Vulcan at 9,000 and the Lightning at 9,500. Progress is saved in your browser's localStorage. **Settings → Unlock all aircraft**
+the F9F-2 Panther at 3,400, the Il-28 at 3,500, the Sea Hawk at 3,800, the F-86F at 4,500, the B-66B at 5,000, the B-58A Hustler at 6,000, the Tu-22 at 7,000, the Buccaneer at 7,200, the F-102A at 7,500, the Su-15 at 8,000, the Yak-38 at 8,500, the Vulcan at 9,000 and the Lightning at 9,500. Progress is saved in your browser's localStorage. **Settings → Unlock all aircraft**
 skips the grind.
 
 ---
