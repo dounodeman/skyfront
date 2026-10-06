@@ -13,6 +13,10 @@ Built with TypeScript, Three.js and Vite.
 
 ---
 
+## Naval warfare
+
+Every cruiser, destroyer and frigate carries anti-ship missiles (`asm` in `src/world/ships.ts`, flight and defence code in `src/weapons/shipMissiles.ts`) and shoots at enemy ships in reach, carriers first. Cruisers reach furthest, then destroyers, then frigates (Harpoon, MM38 Exocet, P-15 Termit, P-35). Each ship also has point defence (`defence`): every living ship takes one shot at each hostile missile that comes inside its radius while it is flying at that ship or a ship under its umbrella, with a base chance of 50% (cruiser), 35% (destroyer) or 25% (frigate) that drops as more missiles arrive together or the ship is already busy. The same defence works against aircraft-launched Sea Eagle and Martel missiles. `npm run navalwar -- <gap m> <seconds>` runs two fleets against each other headlessly.
+
 ## Maps
 
 The main menu has a map picker (the game reloads when you change it). **Skyfront Island** is the original single-island
@@ -43,7 +47,7 @@ Five neutral points sit on the islands. Troops landed by helicopter (the player 
 | Stanley Airport | Island airfield: spawn and rearm on the island, and land-based fighters join the hangar (US F-86F, F-102A; Western Europe Lightning; Russia MiG-15bis, Su-15). The respawn picker offers "Island airfield" |
 | Fox Bay | Flak battery: three heavy and three light AA guns defend the point |
 
-The installations are built when a point is first taken, belong to whoever holds it, and can be bombed: a wrecked radar, SAM site, depot or flak battery gives no buff until the owner's engineers repair it after four minutes (or the point changes hands). Each point held drains 0.35 enemy tickets per second; a side that holds all five for two minutes wins outright, otherwise the usual ticket rules and a 45-minute clock decide. Carrier jets (F9F-2, Sea Hawk, Yak-38) are the starting fighters. The player may also fly a subsonic bomber (B-66; Vulcan or Buccaneer; Il-28), which starts in level flight 26 km out on its side's approach; the B-58 and Tu-22 are not offered. The map data is `buildFalklands()` in `src/world/maps.ts`; the rules are in `src/game/control.ts` and the buff installations in `src/world/outposts.ts`.
+A side that holds Fox Bay (flak battery up) can also land anywhere inside the point to rearm, refuel and repair, and the respawn picker offers it as a helicopter spawn while it is held. The installations are built when a point is first taken, belong to whoever holds it, and can be bombed: a wrecked radar, SAM site, depot or flak battery gives no buff until the owner's engineers repair it after four minutes (or the point changes hands). Each point held drains 0.35 enemy tickets per second; a side that holds all five for two minutes wins outright, otherwise the usual ticket rules and a 45-minute clock decide. Carrier jets (F9F-2, Sea Hawk, Yak-38) are the starting fighters. The player may also fly a subsonic bomber (B-66; Vulcan or Buccaneer; Il-28), which starts in level flight 26 km out on its side's approach (the carrier-based Buccaneer launches from the carrier deck like the other naval jets, and only starts in the air if you choose the held island airfield); the B-58 and Tu-22 are not offered. The map data is `buildFalklands()` in `src/world/maps.ts`; the rules are in `src/game/control.ts` and the buff installations in `src/world/outposts.ts`.
 
 ---
 
@@ -158,6 +162,7 @@ Friendly airfield flak shoots at enemies who chase you home.
 | B-58A | — | 4× 1000 lb + fuel pod, **or** a nuclear bomb with the fuel pod removed |
 | Tu-22 | — | 8× 500 kg + bay fuel tank, **or** a nuclear bomb with the bay tank removed |
 | Il-28 | — | 6× 500 kg, **or** a nuclear bomb (RDS-4) |
+| Ar 234 C-3 | — | 3× SC 500 (under the nacelles and the fuselage) |
 | B-66B | — | 12× 1000 lb, **or** a nuclear bomb (Mk 7) |
 | Su-15 | 4× R-8M homing missiles, **or** 32× S-5 57 mm (two 16-tube pods) | — |
 | F-102A | 6× AIM-4 Falcon homing missiles, **or** 24× Mk 4 FFAR 2.75" (bay doors) | — |
@@ -181,25 +186,29 @@ can outrun the shock.
 
 **B-58A Hustler (bonus, outside the era):** a 1956 Mach 2 delta-wing bomber with four afterburning
 engines and four 1000 lb bombs. Its only gun is a radar-aimed 20mm tail gun: hold Fire and it shoots
-*backward* at the nearest enemy within 1.5 km behind you (the HUD shows the radar lock). It's player-only,
-so AI pilots never fly it. It pulls only about 3 g, so outrun fighters rather than turning with them.
+*backward* at the nearest enemy within 1.5 km behind you (the HUD shows the radar lock). AI pilots fly it too, as a high level bomber.
+It pulls only about 3 g, so outrun fighters rather than turning with them.
 
 **Tu-22 Blinder (bonus, outside the era):** an early Soviet Mach 1.4 bomber with two afterburning engines
 on the tail and a radar-aimed twin 23mm tail gun that works like the B-58's. It is heavier, slower and
-thirstier than the B-58 and rolls sluggishly, so plan the bomb run early. Player-only, unlocks at 7,000.
+thirstier than the B-58 and rolls sluggishly, so plan the bomb run early. AI pilots fly it as a level bomber. Unlocks at 7,000.
 
-**Early jet bombers (bonus, outside the era):** two straight-forward twin-jet bombers with no afterburners and a radar-aimed tail gun
-that works like the B-58's. Both fly a level bomb run, so they're slow to turn and climb; hold the brakes (**H**, an airbrake in flight) to get down for landing.
-Unlike the supersonic bombers above, AI pilots fly them too: they cruise at 2,200–3,200 m, bomb in a shallow level run, then head home
+**Early jet bombers (bonus, outside the era):** straight-forward jet bombers with no afterburners; the twin-jets have a radar-aimed tail gun
+that works like the B-58's. All fly a level bomb run, so they're slow to turn and climb; hold the brakes (**H**, an airbrake in flight) to get down for landing.
+AI pilots fly them (and the supersonic bombers above) too: they cruise at 2,200–3,200 m, bomb in a shallow level run, then head home
 and land, defended only by their tail gunner.
 - **Il-28 Beagle** (Soviet, 1948): a light straight-wing bomber with two VK-1 engines in wing nacelles, a glazed bombardier nose, two fixed
   forward 23mm guns and a twin 23mm tail turret. Agile for a bomber, but it tops out near 900 km/h. Unlocks at 3,500.
+- **Arado Ar 234 C-3** (Western Europe, 1945): the first jet bomber, in its four-engined form: four BMW 003s in two twinned nacelles under
+  a straight shoulder wing, the pilot alone in a glazed nose with a rear-view periscope on the roof, and three 500 kg bombs on external
+  racks. Two MG 151/20 under the nose; two more fixed in the tail fire straight back, only at an enemy within about 8 degrees of dead astern.
+  About 850 km/h clean at 6,000 m, but the BMW 003s spool slowly and flame out if rushed. Unlocks at 2,400.
 - **B-66B Destroyer** (American, 1954): a swept-wing bomber with two J71 engines in underwing pods and a twin 20mm radar-aimed tail gun.
   Faster and with a bigger bomb load than the Il-28, but heavy and slow to roll. Unlocks at 5,000.
 
 **Avro Vulcan B.2 (bonus, outside the era, Western Europe):** Britain's V-bomber: a huge tailless delta with four Olympus engines buried in the
 wing roots (no afterburners) and no guns at all. Pick **21× 1000 lb bombs** (each press of the bomb key drops a row of three) or the Yellow Sun
-nuclear bomb. It is subsonic, so it relies on altitude, but the big delta wing rolls and turns far better than the other bombers. Player-only, unlocks at 9,000.
+nuclear bomb. It is subsonic, so it relies on altitude, but the big delta wing rolls and turns far better than the other bombers. AI pilots fly it as a level bomber. Unlocks at 9,000.
 
 **Early Cold War interceptors (bonus, outside the era):** the missiles of the day aren't in the game, so both fight with what they can
 carry in it.
@@ -207,7 +216,7 @@ carry in it.
   very fast gun fighter. It climbs superbly but has a heavy wing, so it loses a turning fight. Pick **4× R-8M** homing missiles or S-5 rocket pods as its payload. Unlocks at 8,000.
 - **F-102A Delta Dagger** (American, 1956): a single-engine area-ruled delta with no guns at all. Its weapons are six homing AIM-4 Falcon
   missiles (default) or a 24-rocket Mk 4 FFAR pack in the bay doors, both fired with the bomb key (**B** / middle mouse). Easy to fly and
-  fast, but few shots. Player-only (AI pilots can't fight with missiles or rockets), unlocks at 7,500.
+  fast, but few shots. AI pilots fly it too and fire the Falcons. Unlocks at 7,500.
 - **English Electric Lightning F.6** (British, 1965): Mach 2 with two stacked afterburning Avons, two 30mm Aden cannon in the ventral tank and a
   Red Top (all-aspect, 6 km) or Firestreak (rear hemisphere, narrower cone, 4 km) missile on each side of the forward fuselage. It climbs like a
   rocket but carries little fuel. Unlocks at 9,500.
@@ -260,7 +269,7 @@ them down to stop a landing. Shot-down AI helicopters respawn like other AI airc
 
 **Score and unlocks:** you earn score for air kills (100), assists (40), ground units (30–60), buildings,
 destroying bases (200), disabling the enemy airfield (300), safe landings (50), winning (250) and surviving
-(50). You start with the three props. The Me 262 unlocks at 1,200 career score, the MiG-15bis at 2,600,
+(50). You start with the three props. The Me 262 unlocks at 1,200 career score, the Ar 234 at 2,400, the MiG-15bis at 2,600,
 the F9F-2 Panther at 3,400, the Il-28 at 3,500, the Sea Hawk at 3,800, the F-86F at 4,500, the B-66B at 5,000, the B-58A Hustler at 6,000, the Tu-22 at 7,000, the Buccaneer at 7,200, the F-102A at 7,500, the Su-15 at 8,000, the Yak-38 at 8,500, the Vulcan at 9,000 and the Lightning at 9,500. Progress is saved in your browser's localStorage. **Settings → Unlock all aircraft**
 skips the grind.
 
@@ -384,7 +393,7 @@ The B-58 uses one: `public/media/b58.glb`, loaded by `src/aircraft/b58.ts`. To c
 /Applications/Blender.app/Contents/MacOS/Blender --background --factory-startup --python tools/b58/export_glb.py
 ```
 
-The fighters, the Tu-22, the Il-28, the B-66, the Vulcan and the interceptors are built from one Blender script, `tools/aircraft/model.py` (a design per aircraft),
+The fighters, the Tu-22, the Il-28, the Ar 234, the B-66, the Vulcan and the interceptors are built from one Blender script, `tools/aircraft/model.py` (a design per aircraft),
 exported by `tools/aircraft/export_glb.py` and loaded by `src/aircraft/glbAircraft.ts`. Add `-- tu22` to
 export just one. `tools/aircraft/preview.py <id> <out_dir>` renders side, front, three-quarter, top and rear views with headless Blender (`pip install bpy`).
 
@@ -419,3 +428,11 @@ public/media/        downloaded / exported assets (see LICENSES.md)
 - Aircraft don't collide with each other or with buildings and trees, only with the ground and water.
 - AI pilots occasionally fly into the ground, mostly on Rookie (some of that is deliberate).
 - No multiplayer. The match is you plus AI.
+
+## AI missiles
+
+AI pilots use guided missiles. Fighters carrying air-to-air missiles (Su-15 R-8M, Lightning Red Top / Firestreak, F-102A Falcon) fire at
+the target they are engaging once it is in the seeker's range and cone. Buccaneers sometimes carry Martel (fired at ground targets) or Sea Eagle
+(anti-ship), and Tu-22s sometimes carry a Kh-22 (anti-ship) when enemy ships are afloat. At most two AI aircraft attack the same target at once.
+
+AI pilots never carry nuclear bombs: loadouts are filtered in the aircraft constructor, and an AI aircraft cannot release one.
