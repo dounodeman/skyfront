@@ -25,7 +25,7 @@ airfield and five camps, the US (F9F-2 Panther, flown from two carriers) lands t
 the US wins by capturing all six points with no time limit; Russia wins by sinking a US carrier
 (it takes six Kh-22 hits). Once the US holds two thirds of the points Russia sends two Tu-22 anti-ship bombers every five minutes.
 Ground forces are bought with credits earned from kills: press 1-6 to order troops to a point, 0 for the nearest, U to deploy a
-squad. The other side's commander does the same. Progress autosaves; use "Continue mission" in the menu. US troops are not placed on the island: fly them in by H-34 from a carrier to the Red or Blue Beach landing zone and set them down (the first lift on a beach sets up a landing zone there; only then can squads bought with U be set down on that beach, and they can also deploy at points the US holds). When the computer commands the US, AI H-34s fly its troops in and set up the landing zones.
+squad. The other side's commander does the same. Progress autosaves; use "Continue mission" in the menu. US troops are not placed on the island: fly them in by H-34 from a carrier to the Red or Blue Beach landing zone and set them down (the first lift on a beach sets up a landing zone there; only then can squads bought with U be set down on that beach, and they can also deploy at points the US holds). When the computer commands the US, AI H-34s fly its troops in and set up the landing zones. Once a beach has its landing zone, the respawn picker offers it as a helicopter spawn point (US only): choose an H-34 and pick the beach under "Helicopter spawn at".
 
 ---
 
@@ -35,7 +35,9 @@ Carriers (any ship with a `deck` in `src/world/ships.ts`) run a shared catapult 
 start on their team's carrier; AI aircraft park on the deck's `park` spots, creep forward as the line moves, taxi to a free catapult
 track when cleared, hold full power and ride the shuttle. One aircraft is cleared at a time with a short gap between shots. The
 player joins the same line: with power up on a track you are told how many aircraft are ahead, and you fire only when it is your turn
-(a player who is not ready when they reach the front goes to the back). `npm run cattest -- 4 player` simulates a deck headless.
+(a player who is not ready when they reach the front goes to the back). An engine that flames out while running up is relit at idle
+before the shot. `npm run cattest -- 4 player f9f2` simulates a deck headless (the last argument picks the aircraft, and with it the
+team's carrier: `seahawk` for HMS Hermes, `yak38` for the Kiev).
 
 ---
 
@@ -139,6 +141,8 @@ Friendly airfield flak shoots at enemies who chase you home.
 | F-102A | 6× AIM-4 Falcon homing missiles, **or** 24× Mk 4 FFAR 2.75" (bay doors) | — |
 | Vulcan B.2 | — | 21× 1000 lb (a row of three per press), **or** one nuclear bomb |
 | Lightning F.6 | 2× Red Top **or** 2× Firestreak homing missiles | — |
+| Sea Hawk FGA.6 | 16× RP-3 60 lb | 2× 500 lb |
+| Yak-38 | 32× S-5 57 mm (two 16-tube pods) | 2× 500 kg |
 
 Hold the bomb key (**B** / middle mouse) to fire rockets in pairs (the R4M fires in salvos of six). Rockets
 burn for about a second, then fall like a shell, so aim a little high at long range. With **Settings →
@@ -187,6 +191,15 @@ carry in it.
 
 **F9F-2 Panther (Korean War):** Grumman's straight-wing Navy jet: one J42 engine, four 20mm nose cannons and wingtip tanks. Forgiving and fast in a dive, but its unswept wing hits compressibility early and its single engine gives only modest thrust, so keep your speed up and use the cannons. Unlocks at 3,400.
 
+**Hawker Sea Hawk FGA.6 (W. Europe, Royal Navy):** a straight-wing naval jet with one Nene, its "trouser leg" jet pipes exiting at the wing
+roots, four 20mm Hispano cannon and RP-3 rockets or 500 lb bombs. Light on the controls and gentle at low speed, slow at the top end. Starts on
+HMS Hermes and leaves over the ski-jump. Unlocks at 3,800.
+
+**Yakovlev Yak-38 Forger (Russia, Soviet Navy):** the Kiev's VTOL fighter, flown here as a short take-off jet: with take-off flaps (2 or more)
+and the throttle past half, its two lift jets push it up as well, fading out between about 250 and 420 km/h, so it gets off the Kiev's
+catapult stand-in heavy and can come back slowly (they burn extra fuel). Two UPK-23 gun pods, S-5 rocket pods or 500 kg bombs. Small, heavy
+and short-ranged; fast low down but not a turner. True vertical take-off and hover aren't modeled yet. Unlocks at 8,500.
+
 **Homing missiles (AIM-4, R-8M, Red Top, Firestreak):** point the nose at an enemy within the seeker cone (about 25-30°, up to 4.5-5.5 km) and a red bracket
 and `MISSILE LOCK` with the range appear. Press the bomb key to fire one missile; with no lock nothing launches. The missile boosts,
 turns toward where the target will be (it can only turn so hard, so a tight break at close range can shake it), and explodes by proximity.
@@ -222,7 +235,7 @@ them down to stop a landing. Shot-down AI helicopters respawn like other AI airc
 **Score and unlocks:** you earn score for air kills (100), assists (40), ground units (30–60), buildings,
 destroying bases (200), disabling the enemy airfield (300), safe landings (50), winning (250) and surviving
 (50). You start with the three props. The Me 262 unlocks at 1,200 career score, the MiG-15bis at 2,600,
-the F9F-2 Panther at 3,400, the Il-28 at 3,500, the F-86F at 4,500, the B-66B at 5,000, the B-58A Hustler at 6,000, the Tu-22 at 7,000, the F-102A at 7,500, the Su-15 at 8,000, the Vulcan at 9,000 and the Lightning at 9,500. Progress is saved in your browser's localStorage. **Settings → Unlock all aircraft**
+the F9F-2 Panther at 3,400, the Il-28 at 3,500, the Sea Hawk at 3,800, the F-86F at 4,500, the B-66B at 5,000, the B-58A Hustler at 6,000, the Tu-22 at 7,000, the F-102A at 7,500, the Su-15 at 8,000, the Yak-38 at 8,500, the Vulcan at 9,000 and the Lightning at 9,500. Progress is saved in your browser's localStorage. **Settings → Unlock all aircraft**
 skips the grind.
 
 ---
