@@ -43,7 +43,7 @@ Five neutral points sit on the islands. Troops landed by helicopter (the player 
 | Stanley Airport | Island airfield: spawn and rearm on the island, and land-based fighters join the hangar (US F-86F, F-102A; Western Europe Lightning; Russia MiG-15bis, Su-15). The respawn picker offers "Island airfield" |
 | Fox Bay | Flak battery: three heavy and three light AA guns defend the point |
 
-The installations are built when a point is first taken, belong to whoever holds it, and can be bombed: a wrecked radar, SAM site, depot or flak battery gives no buff until the owner's engineers repair it after four minutes (or the point changes hands). Each point held drains 0.35 enemy tickets per second; a side that holds all five for two minutes wins outright, otherwise the usual ticket rules and a 45-minute clock decide. Carrier jets (F9F-2, Sea Hawk, Yak-38) are the starting fighters. The map data is `buildFalklands()` in `src/world/maps.ts`; the rules are in `src/game/control.ts` and the buff installations in `src/world/outposts.ts`.
+The installations are built when a point is first taken, belong to whoever holds it, and can be bombed: a wrecked radar, SAM site, depot or flak battery gives no buff until the owner's engineers repair it after four minutes (or the point changes hands). Each point held drains 0.35 enemy tickets per second; a side that holds all five for two minutes wins outright, otherwise the usual ticket rules and a 45-minute clock decide. Carrier jets (F9F-2, Sea Hawk, Yak-38) are the starting fighters. The player may also fly a subsonic bomber (B-66; Vulcan or Buccaneer; Il-28), which starts in level flight 26 km out on its side's approach; the B-58 and Tu-22 are not offered. The map data is `buildFalklands()` in `src/world/maps.ts`; the rules are in `src/game/control.ts` and the buff installations in `src/world/outposts.ts`.
 
 ---
 
@@ -53,8 +53,10 @@ Carriers (any ship with a `deck` in `src/world/ships.ts`) run a shared launch qu
 has a flat deck with two catapults side by side on the bow. The Kiev's Yak-38s taxi to the launch spot and take off on their
 own power, with no shuttle). Naval aircraft (the player's and the AI's) can
 start on their team's carrier; AI aircraft park on the deck's `park` spots, creep forward as the line moves, taxi to a free catapult
-track when cleared, hold full power and ride the shuttle. One aircraft is cleared at a time with a short gap between shots. The
-player joins the same line: with power up on a track you are told how many aircraft are ahead, and you fire only when it is your turn
+track when cleared, hold full power and ride the shuttle. Each catapult runs on its own, so the two-catapult carriers (Valley Forge
+and Hermes) launch two aircraft at once; the starboard catapult's aircraft holds a little further aft so the wings don't overlap. An
+AI aircraft also takes the free catapult while the player sits on the other one running up. There is a short gap between shots on
+each catapult. The player joins the same line: with power up on a track you are told how many aircraft are ahead, and you fire only when it is your turn
 (a player who is not ready when they reach the front goes to the back). An engine that flames out while running up is relit at idle
 before the shot. `npm run cattest -- 4 player f9f2` simulates a deck headless (the last argument picks the aircraft, and with it the
 team's carrier: `seahawk` or `buccaneer` for HMS Hermes, `yak38` for the Kiev).
