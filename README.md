@@ -47,7 +47,7 @@ Five neutral points sit on the islands. Troops landed by helicopter (the player 
 | Stanley Airport | Island airfield: spawn and rearm on the island, and land-based fighters join the hangar (US F-86F, F-102A; Western Europe Lightning; Russia MiG-15bis, Su-15). The respawn picker offers "Island airfield" |
 | Fox Bay | Flak battery: three heavy and three light AA guns defend the point |
 
-A side that holds Fox Bay (flak battery up) can also land anywhere inside the point to rearm, refuel and repair, and the respawn picker offers it as a helicopter spawn while it is held. The installations are built when a point is first taken, belong to whoever holds it, and can be bombed: a wrecked radar, SAM site, depot or flak battery gives no buff until the owner's engineers repair it after four minutes (or the point changes hands). Each point held drains 0.35 enemy tickets per second; a side that holds all five for two minutes wins outright, otherwise the usual ticket rules and a 45-minute clock decide. Carrier jets (F9F-2, Sea Hawk, Yak-38) are the starting fighters. The player may also fly a subsonic bomber (B-66; Vulcan or Buccaneer; Il-28), which starts in level flight 26 km out on its side's approach (the carrier-based Buccaneer launches from the carrier deck like the other naval jets, and only starts in the air if you choose the held island airfield); the B-58 and Tu-22 are not offered. The map data is `buildFalklands()` in `src/world/maps.ts`; the rules are in `src/game/control.ts` and the buff installations in `src/world/outposts.ts`.
+A side that holds Fox Bay (flak battery up) can also land anywhere inside the point to rearm, refuel and repair, and the respawn picker offers it as a helicopter spawn while it is held. The installations are built when a point is first taken, belong to whoever holds it, and can be bombed: a wrecked radar, SAM site, depot or flak battery gives no buff until the owner's engineers repair it after four minutes (or the point changes hands). Each point held drains 0.35 enemy tickets per second; a side that holds all five for two minutes wins outright, otherwise the usual ticket rules and a 45-minute clock decide. Carrier jets (F9F-2, Sea Hawk, Yak-38) are the starting fighters. The player may also fly a subsonic bomber (B-66; Vulcan or Buccaneer; Il-28), which starts in level flight 26 km out on its side's approach (the carrier-based Buccaneer launches from the carrier deck like the other naval jets, and only starts in the air if you choose the held island airfield); the B-58 and Tu-22 are not offered. About a third of each side's AI are bombers too: they fly in flights of three or four of one type (Buccaneer, Vulcan, B-66 or Il-28) in a loose wedge behind a leader, starting out on the same approach, and a wingman takes over if the leader is shot down (a replacement joins the formation from behind). With nothing to bomb yet they fly long straight legs across the map. The map data is `buildFalklands()` in `src/world/maps.ts`; the rules are in `src/game/control.ts` and the buff installations in `src/world/outposts.ts`.
 
 ---
 
@@ -185,7 +185,7 @@ everything out to about 2.6 km. Drop it from high altitude and run: the fall tak
 can outrun the shock.
 
 **B-58A Hustler (bonus, outside the era):** a 1956 Mach 2 delta-wing bomber with four afterburning
-engines and four 1000 lb bombs. Its only gun is a radar-aimed 20mm tail gun: hold Fire and it shoots
+engines and four 1000 lb bombs. Its only gun is a radar-aimed 20mm tail gun: hold the gunner key (**R**) and it shoots
 *backward* at the nearest enemy within 1.5 km behind you (the HUD shows the radar lock). AI pilots fly it too, as a high level bomber.
 It pulls only about 3 g, so outrun fighters rather than turning with them.
 
@@ -286,7 +286,8 @@ Bindings are saved to localStorage.
 | Pitch down / up | W / S |
 | Yaw left / right (rudder) | A / D |
 | Roll left / right | Q / E |
-| Fire guns | Left mouse / Space |
+| Fire main guns | Left mouse / Space |
+| Gunner: fire tail turret (B-66, Il-28, B-58, Tu-22) | R |
 | Drop bomb / fire rockets (hold) / unload troops | Middle mouse / B |
 | Throttle up (WEP above 100%) / down | Shift / Ctrl |
 | Landing gear | G |
