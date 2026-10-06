@@ -3861,10 +3861,10 @@ void main() {
         float a0 = 1.0 - smoothstep(500.0, 1800.0, dist);
         float a1 = 1.0 - smoothstep(2500.0, 9000.0, dist);
         float a2 = 1.0 - smoothstep(10000.0, 40000.0, dist);
-        h += a0 * 0.35 * (1.0 - abs(vnoise(rot(p, 0.4) / 7.0 + wind * t * 0.9) * 2.0 - 1.0));
-        h += a0 * 0.18 * (1.0 - abs(vnoise(rot(p, 1.3) / 3.1 - wind * t * 0.5) * 2.0 - 1.0));
-        h += a1 * 1.2 * (1.0 - abs(vnoise(rot(p, -0.3) / 38.0 + wind * t * 2.0) * 2.0 - 1.0));
-        h += a2 * 4.0 * (1.0 - abs(vnoise(rot(p, 0.9) / 190.0 + wind * t * 5.0) * 2.0 - 1.0));
+        h += a0 * 0.35 * (1.0 - abs(vnoise(rot(p, 0.4) / 7.0 + wind * t * 0.25 / 7.0) * 2.0 - 1.0));
+        h += a0 * 0.18 * (1.0 - abs(vnoise(rot(p, 1.3) / 3.1 - wind * t * 0.12 / 3.1) * 2.0 - 1.0));
+        h += a1 * 1.2 * (1.0 - abs(vnoise(rot(p, -0.3) / 38.0 + wind * t * 0.9 / 38.0) * 2.0 - 1.0));
+        h += a2 * 4.0 * (1.0 - abs(vnoise(rot(p, 0.9) / 190.0 + wind * t * 2.5 / 190.0) * 2.0 - 1.0));
         return h;
       }
 
@@ -3915,16 +3915,23 @@ void main() {
         col += vec3(1.0, 0.93, 0.78) * spec;
 
         // Whitecaps where the swell crests, scattered patches that thin with distance.
-        float capMask = smoothstep(0.5, 0.8, vnoise(p / 260.0 + 21.0));
-        float fine = vnoise(p / 5.0 + vec2(0.8, 0.6) * t * 0.8) * 0.55 + vnoise(p / 14.0 - vec2(0.8, 0.6) * t * 0.4) * 0.45;
-        float crest = smoothstep(0.58, 0.74, fine + capMask * 0.1);
-        float caps = capMask * crest * (1.0 - smoothstep(250.0, 3500.0, dist));
+        // Foam is born on crests, grows, then thins out: each patch runs its own ~11 s lifecycle (continuous in space,
+        // zero at both ends of the cycle), gusts of wind move slowly through the patch mask.
+        vec2 wdir = vec2(0.8, 0.6);
+        float gust = vnoise(p / 260.0 + 21.0 + wdir * t * 1.5 / 260.0);
+        float capMask = smoothstep(0.45, 0.78, gust);
+        float age = fract(t / 11.0 + vnoise(p / 45.0 + 3.0) * 4.0);
+        float life = smoothstep(0.0, 0.22, age) * pow(1.0 - age, 1.6) * 1.3;
+        float fine = vnoise(p / 5.0 + wdir * t * 0.35 / 5.0) * 0.55 + vnoise(p / 14.0 - wdir * t * 0.2 / 14.0) * 0.45;
+        float thr = mix(0.86, 0.56, clamp(life, 0.0, 1.0));
+        float crest = smoothstep(thr, thr + 0.12, fine + (h0 - 0.6) * 0.06);
+        float caps = capMask * crest * clamp(life, 0.0, 1.0) * (1.0 - smoothstep(250.0, 3500.0, dist));
         col = mix(col, vec3(0.95, 0.98, 1.0), clamp(caps, 0.0, 0.5));
 
         // Shoreline: bright surf bands rolling in plus a hard foam line at the waterline.
         if (hasSeabed > 0.5) {
           float wob = vnoise(p / 40.0) * 5.0;
-          float band = 0.5 + 0.5 * sin(depth * 0.55 - t * 0.9 + wob);
+          float band = 0.5 + 0.5 * sin(depth * 0.55 - t * 0.45 + wob);
           float surf = (1.0 - smoothstep(1.0, 9.0, depth)) * smoothstep(0.35, 0.8, band);
           float edge = 1.0 - smoothstep(0.0, 1.6 + vnoise(p / 12.0) * 1.2, depth);
           float foam = clamp(surf * 0.7 + edge, 0.0, 1.0) * (0.75 + 0.25 * vnoise(p / 4.0));
