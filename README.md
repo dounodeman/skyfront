@@ -32,7 +32,7 @@ squad. The other side's commander does the same. Progress autosaves; use "Contin
 ## Carrier flight deck
 
 Carriers (any ship with a `deck` in `src/world/ships.ts`) run a shared launch queue (the Valley Forge and HMS Hermes have catapults; Hermes
-has a flat deck with a bow catapult and a waist catapult on the angled deck. The Kiev's Yak-38s taxi to the launch spot and take off on their
+has a flat deck with two catapults side by side on the bow. The Kiev's Yak-38s taxi to the launch spot and take off on their
 own power, with no shuttle). Naval aircraft (the player's and the AI's) can
 start on their team's carrier; AI aircraft park on the deck's `park` spots, creep forward as the line moves, taxi to a free catapult
 track when cleared, hold full power and ride the shuttle. One aircraft is cleared at a time with a short gap between shots. The
