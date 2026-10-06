@@ -27,7 +27,7 @@ ground forces only defend their own shores. Maps are plain data in `src/world/ma
 **Operation Landfall** (`?map=landfall`) is a mission, not a match. The island is traced from an aerial photo; Russia (MiG-15bis) holds the
 airfield and five camps, the US (F9F-2 Panther, flown from two carriers) lands troops on the south-east beaches. There are no tickets:
 the US wins by capturing all six points with no time limit; Russia wins by sinking a US carrier
-(it takes six Kh-22 hits). Once the US holds two thirds of the points Russia sends two Tu-22 anti-ship bombers every five minutes.
+(it takes six Kh-22 hits). From 20 minutes into the mission Russia sends four Tu-22 anti-ship bombers, three Kh-22s each, every five minutes (a warning goes out a minute before the first wave). Flying for Russia, you get a minute after each wave launches to press **J** and join it in a Tu-22 of your own (three Kh-22s), flying in formation with the wave, even if you are already in the air or waiting to respawn; afterwards you respawn in what you flew before. `npm run landfall` checks the wave timing and a Tu-22 strike headlessly.
 Ground forces are bought with credits earned from kills: press 1-6 to order troops to a point, 0 for the nearest, U to deploy a
 squad. The other side's commander does the same. Progress autosaves; use "Continue mission" in the menu. US troops are not placed on the island: fly them in by H-34 from a carrier to the Red or Blue Beach landing zone and set them down (the first lift on a beach sets up a landing zone there; only then can squads bought with U be set down on that beach, and they can also deploy at points the US holds). When the computer commands the US, AI H-34s fly its troops in and set up the landing zones. Once a beach has its landing zone, the respawn picker offers it as a helicopter spawn point (US only): choose an H-34 and pick the beach under "Helicopter spawn at".
 
@@ -37,7 +37,7 @@ squad. The other side's commander does the same. Progress autosaves; use "Contin
 
 **Falklands** (`?map=falklands`) is a symmetric objective battle on two islands: East Falkland (north lobe, the isthmus at Goose Green and the lowland of Lafonia) and West Falkland. Pick any two of the three nations on the menu ("Your side" and "Enemy side"; changing either reloads the game, because the fleets are rebuilt). Each side starts at sea with **two carrier task forces**, one carrier, two cruisers or frigates and five destroyers each (US: Valley Forge, Boston, Adams; Western Europe: Hermes, Type 21, County; Russia: Kiev, Kresta II, Kanin). The task forces sail tracks at least 12 km from the SA-2 battery that can be built on the islands (the SAM's range is 11 km).
 
-Five neutral points sit on the islands. Troops landed by helicopter (the player flies one lift, the AI flies three more per side; Western Europe flies the H-34 here, the US the H-34 and Russia the Mi-4) take a point by holding it alone: the meter swings toward the side whose vehicles or infantry are in the circle, and it is theirs once it is all the way over. Pushing it back through the middle makes the point neutral again (the buff is lost) before the other side can claim it. Armour also lands at each point a side takes and every two minutes at the points it holds, and dead vehicles are replaced from the held points.
+Five neutral points sit on the islands. Troops landed by helicopter (the player flies one lift, the AI flies three more per side; Western Europe flies the Westland Wessex, the US the H-34 and Russia the Mi-4) take a point by holding it alone: the meter swings toward the side whose vehicles or infantry are in the circle, and it is theirs once it is all the way over. Pushing it back through the middle makes the point neutral again (the buff is lost) before the other side can claim it. Armour also lands at each point a side takes and every two minutes at the points it holds, and dead vehicles are replaced from the held points.
 
 | Point | Buff while held |
 | --- | --- |
@@ -47,7 +47,7 @@ Five neutral points sit on the islands. Troops landed by helicopter (the player 
 | Stanley Airport | Island airfield: spawn and rearm on the island, and land-based fighters join the hangar (US F-86F, F-102A; Western Europe Lightning; Russia MiG-15bis, Su-15). The respawn picker offers "Island airfield" |
 | Fox Bay | Flak battery: three heavy and three light AA guns defend the point |
 
-A side that holds Fox Bay (flak battery up) can also land anywhere inside the point to rearm, refuel and repair, and the respawn picker offers it as a helicopter spawn while it is held. The installations are built when a point is first taken, belong to whoever holds it, and can be bombed: a wrecked radar, SAM site, depot or flak battery gives no buff until the owner's engineers repair it after four minutes (or the point changes hands). Each point held drains 0.35 enemy tickets per second; a side that holds all five for two minutes wins outright, otherwise the usual ticket rules and a 45-minute clock decide. Carrier jets (F9F-2, Sea Hawk, Yak-38) are the starting fighters. The player may also fly a subsonic bomber (B-66; Vulcan or Buccaneer; Il-28), which starts in level flight 26 km out on its side's approach (the carrier-based Buccaneer launches from the carrier deck like the other naval jets, and only starts in the air if you choose the held island airfield); the B-58 and Tu-22 are not offered. About a third of each side's AI are bombers too: they fly in flights of three or four of one type (Buccaneer, Vulcan, B-66 or Il-28) in a loose wedge behind a leader, starting out on the same approach, and a wingman takes over if the leader is shot down (a replacement joins the formation from behind). With nothing to bomb yet they fly long straight legs across the map. The map data is `buildFalklands()` in `src/world/maps.ts`; the rules are in `src/game/control.ts` and the buff installations in `src/world/outposts.ts`.
+A side that holds Fox Bay (flak battery up) can also land anywhere inside the point to rearm, refuel and repair, and the respawn picker offers it as a helicopter spawn while it is held. The installations are built when a point is first taken, belong to whoever holds it, and can be bombed: a wrecked radar, SAM site, depot or flak battery gives no buff until the owner's engineers repair it after four minutes (or the point changes hands). Each point held drains 0.35 enemy tickets per second; a side that holds all five for two minutes wins outright, otherwise the usual ticket rules and a 45-minute clock decide. Carrier jets (F9F-2, Sea Hawk, Yak-38) are the starting fighters. The player may also fly any bomber (B-66, B-47 or B-58; Vulcan or Buccaneer; Il-28, M-4 or Tu-22), which always starts in level flight 26 km out on its side's approach (a Buccaneer only launches from the carrier deck if you choose the carrier start). About a third of each side's AI are bombers too: they fly in flights of three or four of one type (Buccaneer, Vulcan, B-66, B-47, Il-28 or M-4) in a loose wedge behind a leader, starting out on the same approach, and a wingman takes over if the leader is shot down (a replacement joins the formation from behind). With nothing to bomb yet they fly long straight legs across the map. The map data is `buildFalklands()` in `src/world/maps.ts`; the rules are in `src/game/control.ts` and the buff installations in `src/world/outposts.ts`.
 
 ---
 
@@ -160,10 +160,12 @@ Friendly airfield flak shoots at enemies who chase you home.
 | F-86F | 8× HVAR 5" | 2× 1000 lb |
 | MiG-15bis | 2× ARS-212 | 2× 250 kg |
 | B-58A | — | 4× 1000 lb + fuel pod, **or** a nuclear bomb with the fuel pod removed |
-| Tu-22 | — | 8× 500 kg + bay fuel tank, **or** a nuclear bomb with the bay tank removed |
+| Tu-22 | 3× Kh-22 anti-ship missiles (one semi-recessed under the belly, one on a pylon under each wing) | 8× 500 kg + bay fuel tank, **or** a nuclear bomb with the bay tank removed |
 | Il-28 | — | 6× 500 kg, **or** a nuclear bomb (RDS-4) |
 | Ar 234 C-3 | — | 3× SC 500 (under the nacelles and the fuselage) |
 | B-66B | — | 12× 1000 lb, **or** a nuclear bomb (Mk 7) |
+| B-47E | 1× GAM-63 Rascal stand-off missile | 18× 1000 lb (a pair per press), **or** a nuclear bomb (Mk 15) |
+| M-4 Bison | — | 24× FAB-1000 (a row of four per press), **or** 1× FAB-9000, **or** a nuclear bomb |
 | Su-15 | 4× R-8M homing missiles, **or** 32× S-5 57 mm (two 16-tube pods) | — |
 | F-102A | 6× AIM-4 Falcon homing missiles, **or** 24× Mk 4 FFAR 2.75" (bay doors) | — |
 | Vulcan B.2 | — | 21× 1000 lb (a row of three per press), **or** one nuclear bomb |
@@ -178,7 +180,7 @@ Bomb/rocket impact marker** on, a diamond shows where they'll hit. Stores add dr
 gone. Landing to rearm reloads the payload you took off with. AI attackers carry bombs or rockets too, and
 AI bombers start in the air.
 
-**Nuclear bomb (B-58, Tu-22, Il-28, B-66 and Vulcan):** taking it removes the fuel pod (B-58, 40% less fuel) or the bomb-bay tank (Tu-22, 20% less fuel). The bomb
+**Nuclear bomb (B-58, Tu-22, Il-28, B-66, B-47, M-4 and Vulcan):** taking it removes the fuel pod (B-58, 40% less fuel) or the bomb-bay tank (Tu-22, 20% less fuel). The bomb
 air-bursts about 550 m above the ground. Everything within about 1.3 km is destroyed: buildings, units,
 AA guns and aircraft, enemy *and* friendly, including a whole base or airfield. The shock front damages
 everything out to about 2.6 km. Drop it from high altitude and run: the fall takes 30–45 s, and the B-58
@@ -205,6 +207,18 @@ and land, defended only by their tail gunner.
   About 850 km/h clean at 6,000 m, but the BMW 003s spool slowly and flame out if rushed. Unlocks at 2,400.
 - **B-66B Destroyer** (American, 1954): a swept-wing bomber with two J71 engines in underwing pods and a twin 20mm radar-aimed tail gun.
   Faster and with a bigger bomb load than the Il-28, but heavy and slow to roll. Unlocks at 5,000.
+
+**Strategic jet bombers (bonus, outside the era):** two big subsonic bombers on bicycle landing gear (a forward and an aft truck on the
+fuselage centreline, with small outrigger wheels under the wings). Both sit nose-up on the runway and fly themselves off without much
+rotation, but they need a long run (about 2 km). Neither turns or climbs well, so plan the bomb run early. AI pilots fly them as level
+bombers and never take the nuclear bomb.
+- **B-47E Stratojet** (American, 1951): six J47s in twin inboard and single outboard pods under a thin 35° swept wing, a fighter-style tandem
+  canopy and a radar-aimed twin 20mm tail turret. 18× 1000 lb bombs, a GAM-63 Rascal stand-off missile (locks enemy ground targets and
+  ships) or a Mk 15 nuclear bomb. Unlocks at 5,500.
+- **Myasishchev M-4 Bison-A** (Soviet, 1955): four AM-3s in a wing-root glove, a short round nose with a glazed navigator's cap and a chin
+  radar, a stepped pilots' cabin, wingtip outrigger fairings, dorsal and ventral gun barbettes and a glazed tail gunner's position with twin
+  23mm cannon. The biggest bomb load in the game: 24× FAB-1000, a single
+  9-tonne FAB-9000 or a nuclear bomb. Heavy and underpowered. Unlocks at 6,500.
 
 **Avro Vulcan B.2 (bonus, outside the era, Western Europe):** Britain's V-bomber: a huge tailless delta with four Olympus engines buried in the
 wing roots (no afterburners) and no guns at all. Pick **21× 1000 lb bombs** (each press of the bomb key drops a row of three) or the Yellow Sun
@@ -247,19 +261,22 @@ light after about a second: thrust goes up by 45-65% depending on the engine, fu
 flame trails each engine. The HUD shows `AB` next to the throttle. Back the throttle off to shut them down.
 Top speed and climb need the afterburners; cruise on dry thrust to save fuel.
 
-**Helicopters (first test): H-34 Choctaw (US) and Mi-4AV Hound (Russia).** The AI flies them too (see below). In mouse-aim the controls are War Thunder style: **Shift/Ctrl** are the collective (climb and descend; let go and the hover assist holds your height, hold Ctrl over flat ground to land), the mouse is the cyclic (aim the nose down to fly forward, up to slow and back off, level to hover; up to 22° down is full speed), **W/S** nudge the cyclic forward and back, **Q/E** sidestep and **A/D** are the pedals. With the cyclic centred the hover assist stops all drift. Full
+**Helicopters (first test): H-34 Choctaw (US), Westland Wessex HU.5 (Western Europe) and Mi-4AV Hound (Russia).** The H-34
+and Wessex have a modeled flight deck you see from the cockpit view (framed windscreen, instrument panel, seats and controls);
+the Wessex is the British twin-Gnome turbine S-58, with a longer nose, an air intake in place of the radial and an exhaust
+each side. The AI flies them too (see below). In mouse-aim the controls are War Thunder style: **Shift/Ctrl** are the collective (climb and descend; let go and the hover assist holds your height, hold Ctrl over flat ground to land), the mouse is the cyclic (aim the nose down to fly forward, up to slow and back off, level to hover; up to 22° down is full speed), **W/S** nudge the cyclic forward and back, **Q/E** sidestep and **A/D** are the pedals. With the cyclic centred the hover assist stops all drift. Full
 manual (**M**) puts the collective on the throttle keys and cyclic and pedals on the stick keys. The HUD shows collective,
-rotor rpm and vertical speed instead of throttle, engine and G. Loads: troops (12 in the H-34, 14 in the Mi-4), FFAR or
-S-5 rocket pods, four wire-guided AGM-22 (H-34) or 9M17 Falanga (Mi-4) missiles that lock the enemy ground target or ship nearest the nose (bomb key), and FAB-100 bombs on the Mi-4. To set troops down, land and stop, then press the bomb key; they get out
+rotor rpm and vertical speed instead of throttle, engine and G. Loads: troops (12 in the H-34, 16 in the Wessex, 14 in the Mi-4), FFAR, 2 in or
+S-5 rocket pods, four wire-guided AGM-22 (H-34), SS.11 (Wessex) or 9M17 Falanga (Mi-4) missiles that lock the enemy ground target or ship nearest the nose (bomb key), and FAB-100 bombs on the Mi-4. To set troops down, land and stop, then press the bomb key; they get out
 as infantry sections of six that march on the nearest objective, shoot at ground units and low aircraft, and count
 toward capturing a point. In Operation Landfall they can only be landed inside a landing zone (`LZ` markers): the US
 beaches (Red and Blue Beach) and any point your side holds firmly. Land back on a carrier deck or your airfield to
-pick up more. The H-34 starts on its own spot on the carrier deck (no catapult). If the engine or main gearbox is lost
+pick up more. The H-34 and Wessex start on their own spot on the carrier deck (no catapult). If the engine or main gearbox is lost
 the rotor autorotates: the autopilot glides at about 110 km/h, flares near the ground and cushions the landing. Losing
 the main rotor is fatal; losing the tail rotor spins the fuselage.
 
 **AI helicopters.** Every battle fields AI helicopters of two kinds, flown by the same autopilot as yours. A *troop lift*
-(H-34 or Mi-4 with troops) flies low to a landing zone, lands, sets its troops down and returns to its carrier or airfield
+(H-34, Wessex or Mi-4 with troops) flies low to a landing zone, lands, sets its troops down and returns to its carrier or airfield
 to load more; outside missions it puts them down on dry land short of the nearest enemy base, and they march on it. A
 *gunship* (armed with rockets and its gun) picks enemy tanks, infantry, trucks and guns (preferring targets near friendly
 troops and away from heavy air defences), makes low rocket and gun passes, then goes home to rearm. In Operation Landfall
@@ -270,7 +287,7 @@ them down to stop a landing. Shot-down AI helicopters respawn like other AI airc
 **Score and unlocks:** you earn score for air kills (100), assists (40), ground units (30–60), buildings,
 destroying bases (200), disabling the enemy airfield (300), safe landings (50), winning (250) and surviving
 (50). You start with the three props. The Me 262 unlocks at 1,200 career score, the Ar 234 at 2,400, the MiG-15bis at 2,600,
-the F9F-2 Panther at 3,400, the Il-28 at 3,500, the Sea Hawk at 3,800, the F-86F at 4,500, the B-66B at 5,000, the B-58A Hustler at 6,000, the Tu-22 at 7,000, the Buccaneer at 7,200, the F-102A at 7,500, the Su-15 at 8,000, the Yak-38 at 8,500, the Vulcan at 9,000 and the Lightning at 9,500. Progress is saved in your browser's localStorage. **Settings → Unlock all aircraft**
+the F9F-2 Panther at 3,400, the Il-28 at 3,500, the Sea Hawk at 3,800, the F-86F at 4,500, the B-66B at 5,000, the B-47E at 5,500, the B-58A Hustler at 6,000, the M-4 at 6,500, the Tu-22 at 7,000, the Buccaneer at 7,200, the F-102A at 7,500, the Su-15 at 8,000, the Yak-38 at 8,500, the Vulcan at 9,000 and the Lightning at 9,500. Progress is saved in your browser's localStorage. **Settings → Unlock all aircraft**
 skips the grind.
 
 ---
@@ -394,7 +411,7 @@ The B-58 uses one: `public/media/b58.glb`, loaded by `src/aircraft/b58.ts`. To c
 /Applications/Blender.app/Contents/MacOS/Blender --background --factory-startup --python tools/b58/export_glb.py
 ```
 
-The fighters, the Tu-22, the Il-28, the Ar 234, the B-66, the Vulcan and the interceptors are built from one Blender script, `tools/aircraft/model.py` (a design per aircraft),
+The fighters, the Tu-22, the Il-28, the Ar 234, the B-66, the B-47, the M-4, the Vulcan and the interceptors are built from one Blender script, `tools/aircraft/model.py` (a design per aircraft),
 exported by `tools/aircraft/export_glb.py` and loaded by `src/aircraft/glbAircraft.ts`. Add `-- tu22` to
 export just one. `tools/aircraft/preview.py <id> <out_dir>` renders side, front, three-quarter, top and rear views with headless Blender (`pip install bpy`).
 
@@ -434,6 +451,6 @@ public/media/        downloaded / exported assets (see LICENSES.md)
 
 AI pilots use guided missiles. Fighters carrying air-to-air missiles (Su-15 R-8M, Lightning Red Top / Firestreak, F-102A Falcon) fire at
 the target they are engaging once it is in the seeker's range and cone. Buccaneers sometimes carry Martel (fired at ground targets) or Sea Eagle
-(anti-ship), and Tu-22s sometimes carry a Kh-22 (anti-ship) when enemy ships are afloat. At most two AI aircraft attack the same target at once.
+(anti-ship), and Tu-22s sometimes carry three Kh-22s (anti-ship) when enemy ships are afloat. B-47s sometimes carry a GAM-63 Rascal stand-off missile at ground targets. At most two AI aircraft attack the same target at once.
 
 AI pilots never carry nuclear bombs: loadouts are filtered in the aircraft constructor, and an AI aircraft cannot release one.
