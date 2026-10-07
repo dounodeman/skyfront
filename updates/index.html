@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Skyfront Dev Blog</title>
+<style>
+  :root { --bg: #12171d; --panel: #1b222b; --line: #2c3641; --text: #cfd6df; --dim: #7d8a99; --head: #f1f4f8; --accent: #e59a45; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  header { background: linear-gradient(#1b222b, #12171d); border-bottom: 1px solid var(--line); padding: 14px 16px; }
+  header .wrap { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+  .logo { font-size: 22px; font-weight: 900; letter-spacing: 6px; color: var(--head); text-decoration: none; }
+  .logo span { font-size: 10px; letter-spacing: 3px; font-weight: 600; color: var(--dim); text-transform: uppercase; margin-left: 10px; }
+  .play { margin-left: auto; color: var(--accent); text-decoration: none; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; }
+  .wrap { max-width: 980px; margin: 0 auto; }
+  main { padding: 24px 16px 64px; }
+  article { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 24px; margin-bottom: 32px; }
+  article h2 { color: var(--head); margin: 0 0 4px; font-size: 26px; }
+  .date { color: var(--dim); font-size: 13px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 18px; }
+  h3 { color: var(--accent); font-size: 15px; letter-spacing: 2px; text-transform: uppercase; margin: 28px 0 8px; }
+  figure { margin: 12px 0 20px; }
+  figure img { width: 100%; height: auto; display: block; border: 1px solid var(--line); border-radius: 4px; }
+  figcaption { color: var(--dim); font-size: 13px; margin-top: 6px; }
+  ul { padding-left: 20px; }
+  b { color: var(--head); }
+</style>
+</head>
+<body>
+<header><div class="wrap"><a class="logo" href="../">SKYFRONT<span>dev blog</span></a><a class="play" href="../">Play ›</a></div></header>
+<main class="wrap">
+
+<article id="missiles">
+  <h2>Every missile, rocket and SAM rebuilt</h2>
+  <div class="date">7 October 2026</div>
+  <p>Until now most of Skyfront's weapons were the same generic tube with four fins, just scaled up or down, and every ship-launched SAM looked like an SA-2. This update gives all 31 weapons their own model, built to the real weapon's dimensions with its real fin and wing layout, nose and seeker shape, and paint scheme. Each one was checked against period photographs.</p>
+  <ul>
+    <li><b>Ship SAMs are now themselves:</b> Tartar, Terrier, Sea Slug, Sea Cat, Volna and Shtorm each have their own shape.</li>
+    <li><b>Boosters drop away</b> after launch on the SA-2, Terrier, Sea Slug, Volna, Harpoon, P-15 and P-35.</li>
+    <li><b>Folding fins</b> sit flat on the pylon and spring out once the weapon is away: the S-5, R4M, FFAR and 2 in rockets, and the ventral fins on the Kh-22 and Rascal.</li>
+  </ul>
+  <p>Each sheet shows the side, front, three-quarter and top views.</p>
+
+  <h3>Air-to-air</h3>
+  <figure><img src="img/missiles-air-to-air.png" alt="R-98, AIM-4 Falcon, Red Top and Firestreak models" loading="lazy"><figcaption>R-98 (Su-15), AIM-4 Falcon (F-102A), Red Top and Firestreak (Lightning).</figcaption></figure>
+
+  <h3>Air-to-surface</h3>
+  <figure><img src="img/missiles-air-to-surface.png" alt="Kh-22, Martel, Sea Eagle, Rascal, SS.11 and Falanga models" loading="lazy"><figcaption>Kh-22 (Tu-22), Martel and Sea Eagle (Buccaneer), GAM-63 Rascal (B-47), SS.11 (H-34) and 9M17 Falanga (Mi-4).</figcaption></figure>
+
+  <h3>Ship-launched anti-ship missiles</h3>
+  <figure><img src="img/missiles-ship-anti-ship.png" alt="Harpoon, Exocet, P-15 Termit and P-35 models" loading="lazy"><figcaption>RGM-84 Harpoon, MM38 Exocet, P-15 Termit and P-35, shown with their boosters attached.</figcaption></figure>
+
+  <h3>Surface-to-air</h3>
+  <figure><img src="img/missiles-sams.png" alt="SA-2, Tartar, Terrier, Sea Slug, Sea Cat, Volna and Shtorm models" loading="lazy"><figcaption>SA-2, Tartar, Terrier, Sea Slug with its four wrap-around boosters, Sea Cat, Volna and Shtorm.</figcaption></figure>
+
+  <h3>Unguided rockets</h3>
+  <figure><img src="img/missiles-rockets.png" alt="WGr. 21, HVAR, RS-82, R4M, ARS-212, S-5, FFAR, RP-3 and 2 in rocket models" loading="lazy"><figcaption>WGr. 21, HVAR, RS-82, R4M, ARS-212, S-5, Mk 4 FFAR, RP-3 and the British 2 in rocket, as carried.</figcaption></figure>
+
+  <h3>Fins out</h3>
+  <figure><img src="img/missiles-in-flight-fins-deployed.png" alt="Weapons in flight with fins deployed" loading="lazy"><figcaption>In flight: the folding fins spring out and the Kh-22 and Rascal drop their ventral fins.</figcaption></figure>
+
+  <h3>Before</h3>
+  <figure><img src="img/missiles-before.png" alt="The old generic weapon models" loading="lazy"><figcaption>The old models, for comparison.</figcaption></figure>
+</article>
+
+</main>
+</body>
+</html>
