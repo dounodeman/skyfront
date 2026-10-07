@@ -175,7 +175,7 @@ Friendly airfield flak shoots at enemies who chase you home.
 | B-47E | 1× GAM-63 Rascal stand-off missile | 18× 1000 lb (a pair per press), **or** a nuclear bomb (Mk 15) |
 | M-4 Bison | — | 24× FAB-1000 (a row of four per press), **or** 1× FAB-9000, **or** a nuclear bomb |
 | Su-15 | 4× R-8M homing missiles, **or** 32× S-5 57 mm (two 16-tube pods) | — |
-| F-102A | 6× AIM-4 Falcon homing missiles, **or** 24× Mk 4 FFAR 2.75" (bay doors) | — |
+| F-102A | 6× AIM-4 Falcon homing missiles, **or** 2× AIM-26A nuclear Falcon radar missiles, **or** 24× Mk 4 FFAR 2.75" (bay doors) | — |
 | Vulcan B.2 | — | 21× 1000 lb (a row of three per press), **or** one nuclear bomb |
 | Lightning F.6 | 2× Red Top **or** 2× Firestreak homing missiles | — |
 | Sea Hawk FGA.6 | 16× RP-3 60 lb | 2× 500 lb |
@@ -239,6 +239,10 @@ carry in it.
 - **F-102A Delta Dagger** (American, 1956): a single-engine area-ruled delta with no guns at all. Its weapons are six homing AIM-4 Falcon
   missiles (default) or a 24-rocket Mk 4 FFAR pack in the bay doors, both fired with the bomb key (**B** / middle mouse). Easy to fly and
   fast, but few shots. AI pilots fly it too and fire the Falcons. Unlocks at 7,500.
+  The **AIM-26A** payload swaps the six AIM-4s for two nuclear Super Falcons: a radar-guided missile (Mach 2+, 9 km, wide 28° cone) with a W54
+  warhead of about a quarter kiloton. It arms 1.2 s after launch and bursts by proximity (or on the ground) as a small nuclear blast: everything within
+  350 m is destroyed and aircraft out to 700 m are damaged, so one missile can take a whole formation, and you too if you fly after it. Only two fit because
+  each is bigger and heavier than an AIM-4 (they ride on the middle trapeze pair in the bay); it is player-only, the AI always carries the AIM-4.
 - **English Electric Lightning F.6** (British, 1965): Mach 2 with two stacked afterburning Avons, two 30mm Aden cannon in the ventral tank and a
   Red Top (all-aspect, 6 km) or Firestreak (rear hemisphere, narrower cone, 4 km) missile on each side of the forward fuselage. It climbs like a
   rocket but carries little fuel. Unlocks at 9,500.
@@ -277,7 +281,7 @@ manual (**M**) puts the collective on the throttle keys and cyclic and pedals on
 rotor rpm and vertical speed instead of throttle, engine and G. Loads: troops (12 in the H-34, 16 in the Wessex, 14 in the Mi-4), FFAR, 2 in or
 S-5 rocket pods, four wire-guided AGM-22 (H-34), SS.11 (Wessex) or 9M17 Falanga (Mi-4) missiles that lock the enemy ground target or ship nearest the nose (bomb key), and FAB-100 bombs on the Mi-4. To set troops down, land and stop, then press the bomb key; they get out
 as infantry sections of six that march on the nearest objective, shoot at ground units and low aircraft, and count
-toward capturing a point. In Operation Landfall they can only be landed inside a landing zone (`LZ` markers): the US
+toward capturing a point. In Operation Landfall they can only be landed inside a landing zone (`LZ` markers): the Federation of Verländ
 beaches (Red and Blue Beach) and any point your side holds firmly. Land back on a carrier deck or your airfield to
 pick up more. The H-34 and Wessex start on their own spot on the carrier deck (no catapult). If the engine or main gearbox is lost
 the rotor autorotates: the autopilot glides at about 110 km/h, flares near the ground and cushions the landing. Losing
