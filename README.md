@@ -20,34 +20,42 @@ Every cruiser, destroyer and frigate carries anti-ship missiles (`asm` in `src/w
 ## Maps
 
 The main menu has a map picker (the game reloads when you change it). **Skyfront Island** is the original single-island
-map. **Trident Isles** has three equal home islands around an inner sea (US north-west, Russia north-east, Western Europe
+map. **Trident Isles** has three equal home islands around an inner sea (Federation of Verländ north-west, Sotov Union north-east, Republic of Aurelia
 south) with a contested atoll and stepping-stone islets in between; the islands are not linked by land, so for now the
 ground forces only defend their own shores. Maps are plain data in `src/world/maps.ts`; you can also force one with `?map=trident`.
 
-**Operation Landfall** (`?map=landfall`) is a mission, not a match. The island is traced from an aerial photo; Russia (MiG-15bis) holds the
-airfield and five camps, the US (F9F-2 Panther, flown from two carriers) lands troops on the south-east beaches. There are no tickets:
-the US wins by capturing all six points with no time limit; Russia wins by sinking a US carrier
-(it takes six Kh-22 hits). From 20 minutes into the mission Russia sends four Tu-22 anti-ship bombers, three Kh-22s each, every five minutes (a warning goes out a minute before the first wave). Flying for Russia, you get a minute after each wave launches to press **J** and join it in a Tu-22 of your own (three Kh-22s), flying in formation with the wave, even if you are already in the air or waiting to respawn; afterwards you respawn in what you flew before. `npm run landfall` checks the wave timing and a Tu-22 strike headlessly.
+**Operation Landfall** (`?map=landfall`) is a mission, not a match. The island is traced from an aerial photo; the Sotov Union (MiG-15bis) holds the
+airfield and five camps, the Federation of Verländ (F9F-2 Panther, flown from two carriers) lands troops on the south-east beaches. There are no tickets:
+the Federation of Verländ wins by capturing all six points with no time limit; the Sotov Union wins by sinking a Verländ carrier
+(it takes six Kh-22 hits). From 20 minutes into the mission the Sotov Union sends four Tu-22 anti-ship bombers, three Kh-22s each, every five minutes (a warning goes out a minute before the first wave). Flying for Sotov Union, you get a minute after each wave launches to press **J** and join it in a Tu-22 of your own (three Kh-22s), flying in formation with the wave, even if you are already in the air or waiting to respawn; afterwards you respawn in what you flew before. `npm run landfall` checks the wave timing and a Tu-22 strike headlessly.
 Ground forces are bought with credits earned from kills: press 1-6 to order troops to a point, 0 for the nearest, U to deploy a
-squad. The other side's commander does the same. Progress autosaves; use "Continue mission" in the menu. US troops are not placed on the island: fly them in by H-34 from a carrier to the Red or Blue Beach landing zone and set them down (the first lift on a beach sets up a landing zone there; only then can squads bought with U be set down on that beach, and they can also deploy at points the US holds). When the computer commands the US, AI H-34s fly its troops in and set up the landing zones. Once a beach has its landing zone, the respawn picker offers it as a helicopter spawn point (US only): choose an H-34 and pick the beach under "Helicopter spawn at".
+squad. The other side's commander does the same. Progress autosaves; use "Continue mission" in the menu. Verländ troops are not placed on the island: fly them in by H-34 from a carrier to the Red or Blue Beach landing zone and set them down (the first lift on a beach sets up a landing zone there; only then can squads bought with U be set down on that beach, and they can also deploy at points the Federation of Verländ holds). When the computer commands the US, AI H-34s fly its troops in and set up the landing zones. Once a beach has its landing zone, the respawn picker offers it as a helicopter spawn point (Federation of Verländ only): choose an H-34 and pick the beach under "Helicopter spawn at".
 
 ---
 
 ## Falklands
 
-**Falklands** (`?map=falklands`) is a symmetric objective battle on two islands: East Falkland (north lobe, the isthmus at Goose Green and the lowland of Lafonia) and West Falkland. Pick any two of the three nations on the menu ("Your side" and "Enemy side"; changing either reloads the game, because the fleets are rebuilt). Each side starts at sea with **two carrier task forces**, one carrier, two cruisers or frigates and five destroyers each (US: Valley Forge, Boston, Adams; Western Europe: Hermes, Type 21, County; Russia: Kiev, Kresta II, Kanin). The task forces sail tracks at least 12 km from the SA-2 battery that can be built on the islands (the SAM's range is 11 km).
+**Falklands** (`?map=falklands`) is a symmetric objective battle on two islands: East Falkland (north lobe, the isthmus at Goose Green and the lowland of Lafonia) and West Falkland. Pick any two of the three nations on the menu ("Your side" and "Enemy side"; changing either reloads the game, because the fleets are rebuilt). Each side starts at sea with **two carrier task forces**, one carrier, two cruisers or frigates and five destroyers each (US: Valley Forge, Boston, Adams; Republic of Aurelia: Hermes, Type 21, County; Sotov Union: Kiev, Kresta II, Kanin). The task forces sail tracks at least 12 km from the SA-2 battery that can be built on the islands (the SAM's range is 11 km).
 
-Five neutral points sit on the islands. Troops landed by helicopter (the player flies one lift, the AI flies three more per side; Western Europe flies the Westland Wessex, the US the H-34 and Russia the Mi-4) take a point by holding it alone: the meter swings toward the side whose vehicles or infantry are in the circle, and it is theirs once it is all the way over. Pushing it back through the middle makes the point neutral again (the buff is lost) before the other side can claim it. Armour also lands at each point a side takes and every two minutes at the points it holds, and dead vehicles are replaced from the held points.
+Five neutral points sit on the islands. Troops landed by helicopter (the player flies one lift, the AI flies three more per side; the Republic of Aurelia flies the Westland Wessex, the Federation of Verländ the H-34 and Sotov Union the Mi-4) take a point by holding it alone: the meter swings toward the side whose vehicles or infantry are in the circle, and it is theirs once it is all the way over. Pushing it back through the middle makes the point neutral again (the buff is lost) before the other side can claim it. Armour also lands at each point a side takes and every two minutes at the points it holds, and dead vehicles are replaced from the held points.
 
 | Point | Buff while held |
 | --- | --- |
 | San Carlos | Supply depot: armour reinforcements arrive twice as fast and new troops are 30% tougher |
 | Goose Green | SAM site: an SA-2 battery comes online for the holder |
 | Mount Kent | Early-warning radar: enemy aircraft are tracked out to 9.5 km (normal sight is 3.8 km) through cloud and over hills, and shown on the HUD and minimap |
-| Stanley Airport | Island airfield: spawn and rearm on the island, and land-based fighters join the hangar (US F-86F, F-102A; Western Europe Lightning; Russia MiG-15bis, Su-15). The respawn picker offers "Island airfield" |
+| Stanley Airport | Island airfield: spawn and rearm on the island, and land-based fighters join the hangar (Verländ F-86F, F-102A; Aurelia Lightning; Sotov MiG-15bis, Su-15). The respawn picker offers "Island airfield" |
 | Fox Bay | Flak battery: three heavy and three light AA guns defend the point |
 
 A side that holds Fox Bay (flak battery up) can also land anywhere inside the point to rearm, refuel and repair, and the respawn picker offers it as a helicopter spawn while it is held. The installations are built when a point is first taken, belong to whoever holds it, and can be bombed: a wrecked radar, SAM site, depot or flak battery gives no buff until the owner's engineers repair it after four minutes (or the point changes hands). Each point held drains 0.35 enemy tickets per second; a side that holds all five for two minutes wins outright, otherwise the usual ticket rules and a 45-minute clock decide. Carrier jets (F9F-2, Sea Hawk, Yak-38) are the starting fighters. The player may also fly any bomber (B-66, B-47 or B-58; Vulcan or Buccaneer; Il-28, M-4 or Tu-22), which always starts in level flight 26 km out on its side's approach (a Buccaneer only launches from the carrier deck if you choose the carrier start). About a third of each side's AI are bombers too: they fly in flights of three or four of one type (Buccaneer, Vulcan, B-66, B-47, Il-28 or M-4) in a loose wedge behind a leader, starting out on the same approach, and a wingman takes over if the leader is shot down (a replacement joins the formation from behind). With nothing to bomb yet they fly long straight legs across the map. The map data is `buildFalklands()` in `src/world/maps.ts`; the rules are in `src/game/control.ts` and the buff installations in `src/world/outposts.ts`.
+
+---
+
+## Bering Strait intercept
+
+**Bering Strait** (`?map=bering`) is the strait at true scale (Natural Earth 1:10m coastlines, public domain): Chukotka on the west, Alaska on the east, the Diomede Islands in the middle and the two capes about 86 km apart. You pick Sotov Union or the USA to defend by choosing a fighter on the menu (F-86F or F-102A for the USA, MiG-15bis or Su-15 for Sotov Union). You and an AI squad of fighters (F-86F and F-102A, or MiG-15bis and Su-15) defend the interior against waves of bombers (B-47, B-66, B-58 or M-4, Il-28, Tu-22) that fly in formation from the far shore to a finish line inland. The bombers carry nothing: each one that crosses the line is a leak. Six waves of growing size arrive every 170 s; the defence fails at 8 leaks and holds if the last bomber is down or through with fewer.
+
+The squad listens to you: **1-6** attack the Nth most urgent bomber flight, **8** the nearest flight, **0** free hunt, **7** cover me, **9** return to base. The HUD lists the flights by distance to the line, and the minimap draws the line. The data is `BERING` in `src/world/maps.ts` (coastlines in `src/world/beringData.ts`), the rules are in `src/game/intercept.ts`, and `npm run intercept` checks the schedule and the win and lose rules headlessly.
 
 ---
 
@@ -122,8 +130,8 @@ lowers the render resolution and plants fewer trees.
    gets **one life**.
 
 **Three teams.** Every match has three sides, each with its own airfield, bases, ground forces, colours and
-national markings: the **United States** (west, blue), **Western Europe** (south, gold,
-ringed roundel) and **Russia** (east, red, star). Everyone fights everyone. You fly for the nation that built the
+national markings: the **Federation of Verländ** (west, blue), **Republic of Aurelia** (south, gold,
+ringed roundel) and **Sotov Union** (east, red, star). A fourth nation, the **Republic of Belkara**, appears in the hangar as a locked "coming soon" teaser: it has no aircraft, spawns or effect on matches yet. Everyone fights everyone. You fly for the nation that built the
 aircraft you pick, and the AI pilots on each team fly their own nation's types. The match ends when only one team
 is left, or when yours is knocked out (tickets gone or no aircraft left). Teams, nations and aircraft assignments
 live in `src/world/layout.ts` (`TEAMS`, `AIRCRAFT_TEAM`, `AIRFIELDS`, `BASES`, `UNIT_GROUPS`).
@@ -201,7 +209,7 @@ AI pilots fly them (and the supersonic bombers above) too: they cruise at 2,200�
 and land, defended only by their tail gunner.
 - **Il-28 Beagle** (Soviet, 1948): a light straight-wing bomber with two VK-1 engines in wing nacelles, a glazed bombardier nose, two fixed
   forward 23mm guns and a twin 23mm tail turret. Agile for a bomber, but it tops out near 900 km/h. Unlocks at 3,500.
-- **Arado Ar 234 C-3** (Western Europe, 1945): the first jet bomber, in its four-engined form: four BMW 003s in two twinned nacelles under
+- **Arado Ar 234 C-3** (Republic of Aurelia, 1945): the first jet bomber, in its four-engined form: four BMW 003s in two twinned nacelles under
   a straight shoulder wing, the pilot alone in a glazed nose with a rear-view periscope on the roof, and three 500 kg bombs on external
   racks. Two MG 151/20 under the nose; two more fixed in the tail fire straight back, only at an enemy within about 8 degrees of dead astern.
   About 850 km/h clean at 6,000 m, but the BMW 003s spool slowly and flame out if rushed. Unlocks at 2,400.
@@ -220,7 +228,7 @@ bombers and never take the nuclear bomb.
   23mm cannon. The biggest bomb load in the game: 24× FAB-1000, a single
   9-tonne FAB-9000 or a nuclear bomb. Heavy and underpowered. Unlocks at 6,500.
 
-**Avro Vulcan B.2 (bonus, outside the era, Western Europe):** Britain's V-bomber: a huge tailless delta with four Olympus engines buried in the
+**Avro Vulcan B.2 (bonus, outside the era, Republic of Aurelia):** Britain's V-bomber: a huge tailless delta with four Olympus engines buried in the
 wing roots (no afterburners) and no guns at all. Pick **21× 1000 lb bombs** (each press of the bomb key drops a row of three) or the Yellow Sun
 nuclear bomb. It is subsonic, so it relies on altitude, but the big delta wing rolls and turns far better than the other bombers. AI pilots fly it as a level bomber. Unlocks at 9,000.
 
@@ -237,16 +245,16 @@ carry in it.
 
 **F9F-2 Panther (Korean War):** Grumman's straight-wing Navy jet: one J42 engine, four 20mm nose cannons and wingtip tanks. Forgiving and fast in a dive, but its unswept wing hits compressibility early and its single engine gives only modest thrust, so keep your speed up and use the cannons. Unlocks at 3,400.
 
-**Hawker Sea Hawk FGA.6 (W. Europe, Royal Navy):** a straight-wing naval jet with one Nene, its "trouser leg" jet pipes exiting at the wing
+**Hawker Sea Hawk FGA.6 (Aurelia, Royal Navy):** a straight-wing naval jet with one Nene, its "trouser leg" jet pipes exiting at the wing
 roots, four 20mm Hispano cannon and RP-3 rockets or 500 lb bombs. Light on the controls and gentle at low speed, slow at the top end. Starts on
 HMS Hermes and leaves by catapult. Unlocks at 3,800.
 
-**Blackburn Buccaneer S.2 (W. Europe, Royal Navy):** a two-seat carrier strike jet built to run in at wave-top height: two Spey turbofans
+**Blackburn Buccaneer S.2 (Aurelia, Royal Navy):** a two-seat carrier strike jet built to run in at wave-top height: two Spey turbofans
 in wing-root nacelles, a rotating bomb-bay door, four wing pylons and no guns. Carry eight 1000 lb bombs, four Martel air-to-surface
 missiles (lock any enemy ground target or ship, about 9 km), four Sea Eagle anti-ship missiles (ships only, about 12 km) or a nuclear
 bomb. Fast and steady down low, no dogfighter. Starts on HMS Hermes and leaves by catapult; AI pilots fly it as a bomber. Unlocks at 7,200.
 
-**Yakovlev Yak-38 Forger (Russia, Soviet Navy):** the Kiev's VTOL fighter, flown here as a short take-off jet: with take-off flaps (2 or more)
+**Yakovlev Yak-38 Forger (Sotov Union, Soviet Navy):** the Kiev's VTOL fighter, flown here as a short take-off jet: with take-off flaps (2 or more)
 and the throttle past half, its two lift jets push it up as well, fading out between about 250 and 420 km/h, so it gets off the Kiev's
 short deck run unassisted (no catapult), and can come back slowly (they burn extra fuel). Two UPK-23 gun pods, S-5 rocket pods or 500 kg bombs. Small, heavy
 and short-ranged; fast low down but not a turner. Unlocks at 8,500.
@@ -261,7 +269,7 @@ light after about a second: thrust goes up by 45-65% depending on the engine, fu
 flame trails each engine. The HUD shows `AB` next to the throttle. Back the throttle off to shut them down.
 Top speed and climb need the afterburners; cruise on dry thrust to save fuel.
 
-**Helicopters (first test): H-34 Choctaw (US), Westland Wessex HU.5 (Western Europe) and Mi-4AV Hound (Russia).** The H-34
+**Helicopters (first test): H-34 Choctaw (Federation of Verländ), Westland Wessex HU.5 (Republic of Aurelia) and Mi-4AV Hound (Sotov Union).** The H-34
 and Wessex have a modeled flight deck you see from the cockpit view (framed windscreen, instrument panel, seats and controls);
 the Wessex is the British twin-Gnome turbine S-58, with a longer nose, an air intake in place of the radial and an exhaust
 each side. The AI flies them too (see below). In mouse-aim the controls are War Thunder style: **Shift/Ctrl** are the collective (climb and descend; let go and the hover assist holds your height, hold Ctrl over flat ground to land), the mouse is the cyclic (aim the nose down to fly forward, up to slow and back off, level to hover; up to 22° down is full speed), **W/S** nudge the cyclic forward and back, **Q/E** sidestep and **A/D** are the pedals. With the cyclic centred the hover assist stops all drift. Full
@@ -280,7 +288,7 @@ the main rotor is fatal; losing the tail rotor spins the fuselage.
 to load more; outside missions it puts them down on dry land short of the nearest enemy base, and they march on it. A
 *gunship* (armed with rockets and its gun) picks enemy tanks, infantry, trucks and guns (preferring targets near friendly
 troops and away from heavy air defences), makes low rocket and gun passes, then goes home to rearm. In Operation Landfall
-the US sends H-34 troop lifts (two beside you, four when the computer is the US commander) and one gunship; Russia sends two
+the Federation of Verländ sends H-34 troop lifts (two beside you, four when the computer is the Federation of Verländ commander) and one gunship; the Sotov Union sends two
 Mi-4 gunships. The computer's squads still deploy only at points it holds, so its troops reach the beaches in AI H-34s: shoot
 them down to stop a landing. Shot-down AI helicopters respawn like other AI aircraft.
 
@@ -326,7 +334,8 @@ Bindings are saved to localStorage.
   re-centers after a moment). You can stall, spin and over-G the wings off.
 
 **Views:** the chase camera follows your aim. The cockpit view has a reflector sight; the F-86 also gets
-a green lead-computing gyro sight. The bomb sight looks down at the predicted impact point. While
+a green lead-computing gyro sight. In a cockpit with two pilots side by side (Vulcan, B-66, M-4, and the helicopters)
+you sit in the main pilot's seat, off the centreline. The bomb sight looks down at the predicted impact point. While
 spectating after you're shot down, press Fire to cycle through aircraft.
 
 ---
