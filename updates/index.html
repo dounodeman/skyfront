@@ -30,6 +30,45 @@
 <header><div class="wrap"><a class="logo" href="../">SKYFRONT<span>dev blog</span></a><a class="play" href="../">Play ›</a></div></header>
 <main class="wrap">
 
+<article id="campaign">
+  <h2>Campaign mode: the Belkara-Salergian war (first pass)</h2>
+  <div class="date">7 October 2026</div>
+  <p>Skyfront has a campaign mode, set on Beckett's Chira map. The first campaign is a six-mission war in which you fly for Belkara against its northern neighbour, the Republic of Salergia. Open it from <b>Campaign</b> in the top bar: the map shows a pin for each mission, and each mission unlocks when you win the one before. Results (won, best score, best time, attempts) are saved in the browser.</p>
+  <figure><img src="img/campaign-menu.jpg" alt="The campaign screen with the Chira map and six mission pins" loading="lazy"><figcaption>The campaign screen: Salergia and northern Belkara cut from the Chira map, with the briefing of mission 6.</figcaption></figure>
+
+  <h3>The war</h3>
+  <ul>
+    <li><b>1. Border Rails:</b> sixteen SM.79s against four rail yards, depots and barracks. No flak and a few Po-1s: Salergia has not mobilised.</li>
+    <li><b>2. Forest Airfields:</b> twenty bombers on two forest airfields and the fuel dump beside them. The first P-36As scramble and the first light flak appears.</li>
+    <li><b>3. Mountain Pass:</b> the pass fort, the dam and the ironworks in the border range, with more P-36As and a gun at every target.</li>
+    <li><b>4. Lake Industry:</b> the Hurricanes arrive, and the aircraft works, foundry and rail terminal on the lake are heavily defended.</li>
+    <li><b>5. Counterstrike:</b> Salergia now has Ju 87s. This time you defend your own forward field against dive-bomber raids and their Hurricane escorts.</li>
+    <li><b>6. Resacilo:</b> twenty-four bombers raid the capital under heavy flak. Once the raid is through, the rest of the Salergian air force takes off and you clear the sky to end the war.</li>
+  </ul>
+  <p>Salergia flies export aircraft: Po-1 biplanes and P-36As early on, then Hurricanes and Ju 87s. Every mission is plain data (targets, bomber flights, which fighters are airborne and when others scramble, how much flak guards each target), so the ramp from an unprepared enemy to a prepared one is easy to retune.</p>
+
+  <h3>How a mission plays</h3>
+  <ul>
+    <li>You start in the air with the raid. Fly one of the bombers in the lead flight (it carries the bomb sight, R for the gunners) or a fighter of the escort. The AI bomber flights fly to their own assigned target and drop tight sticks, and the escorts cover them.</li>
+    <li>The panel at the top shows how much of the target set is destroyed against the goal, the bombers lost against the limit, and each target. Win by reaching the goal; lose if too many bombers go down, the bombs run out or time runs out.</li>
+    <li>You can pick any Belkaran aircraft in the hangar for a mission, whatever your career score.</li>
+  </ul>
+  <figure><img src="img/campaign-forest.jpg" alt="An SM.79 over wooded country on the way to Resacilo" loading="lazy"><figcaption>On the way to Resacilo: the campaign map is wooded lowland with a western range, a highland spine through Salergia and a border range.</figcaption></figure>
+  <figure><img src="img/campaign-raid.jpg" alt="The raid on Resacilo with targets half destroyed" loading="lazy"><figcaption>Mission 6 mid-raid: two of the four targets are burning and Salergia is scrambling Hurricanes.</figcaption></figure>
+
+  <h3>The map</h3>
+  <p>The terrain is traced from your Chira map and compressed to 250 m per map pixel, so it is a 120 km square (the map's own scale bar would make Salergia several times bigger). Salergia's capital Resacilo sits on its lake just north of the Belkaran border, as on the map.</p>
+
+  <h3>What is rough</h3>
+  <ul>
+    <li>There is no Po-1 in the game, so Po-2s stand in for it. A Po-1 drawing would let me build the real thing.</li>
+    <li>Only mission 1 was flown in the browser as a whole raid. All six were run in a headless simulation, and the goals and loss limits were set from those runs, so later missions may need retuning after a real playthrough.</li>
+    <li>After they drop their bombs, the AI bombers leave the map a few seconds later instead of flying home.</li>
+    <li>Salergian targets use the standard base layout, so rail yards and dams are still ordinary clusters of buildings.</li>
+  </ul>
+  <figure><img src="img/campaign-progress.jpg" alt="Campaign screen after winning mission 1" loading="lazy"><figcaption>After a win the mission shows its best score and time, and the next one opens.</figcaption></figure>
+</article>
+
 <article id="sotov-air-force">
   <h2>The Sotov Union's WWII air force: nine Soviet aircraft</h2>
   <div class="date">7 October 2026</div>
