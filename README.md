@@ -17,6 +17,19 @@ Built with TypeScript, Three.js and Vite.
 
 Every cruiser, destroyer and frigate carries anti-ship missiles (`asm` in `src/world/ships.ts`, flight and defence code in `src/weapons/shipMissiles.ts`) and shoots at enemy ships in reach, carriers first. Cruisers reach furthest, then destroyers, then frigates (Harpoon, MM38 Exocet, P-15 Termit, P-35). Each ship also has point defence (`defence`): every living ship takes one shot at each hostile missile that comes inside its radius while it is flying at that ship or a ship under its umbrella, with a base chance of 50% (cruiser), 35% (destroyer) or 25% (frigate) that drops as more missiles arrive together or the ship is already busy. The same defence works against aircraft-launched Sea Eagle and Martel missiles. `npm run navalwar -- <gap m> <seconds>` runs two fleets against each other headlessly.
 
+### WWII fleets
+
+Props-only matches on Skyfront Island and Trident Isles have WWII fleets instead of the modern ones (matches with jets keep the modern fleets). Each nation sails a carrier in the middle, a battleship and a heavy cruiser beside it, and a destroyer and a surfaced submarine on the wings:
+
+| Nation | Carrier | Battleship | Cruiser | Destroyer | Submarine |
+| --- | --- | --- | --- | --- | --- |
+| Federation of Verländ (US Navy) | USS Essex | USS Iowa | USS Baltimore | USS Fletcher | USS Gato |
+| Republic of Aurelia (Kriegsmarine) | HMS Illustrious | Bismarck | Prinz Eugen | Z16 Friedrich Eckoldt | U-96 (Type VIIC) |
+| Republic of Belkara (Regia Marina) | Sparviero | Vittorio Veneto | Gorizia | Folgore | Galileo Galilei |
+| Sotov Union (Soviet Navy) | none (the Soviet Navy had no carrier) | Marat | Kirov | Gremyashchy | Shch-402 |
+
+They have no missiles: they fight aircraft with their period AA guns (5"/38, Bofors and Oerlikon; 10.5 cm, 3.7 cm and 2 cm; 4.5" and pom-poms; 90 mm, 100 mm, 37 mm and 20 mm Breda; 100 mm Minizini, 76 mm, 45 mm, 37 mm and DShK) and fight ships and the shore with their main battery: battleships out to 13-15 km, cruisers 11 km, destroyers 7 km and the submarines' deck guns 4 km. Gun ships go for an enemy ship in reach before anything ashore, and a shell that bursts in the water alongside a ship still hurts it. `npm run ww2war -- <team> <team> <seconds>` runs two WWII fleets against each other headlessly (neighbouring fleets on Skyfront Island lose their destroyer and submarine in the first minutes and a big ship or two in fifteen). The F4F-4 Wildcat flies from the Essex. The models are built in `tools/ships/model_ww2_us.py`, `_de.py`, `_it.py` and `_su.py` from the supplied schematics (copies in the project's `models/ships-ww2/refs/`).
+
 ## Maps
 
 The main menu has a map picker (the game reloads when you change it). **Skyfront Island** is the original single-island
