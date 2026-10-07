@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Skyfront Dev Blog</title>
+<style>
+  :root { --bg: #12171d; --panel: #1b222b; --line: #2c3641; --text: #cfd6df; --dim: #7d8a99; --head: #f1f4f8; --accent: #e59a45; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  header { background: linear-gradient(#1b222b, #12171d); border-bottom: 1px solid var(--line); padding: 14px 16px; }
+  header .wrap { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+  .logo { font-size: 22px; font-weight: 900; letter-spacing: 6px; color: var(--head); text-decoration: none; }
+  .logo span { font-size: 10px; letter-spacing: 3px; font-weight: 600; color: var(--dim); text-transform: uppercase; margin-left: 10px; }
+  .play { margin-left: auto; color: var(--accent); text-decoration: none; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; }
+  .wrap { max-width: 980px; margin: 0 auto; }
+  main { padding: 24px 16px 64px; }
+  article { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 24px; margin-bottom: 32px; }
+  article h2 { color: var(--head); margin: 0 0 4px; font-size: 26px; }
+  .date { color: var(--dim); font-size: 13px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 18px; }
+  h3 { color: var(--accent); font-size: 15px; letter-spacing: 2px; text-transform: uppercase; margin: 28px 0 8px; }
+  figure { margin: 12px 0 20px; }
+  figure img { width: 100%; height: auto; display: block; border: 1px solid var(--line); border-radius: 4px; }
+  figcaption { color: var(--dim); font-size: 13px; margin-top: 6px; }
+  ul { padding-left: 20px; }
+  b { color: var(--head); }
+</style>
+</head>
+<body>
+<header><div class="wrap"><a class="logo" href="../">SKYFRONT<span>dev blog</span></a><a class="play" href="../">Play ›</a></div></header>
+<main class="wrap">
+
+<article id="ground-vehicles">
+  <h2>Nine real ground vehicles, built from the drawings</h2>
+  <div class="date">7 October 2026</div>
+  <p>Every nation used to field the same generic tank, carrier and mobile AA gun, just painted in its own colours. Now each side has its own armour, and every model was built from scratch off a three-view drawing of the real vehicle. Each model was then rendered at true scale and laid over its drawing, and anything that didn't line up was fixed.</p>
+  <ul>
+    <li><b>Federation of Verländ:</b> M60A1 tank (105mm), M113A2 carrier (.50 cal), M163 VADS (20mm Vulcan, 1.9 km).</li>
+    <li><b>Republic of Aurelia:</b> Leopard 1 tank (105mm, the fastest), HS.30 carrier (20mm cannon), Gepard (twin 35mm with radar, 3.3 km).</li>
+    <li><b>Sotov Union:</b> T-62 tank (115mm, the hardest hitting), MT-LB carrier (7.62mm PKT), ZSU-23-4 Shilka (quad 23mm with radar, 2.5 km).</li>
+  </ul>
+  <p>The running gear follows each drawing: the number of road wheels and return rollers, and whether the sprocket is at the front (M113, HS.30, MT-LB) or the rear. Turrets carry their own details, such as the M60's cupola and searchlight, the Leopard's spaced armour, the T-62's IR light and the Shilka's radar dish.</p>
+
+  <h3>The line-up</h3>
+  <figure><img src="img/ground-front34.png" alt="All nine ground vehicles from the front three-quarter" loading="lazy"><figcaption>Top to bottom: Verländ, Aurelia, Sotov. Left to right: tank, carrier, mobile AA.</figcaption></figure>
+
+  <h3>Side</h3>
+  <figure><img src="img/ground-side.png" alt="All nine ground vehicles from the side" loading="lazy"><figcaption>Side views.</figcaption></figure>
+
+  <h3>Top</h3>
+  <figure><img src="img/ground-top.png" alt="All nine ground vehicles from above" loading="lazy"><figcaption>Top views.</figcaption></figure>
+
+  <h3>Front and rear</h3>
+  <figure><img src="img/ground-front.png" alt="All nine ground vehicles from the front" loading="lazy"><figcaption>Front views.</figcaption></figure>
+  <figure><img src="img/ground-rear34.png" alt="All nine ground vehicles from the rear three-quarter" loading="lazy"><figcaption>Rear three-quarter views.</figcaption></figure>
+
+  <h3>Checked against the drawings</h3>
+  <figure><img src="img/ground-overlays.png" alt="Each model outlined in red over its three-view drawing" loading="lazy"><figcaption>Each model's outline (red) laid over its drawing at true scale. Top to bottom: M60A1, M113A2 and M163; Leopard 1, HS.30 and Gepard; T-62, MT-LB and ZSU-23-4.</figcaption></figure>
+
+  <h3>Before</h3>
+  <figure><img src="img/ground-before.png" alt="The old generic ground vehicle models" loading="lazy"><figcaption>The old shared models, for comparison.</figcaption></figure>
+</article>
+
+<article id="missiles">
+  <h2>Every missile, rocket and SAM rebuilt</h2>
+  <div class="date">7 October 2026</div>
+  <p>Until now most of Skyfront's weapons were the same generic tube with four fins, just scaled up or down, and every ship-launched SAM looked like an SA-2. This update gives all 31 weapons their own model, built to the real weapon's dimensions with its real fin and wing layout, nose and seeker shape, and paint scheme. Each one was checked against period photographs.</p>
+  <ul>
+    <li><b>Ship SAMs are now themselves:</b> Tartar, Terrier, Sea Slug, Sea Cat, Volna and Shtorm each have their own shape.</li>
+    <li><b>Boosters drop away</b> after launch on the SA-2, Terrier, Sea Slug, Volna, Harpoon, P-15 and P-35.</li>
+    <li><b>Folding fins</b> sit flat on the pylon and spring out once the weapon is away: the S-5, R4M, FFAR and 2 in rockets, and the ventral fins on the Kh-22 and Rascal.</li>
+  </ul>
+  <p>Each sheet shows the side, front, three-quarter and top views.</p>
+
+  <h3>Air-to-air</h3>
+  <figure><img src="img/missiles-air-to-air.png" alt="R-98, AIM-4 Falcon, Red Top and Firestreak models" loading="lazy"><figcaption>R-98 (Su-15), AIM-4 Falcon (F-102A), Red Top and Firestreak (Lightning).</figcaption></figure>
+
+  <h3>Air-to-surface</h3>
+  <figure><img src="img/missiles-air-to-surface.png" alt="Kh-22, Martel, Sea Eagle, Rascal, SS.11 and Falanga models" loading="lazy"><figcaption>Kh-22 (Tu-22), Martel and Sea Eagle (Buccaneer), GAM-63 Rascal (B-47), SS.11 (H-34) and 9M17 Falanga (Mi-4).</figcaption></figure>
+
+  <h3>Ship-launched anti-ship missiles</h3>
+  <figure><img src="img/missiles-ship-anti-ship.png" alt="Harpoon, Exocet, P-15 Termit and P-35 models" loading="lazy"><figcaption>RGM-84 Harpoon, MM38 Exocet, P-15 Termit and P-35, shown with their boosters attached.</figcaption></figure>
+
+  <h3>Surface-to-air</h3>
+  <figure><img src="img/missiles-sams.png" alt="SA-2, Tartar, Terrier, Sea Slug, Sea Cat, Volna and Shtorm models" loading="lazy"><figcaption>SA-2, Tartar, Terrier, Sea Slug with its four wrap-around boosters, Sea Cat, Volna and Shtorm.</figcaption></figure>
+
+  <h3>Unguided rockets</h3>
+  <figure><img src="img/missiles-rockets.png" alt="WGr. 21, HVAR, RS-82, R4M, ARS-212, S-5, FFAR, RP-3 and 2 in rocket models" loading="lazy"><figcaption>WGr. 21, HVAR, RS-82, R4M, ARS-212, S-5, Mk 4 FFAR, RP-3 and the British 2 in rocket, as carried.</figcaption></figure>
+
+  <h3>Fins out</h3>
+  <figure><img src="img/missiles-in-flight-fins-deployed.png" alt="Weapons in flight with fins deployed" loading="lazy"><figcaption>In flight: the folding fins spring out and the Kh-22 and Rascal drop their ventral fins.</figcaption></figure>
+
+  <h3>Before</h3>
+  <figure><img src="img/missiles-before.png" alt="The old generic weapon models" loading="lazy"><figcaption>The old models, for comparison.</figcaption></figure>
+</article>
+
+</main>
+</body>
+</html>
