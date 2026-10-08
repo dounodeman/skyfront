@@ -73,6 +73,15 @@ The squad listens to you: **1-6** attack the Nth most urgent bomber flight, **8*
 
 ---
 
+## Campaigns
+
+Campaigns have their own **Campaigns** tab in the menu (a list of every campaign with its progress) and never appear on the Battle screen. Each campaign is a chain of bombing missions on the Chira map (`src/world/chiraData.ts`, traced from Beckett's map), unlocked one after another; the player flies Belkara. The mission rules are in `src/game/strike.ts`, the campaign list in `src/world/campaigns.ts`, and `npm run strike` checks every mission's data and the win and lose rules headlessly (targets exist, bases, airfields and tank groups are on land, fleets are at sea).
+
+- **The Belkara-Salergian war** (`src/world/campaign.ts`, maps `chira1`-`chira4`): four missions that teach the raid rules, ending with the fall of Resacilo.
+- **The Belkara-Aurelian war** (`src/world/campaignAurelia.ts`, maps `aurelia1`-`aurelia5`): Aurelia comes by sea from Skerry Isle. *Eastern Watch* (defend against He 111 raids), *Skerry Isle* (raid the Aurelian airstrip), *Cape Guns* (defend while the Prinz Eugen shells the coast and Stukas dive), *Bay Landing* (hit the beachhead, tanks fighting ashore) and *The Bay Battle* (24 bombers, both fleets and both armies in action, then clear the sky). A mission may add `fleets` (WWII warships on racetracks at sea) and `unitGroups` (tanks, pillboxes, AA, trucks) to the map; the fleets shell the shore and fire on aircraft by themselves.
+
+---
+
 ## Carrier flight deck
 
 Carriers (any ship with a `deck` in `src/world/ships.ts`) run a shared launch queue (the Valley Forge and HMS Hermes have catapults; Hermes
