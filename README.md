@@ -38,12 +38,33 @@ map; the Republic of Belkara holds a valley cut through its northern mountains. 
 contested atoll and stepping-stone islets in between; the islands are not linked by land, so for now the
 ground forces only defend their own shores. Maps are plain data in `src/world/maps.ts`; you can also force one with `?map=trident`.
 
+**Battle maps.** Three more maps for ordinary four-nation matches (`?map=highlands`, `?map=atolls`, `?map=narrows`):
+
+| Map | Setting | What it is for |
+| --- | --- | --- |
+| Karst Highlands | One landmass, a basin ringed by 1,100 m ranges with a massif in the middle | Land war and low flying; four airfields on four sides, no ships |
+| Coral Chain | Four low atolls round a lagoon with reef islets and a bare central atoll | Open dogfights over water; a fleet off every island |
+| Arctic Narrows | Two tundra coasts across a 6 km strait with two islets in the channel | Short flights and constant fighting over the water; Verländ and Aurelia on the west coast, Sotov and Belkara on the east |
+
+A map is plain data in `src/world/maps.ts` (`HIGHLANDS`, `ATOLLS`, `NARROWS`); `zones` lists the Dominion zones.
+
 **Operation Landfall** (`?map=landfall`) is a mission, not a match. The island is traced from an aerial photo; the Sotov Union (MiG-15bis) holds the
 airfield and five camps, the Federation of Verländ (F9F-2 Panther, flown from two carriers) lands troops on the south-east beaches. There are no tickets:
 the Federation of Verländ wins by capturing all six points with no time limit; the Sotov Union wins by sinking a Verländ carrier
 (it takes six Kh-22 hits). From 20 minutes into the mission the Sotov Union sends four Tu-22 anti-ship bombers, three Kh-22s each, every five minutes (a warning goes out a minute before the first wave). Flying for Sotov Union, you get a minute after each wave launches to press **J** and join it in a Tu-22 of your own (three Kh-22s), flying in formation with the wave, even if you are already in the air or waiting to respawn; afterwards you respawn in what you flew before. `npm run landfall` checks the wave timing and a Tu-22 strike headlessly.
 Ground forces are bought with credits earned from kills: press 1-6 to order troops to a point, 0 for the nearest, U to deploy a
 squad. The other side's commander does the same. Progress autosaves; use "Continue mission" in the menu. Verländ troops are not placed on the island: fly them in by H-34 from a carrier to the Red or Blue Beach landing zone and set them down (the first lift on a beach sets up a landing zone there; only then can squads bought with U be set down on that beach, and they can also deploy at points the Federation of Verländ holds). When the computer commands the US, AI H-34s fly its troops in and set up the landing zones. Once a beach has its landing zone, the respawn picker offers it as a helicopter spawn point (Federation of Verländ only): choose an H-34 and pick the beach under "Helicopter spawn at".
+
+## Game modes
+
+Ordinary matches (not the missions, Falklands or Bering Strait, which keep their own rules) have a **Game mode** picker on the Battle tab. The mode is stored in the settings and sent to the match as `MatchConfig.mode`; the rules are in `src/game/modes.ts` and `Game.setupBattleMode` / `updateBattleMode`. The AI, spawns, respawns, kill feed and Tab scoreboard are the same in every mode.
+
+| Mode | Rules |
+| --- | --- |
+| Air Realistic Battle | The classic ticket match. |
+| Team Deathmatch | Only aircraft losses cost tickets (`50` each at the default team size; bases, airfields and ground units are worth score but cost nothing). 12-minute clock. |
+| Dominion | Three zones (circles, shown as a beam, a ring and a mast). Park more aircraft below 3,500 m inside a circle than any rival and it turns your colour (45 s for one aircraft of lead, faster with more). Every zone a side holds drains each rival 0.3 tickets per second; hold all three for 150 s to win outright. AI fighters patrol the zones their side does not hold. |
+| Bomber Raid | Every 150 s each side sends a flight of 2-5 AI bombers (by team size) against one of its nearest rival's bases. A bomber shot down costs 25 extra tickets, a base 160 and an airfield 110. The raid bombers are not respawned. |
 
 ---
 
