@@ -32,7 +32,7 @@ They have no missiles: they fight aircraft with their period AA guns (5"/38, Bof
 
 ## Commanding forces from the Tab screen
 
-Hold **Tab** for the battle overview. Under the map is a command bar: you can pick friendly AI aircraft, ships and ground units and give them orders without leaving the cockpit. While Tab is held the mouse drives a cursor over the screen instead of your aircraft (your flight controls read as released).
+Hold **Tab** for the battle overview. Under the map is a command bar: you can pick friendly AI aircraft, ships and ground units and give them orders without leaving the cockpit. While Tab is held the mouse is freed (the real cursor shows, your flight controls read as released) and captured again when you let go.
 
 - **Select**: left-click a unit, or drag a box (Shift adds). `A` selects every friendly AI aircraft, `S` every ship, `G` every ground unit, `C` clears. Bomber flights take orders through their leader.
 - **Order**: right-click the map. `1` Auto (an enemy under the cursor is attacked, anything else is a move; hold Shift to patrol), `2` Move, `3` Patrol, `4` Attack. Aircraft fly to the point and orbit it, patrol between where they were and the point, or attack the chosen aircraft, ship, vehicle or building with whatever they carry (AIOrder `goto` / `strike` / `attack` in `src/ai/pilot.ts`). Ships sail to the point at their own pace and keep their formation (they stop short of land); ground units drive there and fire on the move (`Ship.order`, `GroundWar.command`). Enemy ships and vehicles can be picked once a friendly unit has them within 4 km (the map shows the same ones).
