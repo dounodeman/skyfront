@@ -30,6 +30,17 @@ Props-only matches on Skyfront Island and Trident Isles have WWII fleets instead
 
 They have no missiles: they fight aircraft with their period AA guns (5"/38, Bofors and Oerlikon; 10.5 cm, 3.7 cm and 2 cm; 4.5" and pom-poms; 90 mm, 100 mm, 37 mm and 20 mm Breda; 100 mm Minizini, 76 mm, 45 mm, 37 mm and DShK) and fight ships and the shore with their main battery: battleships out to 13-15 km, cruisers 11 km, destroyers 7 km and the submarines' deck guns 4 km. Gun ships go for an enemy ship in reach before anything ashore, and a shell that bursts in the water alongside a ship still hurts it. `npm run ww2war -- <team> <team> <seconds>` runs two WWII fleets against each other headlessly (neighbouring fleets on Skyfront Island lose their destroyer and submarine in the first minutes and a big ship or two in fifteen). The F4F-4 Wildcat flies from the Essex. The models are built in `tools/ships/model_ww2_us.py`, `_de.py`, `_it.py` and `_su.py` from the supplied schematics (copies in the project's `models/ships-ww2/refs/`).
 
+## Commanding forces from the Tab screen
+
+Hold **Tab** for the battle overview. Under the map is a command bar: you can pick friendly AI aircraft, ships and ground units and give them orders without leaving the cockpit. While Tab is held the mouse drives a cursor over the screen instead of your aircraft (your flight controls read as released).
+
+- **Select**: left-click a unit, or drag a box (Shift adds). `A` selects every friendly AI aircraft, `S` every ship, `G` every ground unit, `C` clears. Bomber flights take orders through their leader.
+- **Order**: right-click the map. `1` Auto (an enemy under the cursor is attacked, anything else is a move; hold Shift to patrol), `2` Move, `3` Patrol, `4` Attack. Aircraft fly to the point and orbit it, patrol between where they were and the point, or attack the chosen aircraft, ship, vehicle or building with whatever they carry (AIOrder `goto` / `strike` / `attack` in `src/ai/pilot.ts`). Ships sail to the point at their own pace and keep their formation (they stop short of land); ground units drive there and fire on the move (`Ship.order`, `GroundWar.command`). Enemy ships and vehicles can be picked once a friendly unit has them within 4 km (the map shows the same ones).
+- **Return to base** (`R`) sends aircraft home to rearm, makes ships rejoin their patrol and ground units go back to the advance; **Cancel** (`X`) drops the orders. Units that die lose their orders. Orders apply to friendly AI only (not helicopters or the player).
+- **Next spawn**: while alive, the same screen has aircraft and loadout buttons; the choice applies the next time you spawn (the aircraft you are flying keeps what it has).
+
+The command logic is in `src/game/commands.ts`; the panel is `src/ui/tabPanel.ts`.
+
 ## Maps
 
 The main menu has a map picker (the game reloads when you change it). **Skyfront Island** is the original single-island
