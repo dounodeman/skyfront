@@ -13,6 +13,16 @@ Built with TypeScript, Three.js and Vite.
 
 ---
 
+## Cold War additions
+
+Three player-only aircraft for the Federation of Verländ (hand-lofted in Blender by `tools/aircraft/cold_war.py` from Beckett's three-views, exported with `tools/aircraft/export_glb.py`, checked with `tools/aircraft/render_cw.py`; key features in the project's `models/<name>/key-features.md`):
+
+- **F-4C Phantom II**: twin afterburning J79s, tandem canopy, tall ramp intakes with splitter plates, 45 degree wing with cranked outer panels and an anhedral stabilator. No gun: four AIM-7E Sparrows, four AIM-9B Sidewinders (new missile airframes) or five Mk 82 bombs.
+- **KC-135A Stratotanker**: four J57 pods on pylons ahead of the swept wing, flat six-pane windscreen, flying boom under the tail. Unarmed.
+- **Lockheed CL-1201**: the 340 m, 5,375 t nuclear flying wing (NASA conceptual drawing). Its four turbofans on the aft deck are **retractable**: the fans sink 14 m into the hull when the throttle is closed and rise as it opens (`fanPos` in `src/aircraft/entity.ts`, `Fan <i>` nodes in `glbAircraft.ts`). Forty 2000 lb bombs on wing stations.
+
+---
+
 ## Wingmen
 
 **AI pairs.** Armed AI fighters of one side fly as a lead and a wingman (`updatePairs` in `src/game/wingmen.ts`, behaviour in `AIPilot.wingmanDecide`). The wing holds a fighting-wing slot while climbing or patrolling (the lead cruises at about 70% throttle and eases off while the wing catches up), takes the lead's target and comes in from the far side of it, and breaks off and rejoins when a fight takes it too far from the lead. Cover is mutual: a bandit with its nose on the partner's tail is engaged first, and a pilot being chased turns the attacker across its partner's nose instead of just breaking away. A pair splits up when either dies, goes home or takes a squad order, and the survivors look for new partners.
