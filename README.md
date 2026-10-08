@@ -13,6 +13,14 @@ Built with TypeScript, Three.js and Vite.
 
 ---
 
+## Wingmen
+
+**AI pairs.** Armed AI fighters of one side fly as a lead and a wingman (`updatePairs` in `src/game/wingmen.ts`, behaviour in `AIPilot.wingmanDecide`). The wing holds a fighting-wing slot while climbing or patrolling (the lead cruises at about 70% throttle and eases off while the wing catches up), takes the lead's target and comes in from the far side of it, and breaks off and rejoins when a fight takes it too far from the lead. Cover is mutual: a bandit with its nose on the partner's tail is engaged first, and a pilot being chased turns the attacker across its partner's nose instead of just breaking away. A pair splits up when either dies, goes home or takes a squad order, and the survivors look for new partners.
+
+**Formation request (`J`, rebindable).** Asks the two nearest free friendly AI fighters within 12 km to fly formation on you; press `J` again to release them. They cover you, fight what is near you and call it on the radio (callouts show in the feed). Free Flight has no other aircraft, so `J` scrambles two F9F-2 Panthers to join you there (`Game.FORMATION_TYPE`). The request is generic: any AI fighter type answers, it works from any aircraft you fly, and `Game.toggleFormation` is the one entry point other formation requests (for example helicopters) should use. `npm run wingmen` checks formation holding and pair fights headlessly.
+
+---
+
 ## Naval warfare
 
 Every cruiser, destroyer and frigate carries anti-ship missiles (`asm` in `src/world/ships.ts`, flight and defence code in `src/weapons/shipMissiles.ts`) and shoots at enemy ships in reach, carriers first. Cruisers reach furthest, then destroyers, then frigates (Harpoon, MM38 Exocet, P-15 Termit, P-35). Each ship also has point defence (`defence`): every living ship takes one shot at each hostile missile that comes inside its radius while it is flying at that ship or a ship under its umbrella, with a base chance of 50% (cruiser), 35% (destroyer) or 25% (frigate) that drops as more missiles arrive together or the ship is already busy. The same defence works against aircraft-launched Sea Eagle and Martel missiles. `npm run navalwar -- <gap m> <seconds>` runs two fleets against each other headlessly.
@@ -30,6 +38,17 @@ Props-only matches on Skyfront Island and Trident Isles have WWII fleets instead
 
 They have no missiles: they fight aircraft with their period AA guns (5"/38, Bofors and Oerlikon; 10.5 cm, 3.7 cm and 2 cm; 4.5" and pom-poms; 90 mm, 100 mm, 37 mm and 20 mm Breda; 100 mm Minizini, 76 mm, 45 mm, 37 mm and DShK) and fight ships and the shore with their main battery: battleships out to 13-15 km, cruisers 11 km, destroyers 7 km and the submarines' deck guns 4 km. Gun ships go for an enemy ship in reach before anything ashore, and a shell that bursts in the water alongside a ship still hurts it. `npm run ww2war -- <team> <team> <seconds>` runs two WWII fleets against each other headlessly (neighbouring fleets on Skyfront Island lose their destroyer and submarine in the first minutes and a big ship or two in fifteen). The F4F-4 Wildcat flies from the Essex. The models are built in `tools/ships/model_ww2_us.py`, `_de.py`, `_it.py` and `_su.py` from the supplied schematics (copies in the project's `models/ships-ww2/refs/`).
 
+## Commanding forces from the Tab screen
+
+Hold **Tab** for the battle overview. Under the map is a command bar: you can pick friendly AI aircraft, ships and ground units and give them orders without leaving the cockpit. While Tab is held the mouse is freed (the real cursor shows, your flight controls read as released) and captured again when you let go.
+
+- **Select**: left-click a unit, or drag a box (Shift adds). `A` selects every friendly AI aircraft, `S` every ship, `G` every ground unit, `C` clears. Bomber flights take orders through their leader.
+- **Order**: right-click the map. `1` Auto (an enemy under the cursor is attacked, anything else is a move; hold Shift to patrol), `2` Move, `3` Patrol, `4` Attack. Aircraft fly to the point and orbit it, patrol between where they were and the point, or attack the chosen aircraft, ship, vehicle or building with whatever they carry (AIOrder `goto` / `strike` / `attack` in `src/ai/pilot.ts`). Ships sail to the point at their own pace and keep their formation (they stop short of land); ground units drive there and fire on the move (`Ship.order`, `GroundWar.command`). Enemy ships and vehicles can be picked once a friendly unit has them within 4 km (the map shows the same ones).
+- **Return to base** (`R`) sends aircraft home to rearm, makes ships rejoin their patrol and ground units go back to the advance; **Cancel** (`X`) drops the orders. Units that die lose their orders. Orders apply to friendly AI only (not helicopters or the player).
+- **Next spawn**: while alive, the same screen has aircraft and loadout buttons; the choice applies the next time you spawn (the aircraft you are flying keeps what it has).
+
+The command logic is in `src/game/commands.ts`; the panel is `src/ui/tabPanel.ts`.
+
 ## Maps
 
 The main menu has a map picker (the game reloads when you change it). **Skyfront Island** is the original single-island
@@ -38,12 +57,33 @@ map; the Republic of Belkara holds a valley cut through its northern mountains. 
 contested atoll and stepping-stone islets in between; the islands are not linked by land, so for now the
 ground forces only defend their own shores. Maps are plain data in `src/world/maps.ts`; you can also force one with `?map=trident`.
 
+**Battle maps.** Three more maps for ordinary four-nation matches (`?map=highlands`, `?map=atolls`, `?map=narrows`):
+
+| Map | Setting | What it is for |
+| --- | --- | --- |
+| Karst Highlands | One landmass, a basin ringed by 1,100 m ranges with a massif in the middle | Land war and low flying; four airfields on four sides, no ships |
+| Coral Chain | Four low atolls round a lagoon with reef islets and a bare central atoll | Open dogfights over water; a fleet off every island |
+| Arctic Narrows | Two tundra coasts across a 6 km strait with two islets in the channel | Short flights and constant fighting over the water; Verländ and Aurelia on the west coast, Sotov and Belkara on the east |
+
+A map is plain data in `src/world/maps.ts` (`HIGHLANDS`, `ATOLLS`, `NARROWS`); `zones` lists the Dominion zones.
+
 **Operation Landfall** (`?map=landfall`) is a mission, not a match. The island is traced from an aerial photo; the Sotov Union (MiG-15bis) holds the
 airfield and five camps, the Federation of Verländ (F9F-2 Panther, flown from two carriers) lands troops on the south-east beaches. There are no tickets:
 the Federation of Verländ wins by capturing all six points with no time limit; the Sotov Union wins by sinking a Verländ carrier
 (it takes six Kh-22 hits). From 20 minutes into the mission the Sotov Union sends four Tu-22 anti-ship bombers, three Kh-22s each, every five minutes (a warning goes out a minute before the first wave). Flying for Sotov Union, you get a minute after each wave launches to press **J** and join it in a Tu-22 of your own (three Kh-22s), flying in formation with the wave, even if you are already in the air or waiting to respawn; afterwards you respawn in what you flew before. `npm run landfall` checks the wave timing and a Tu-22 strike headlessly.
 Ground forces are bought with credits earned from kills: press 1-6 to order troops to a point, 0 for the nearest, U to deploy a
 squad. The other side's commander does the same. Progress autosaves; use "Continue mission" in the menu. Verländ troops are not placed on the island: fly them in by H-34 from a carrier to the Red or Blue Beach landing zone and set them down (the first lift on a beach sets up a landing zone there; only then can squads bought with U be set down on that beach, and they can also deploy at points the Federation of Verländ holds). When the computer commands the US, AI H-34s fly its troops in and set up the landing zones. Once a beach has its landing zone, the respawn picker offers it as a helicopter spawn point (Federation of Verländ only): choose an H-34 and pick the beach under "Helicopter spawn at".
+
+## Game modes
+
+Ordinary matches (not the missions, Falklands or Bering Strait, which keep their own rules) have a **Game mode** picker on the Battle tab. The mode is stored in the settings and sent to the match as `MatchConfig.mode`; the rules are in `src/game/modes.ts` and `Game.setupBattleMode` / `updateBattleMode`. The AI, spawns, respawns, kill feed and Tab scoreboard are the same in every mode.
+
+| Mode | Rules |
+| --- | --- |
+| Air Realistic Battle | The classic ticket match. |
+| Team Deathmatch | Only aircraft losses cost tickets (`50` each at the default team size; bases, airfields and ground units are worth score but cost nothing). 12-minute clock. |
+| Dominion | Three zones (circles, shown as a beam, a ring and a mast). Park more aircraft below 3,500 m inside a circle than any rival and it turns your colour (45 s for one aircraft of lead, faster with more). Every zone a side holds drains each rival 0.3 tickets per second; hold all three for 150 s to win outright. AI fighters patrol the zones their side does not hold. |
+| Bomber Raid | Every 150 s each side sends a flight of 2-5 AI bombers (by team size) against one of its nearest rival's bases. A bomber shot down costs 25 extra tickets, a base 160 and an airfield 110. The raid bombers are not respawned. |
 
 ---
 
@@ -70,6 +110,15 @@ A side that holds Fox Bay (flak battery up) can also land anywhere inside the po
 **Bering Strait** (`?map=bering`) is the strait at true scale (Natural Earth 1:10m coastlines, public domain): Chukotka on the west, Alaska on the east, the Diomede Islands in the middle and the two capes about 86 km apart. You pick Sotov Union or the USA to defend by choosing a fighter on the menu (F-86F or F-102A for the USA, MiG-15bis or Su-15 for Sotov Union). You and an AI squad of fighters (F-86F and F-102A, or MiG-15bis and Su-15) defend the interior against waves of bombers (B-47, B-66, B-58 or M-4, Il-28, Tu-22) that fly in formation from the far shore to a finish line inland. The bombers carry nothing: each one that crosses the line is a leak. Six waves of growing size arrive every 170 s; the defence fails at 8 leaks and holds if the last bomber is down or through with fewer.
 
 The squad listens to you: **1-6** attack the Nth most urgent bomber flight, **8** the nearest flight, **0** free hunt, **7** cover me, **9** return to base. The HUD lists the flights by distance to the line, and the minimap draws the line. The data is `BERING` in `src/world/maps.ts` (coastlines in `src/world/beringData.ts`), the rules are in `src/game/intercept.ts`, and `npm run intercept` checks the schedule and the win and lose rules headlessly.
+
+---
+
+## Campaigns
+
+Campaigns have their own **Campaigns** tab in the menu (a list of every campaign with its progress) and never appear on the Battle screen. Each campaign is a chain of bombing missions on the Chira map (`src/world/chiraData.ts`: the coastline is traced from the colours of Beckett's Chira_final map, the sea flood-filled from the window edge, so the whole 120 km window matches the map, islets included), unlocked one after another; the player flies Belkara. The mission rules are in `src/game/strike.ts`, the campaign list in `src/world/campaigns.ts`, and `npm run strike` checks every mission's data and the win and lose rules headlessly (targets exist, bases, airfields and tank groups are on land, fleets are at sea).
+
+- **The Belkara-Salergian war** (`src/world/campaign.ts`, maps `chira1`-`chira4`): four missions that teach the raid rules, ending with the fall of Resacilo.
+- **The Belkara-Aurelian war** (`src/world/campaignAurelia.ts`, maps `aurelia1`-`aurelia5`): fought along the real Belkara-Aurelia border of Beckett's map (Aurelia lies south-east of Belkara; `CHIRA_AURELIA` in `src/world/chiraData.ts` is its outline, read off the map colours) and in the bay beyond it. *Border Incident* (defend against He 111 raids), *Redmark* (raid the Aurelian border airfield), *Cape Guns* (defend while the Prinz Eugen shells the north-east coast and Stukas dive), *Eastport* (hit the harbour, with a cruiser group in the bay and tanks on the border) and *The Border Battle* (24 bombers, both fleets and both armies in action, then clear the sky). A mission may add `fleets` (WWII warships on racetracks at sea) and `unitGroups` (tanks, pillboxes, AA, trucks) to the map; the fleets shell the shore and fire on aircraft by themselves.
 
 ---
 
