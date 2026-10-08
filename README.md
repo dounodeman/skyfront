@@ -38,6 +38,21 @@ Props-only matches on Skyfront Island and Trident Isles have WWII fleets instead
 
 They have no missiles: they fight aircraft with their period AA guns (5"/38, Bofors and Oerlikon; 10.5 cm, 3.7 cm and 2 cm; 4.5" and pom-poms; 90 mm, 100 mm, 37 mm and 20 mm Breda; 100 mm Minizini, 76 mm, 45 mm, 37 mm and DShK) and fight ships and the shore with their main battery: battleships out to 13-15 km, cruisers 11 km, destroyers 7 km and the submarines' deck guns 4 km. Gun ships go for an enemy ship in reach before anything ashore, and a shell that bursts in the water alongside a ship still hurts it. `npm run ww2war -- <team> <team> <seconds>` runs two WWII fleets against each other headlessly (neighbouring fleets on Skyfront Island lose their destroyer and submarine in the first minutes and a big ship or two in fifteen). The F4F-4 Wildcat flies from the Essex. The models are built in `tools/ships/model_ww2_us.py`, `_de.py`, `_it.py` and `_su.py` from the supplied schematics (copies in the project's `models/ships-ww2/refs/`).
 
+### Submarine torpedoes
+
+The four WWII submarines carry 533 mm torpedoes (`torpedo` in `src/world/ships.ts`, flight and hit code in `src/weapons/torpedoes.ts`). A torpedo leaves a bow tube, dives to its set depth (3 to 3.7 m) and runs straight along the bearing it was fired on at its real speed (22 to 24 m/s): there is no homing, so the shooter leads the target (`torpedoLead`), and a ship that turns or speeds up can slip it. It explodes under the first enemy hull it meets after a 120 m arming run, runs out at the end of its range, and breaks up on the seabed or beach if the water over its path gets shallower than its running depth, so it never touches aircraft, ground units or buildings. Steam torpedoes leave a bubble track on the surface.
+
+| Submarine | Torpedo | Bow tubes | Load | Reload | Range (game) | Damage per hit |
+| --- | --- | --- | --- | --- | --- | --- |
+| USS Gato | Mark 14 | 6 | 24 | 40 s | 6.5 km | 460 |
+| U-96 | G7a | 4 | 14 | 50 s | 7.0 km | 560 |
+| Galileo Galilei | W 270/533.4 | 4 | 12 | 55 s | 6.0 km | 540 |
+| Shch-402 | 53-38 | 4 | 10 | 55 s | 6.0 km | 600 |
+
+Tube counts and loads follow the real boats (the stern tubes are not modelled); speeds and warheads follow the real torpedoes; ranges are shortened to the fleets' spacing. Damage is heavy: a destroyer (600 to 750 hp) goes down to two hits, a submarine (320 hp) to one, a cruiser to about four and a battleship to ten.
+
+**AI submarines** fire a spread of up to two torpedoes every few seconds at the enemy ship in reach with a clear water path (carriers first, and not at one that already has two torpedoes on the way), with a fire-control error that follows the match difficulty. **Player control** is on the Tab command screen: select a submarine and right-click an enemy ship to send it to attack (it closes to about 2 km and fires only at that ship), and press **T** or the Fire torpedoes button to fire a salvo of two now at that ship (or the best one in reach when it has no order). The feed says when a torpedo hits, runs ashore, hits the seabed or misses. `npm run torpedoes -- <team A> <team B> [seconds]` runs two WWII fleets headlessly with their subs closing in, a land strip across the water, a torpedo fired at a beach and a player-style fire command.
+
 ## Commanding forces from the Tab screen
 
 Hold **Tab** for the battle overview. Under the map is a command bar: you can pick friendly AI aircraft, ships and ground units and give them orders without leaving the cockpit. While Tab is held the mouse is freed (the real cursor shows, your flight controls read as released) and captured again when you let go.
