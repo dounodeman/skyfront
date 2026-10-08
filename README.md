@@ -15,11 +15,11 @@ Built with TypeScript, Three.js and Vite.
 
 ## Cold War additions
 
-Three player-only aircraft for the Federation of Verländ (hand-lofted in Blender by `tools/aircraft/cold_war.py` from Beckett's three-views, exported with `tools/aircraft/export_glb.py`, checked with `tools/aircraft/render_cw.py`; key features in the project's `models/<name>/key-features.md`):
+Three player-only aircraft for the Federation of Verländ (lofted in Blender by `tools/aircraft/cold_war.py` on `tools/aircraft/cw_lib.py`, exported with `tools/aircraft/export_glb.py`, rendered with `tools/aircraft/render_cw.py` and laid over the reference three-views with `tools/aircraft/overlay_cw.py`; key features in the project's `models/<name>/key-features.md`):
 
 - **F-4C Phantom II**: twin afterburning J79s, tandem canopy, tall ramp intakes with splitter plates, 45 degree wing with cranked outer panels and an anhedral stabilator. No gun: four AIM-7E Sparrows, four AIM-9B Sidewinders (new missile airframes) or five Mk 82 bombs.
-- **KC-135A Stratotanker**: four J57 pods on pylons ahead of the swept wing, flat six-pane windscreen, flying boom under the tail. Unarmed.
-- **Lockheed CL-1201**: the 340 m, 5,375 t nuclear flying wing (NASA conceptual drawing). Its four turbofans on the aft deck are **retractable**: the fans sink 14 m into the hull when the throttle is closed and rise as it opens (`fanPos` in `src/aircraft/entity.ts`, `Fan <i>` nodes in `glbAircraft.ts`). Forty 2000 lb bombs on wing stations.
+- **KC-135A Stratotanker**: four J57 pods on pylons ahead of the swept wing, a 707-style flight deck with its glazed band and window posts, flying boom with V ruddevators under the tail. Unarmed.
+- **Lockheed CL-1201**: the 340 m, 5,375 t nuclear flying wing, shaped after Beckett's render and the NASA side view: an airliner fuselage with a cheatline and black radome, a thick crescent wing with drooped tips blended into a flat engine deck, and a tall swept fin. Its four turbofans on stub pylons are **retractable**: each sinks about 11 m into its well in the deck when the throttle is closed and rises as it opens (`fanPos` in `src/aircraft/entity.ts`; `Fan <i>` nodes in `glbAircraft.ts`, each carrying its own `drop` extra). The chase camera sits three times further back for it (`chaseScale`). Forty 2000 lb bombs on wing stations.
 
 ---
 
