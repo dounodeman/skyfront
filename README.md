@@ -25,6 +25,22 @@ Built with TypeScript, Three.js and Vite.
 
 Every cruiser, destroyer and frigate carries anti-ship missiles (`asm` in `src/world/ships.ts`, flight and defence code in `src/weapons/shipMissiles.ts`) and shoots at enemy ships in reach, carriers first. Cruisers reach furthest, then destroyers, then frigates (Harpoon, MM38 Exocet, P-15 Termit, P-35). Each ship also has point defence (`defence`): every living ship takes one shot at each hostile missile that comes inside its radius while it is flying at that ship or a ship under its umbrella, with a base chance of 50% (cruiser), 35% (destroyer) or 25% (frigate) that drops as more missiles arrive together or the ship is already busy. The same defence works against aircraft-launched Sea Eagle and Martel missiles. `npm run navalwar -- <gap m> <seconds>` runs two fleets against each other headlessly.
 
+### Anti-submarine warfare
+
+Submarines dive. A boat dives to 22 m when an enemy ship with anti-submarine weapons comes within about 6 km, is out of sight and reach of guns and bombs while its hull is below 6 m, and surfaces a minute after the hunters have gone. A close burst sends it down to 70 m for 40 seconds (`Ship.depth`, `Ship.submerged`, `Ship.shock`).
+
+Ships that historically carried them have an `asw` fit in `src/world/ships.ts`: sonar, stern depth-charge rails and side throwers, and an ahead-throwing mortar.
+
+| Ship | Weapons |
+| --- | --- |
+| USS Fletcher | Mk 10 Hedgehog over the bow, Mk 9 depth charges (2 rails, 4 throwers, 40 charges) |
+| Z16 Friedrich Eckoldt | depth charges (2 rails, 4 throwers, 40 charges) |
+| Folgore | depth charges (2 rails, 2 throwers, 28 charges) |
+| Gremyashchy (WWII) | BM-1 depth charges (2 rails, 4 throwers, 36 charges) |
+| Kanin, Kresta II (modern) | RBU-6000 rocket launcher, 12 and 24 rockets |
+
+An AI ship with sonar contact (2.6 km, 3.5 km for the modern ships) runs the boat down at twice its patrol speed unless the player has ordered it elsewhere. A surfaced boat seen within 7 km is headed for and shelled, and once it dives the hunters work from where it went down. The mortar fires when the boat is inside its range window and ahead of the bow; the depth charges go over the side as the stern passes the point where a charge set to the boat's depth would find it. Rounds are in `src/weapons/asw.ts` (`ASWSystem`): depth charges sink at their rate and burst at the set depth, hurting a submerged boat within about 18 m; mortar bombs and rockets burst only on striking a hull, so a miss is a dud. Nothing in the system hurts a surfaced boat. `npm run asw -- <hunter id> <sub id> [seconds] [sub depth]` runs one hunter against one boat headlessly (for example `fletcher typevii`, `z1936 gato`).
+
 ### WWII fleets
 
 Props-only matches on Skyfront Island and Trident Isles have WWII fleets instead of the modern ones (matches with jets keep the modern fleets). Each nation sails a carrier in the middle, a battleship and a heavy cruiser beside it, and a destroyer and a surfaced submarine on the wings:
