@@ -17,11 +17,25 @@ Built with TypeScript, Three.js and Vite.
 
 Every cruiser, destroyer and frigate carries anti-ship missiles (`asm` in `src/world/ships.ts`, flight and defence code in `src/weapons/shipMissiles.ts`) and shoots at enemy ships in reach, carriers first. Cruisers reach furthest, then destroyers, then frigates (Harpoon, MM38 Exocet, P-15 Termit, P-35). Each ship also has point defence (`defence`): every living ship takes one shot at each hostile missile that comes inside its radius while it is flying at that ship or a ship under its umbrella, with a base chance of 50% (cruiser), 35% (destroyer) or 25% (frigate) that drops as more missiles arrive together or the ship is already busy. The same defence works against aircraft-launched Sea Eagle and Martel missiles. `npm run navalwar -- <gap m> <seconds>` runs two fleets against each other headlessly.
 
+### WWII fleets
+
+Props-only matches on Skyfront Island and Trident Isles have WWII fleets instead of the modern ones (matches with jets keep the modern fleets). Each nation sails a carrier in the middle, a battleship and a heavy cruiser beside it, and a destroyer and a surfaced submarine on the wings:
+
+| Nation | Carrier | Battleship | Cruiser | Destroyer | Submarine |
+| --- | --- | --- | --- | --- | --- |
+| Federation of Verländ (US Navy) | USS Essex | USS Iowa | USS Baltimore | USS Fletcher | USS Gato |
+| Republic of Aurelia (Kriegsmarine) | HMS Illustrious | Bismarck | Prinz Eugen | Z16 Friedrich Eckoldt | U-96 (Type VIIC) |
+| Republic of Belkara (Regia Marina) | Sparviero | Vittorio Veneto | Gorizia | Folgore | Galileo Galilei |
+| Sotov Union (Soviet Navy) | none (the Soviet Navy had no carrier) | Marat | Kirov | Gremyashchy | Shch-402 |
+
+They have no missiles: they fight aircraft with their period AA guns (5"/38, Bofors and Oerlikon; 10.5 cm, 3.7 cm and 2 cm; 4.5" and pom-poms; 90 mm, 100 mm, 37 mm and 20 mm Breda; 100 mm Minizini, 76 mm, 45 mm, 37 mm and DShK) and fight ships and the shore with their main battery: battleships out to 13-15 km, cruisers 11 km, destroyers 7 km and the submarines' deck guns 4 km. Gun ships go for an enemy ship in reach before anything ashore, and a shell that bursts in the water alongside a ship still hurts it. `npm run ww2war -- <team> <team> <seconds>` runs two WWII fleets against each other headlessly (neighbouring fleets on Skyfront Island lose their destroyer and submarine in the first minutes and a big ship or two in fifteen). The F4F-4 Wildcat flies from the Essex. The models are built in `tools/ships/model_ww2_us.py`, `_de.py`, `_it.py` and `_su.py` from the supplied schematics (copies in the project's `models/ships-ww2/refs/`).
+
 ## Maps
 
 The main menu has a map picker (the game reloads when you change it). **Skyfront Island** is the original single-island
-map. **Trident Isles** has three equal home islands around an inner sea (Federation of Verländ north-west, Sotov Union north-east, Republic of Aurelia
-south) with a contested atoll and stepping-stone islets in between; the islands are not linked by land, so for now the
+map; the Republic of Belkara holds a valley cut through its northern mountains. **Trident Isles** has three equal home islands around an inner sea
+(Federation of Verländ north-west, Sotov Union north-east, Republic of Aurelia south) and Belkara's smaller island on the north edge, with a
+contested atoll and stepping-stone islets in between; the islands are not linked by land, so for now the
 ground forces only defend their own shores. Maps are plain data in `src/world/maps.ts`; you can also force one with `?map=trident`.
 
 **Operation Landfall** (`?map=landfall`) is a mission, not a match. The island is traced from an aerial photo; the Sotov Union (MiG-15bis) holds the
@@ -129,9 +143,11 @@ lowers the render resolution and plants fewer trees.
 5. Win by draining the enemy's tickets or shooting down every enemy aircraft. Each player and AI pilot
    gets **one life**.
 
-**Three teams.** Every match has three sides, each with its own airfield, bases, ground forces, colours and
+**Four nations.** Skyfront Island and Trident Isles have four sides, each with its own airfield, bases, ground forces, colours and
 national markings: the **Federation of Verländ** (west, blue), **Republic of Aurelia** (south, gold,
-ringed roundel) and **Sotov Union** (east, red, star). A fourth nation, the **Republic of Belkara**, appears in the hangar as a locked "coming soon" teaser: it has no aircraft, spawns or effect on matches yet. Everyone fights everyone. You fly for the nation that built the
+ringed roundel), **Sotov Union** (east, red, star) and **Republic of Belkara** (north, teal, diamond). Belkara flies only WWII
+props (Italian and French types: MC.200, C.202, Re.2001, CR.42, D.520, MS.406, Potez 631, LeO 451, SM.79), so in a jets match its
+AI still flies them. The missions and the Falklands are fought by two of the other three. Everyone fights everyone. You fly for the nation that built the
 aircraft you pick, and the AI pilots on each team fly their own nation's types. The match ends when only one team
 is left, or when yours is knocked out (tickets gone or no aircraft left). Teams, nations and aircraft assignments
 live in `src/world/layout.ts` (`TEAMS`, `AIRCRAFT_TEAM`, `AIRFIELDS`, `BASES`, `UNIT_GROUPS`).
