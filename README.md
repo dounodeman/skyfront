@@ -152,6 +152,8 @@ A side that holds Fox Bay (flak battery up) can also land anywhere inside the po
 
 The squad listens to you: **1-6** attack the Nth most urgent bomber flight, **8** the nearest flight, **0** free hunt, **7** cover me, **9** return to base. The HUD lists the flights by distance to the line, and the minimap draws the line. The data is `BERING` in `src/world/maps.ts` (coastlines in `src/world/beringData.ts`), the rules are in `src/game/intercept.ts`, and `npm run intercept` checks the schedule and the win and lose rules headlessly.
 
+**AI afterburners** (`wantAfterburner` in `src/ai/pilot.ts`): an AI jet with an afterburner lights it by asking for the 1.1 throttle, the same way the player does, so the flame, sound and fuel burn are the engine's own. It lights when chasing a target that is not yet in gun range, when slow in a fight, when running from a threat or extending, and in a climb to cruise altitude with plenty of fuel. It stays off in patrol, formation, takeoff, return and landing, in bombers, above Mach 1.25 and when the tanks run low (under 30% to light, 22% to keep). `npm run abtest` flies each afterburning type through a chase and checks all of this.
+
 ---
 
 ## Campaigns
