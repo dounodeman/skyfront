@@ -23,6 +23,22 @@ Three player-only aircraft for the Federation of Verländ (lofted in Blender by 
 
 ---
 
+## Belkaran jets
+
+Four jets for the Republic of Belkara (designs `f84f`, `g91r`, `mirage3c` and `vautour2b` in `tools/aircraft/model.py`; key features in the
+project's `models/belkara-jets/<id>/key-features.md`), shaped from published dimensions and descriptions:
+
+- **F-84F Thunderstreak**: the Italian Air Force's fighter-bomber. A wide oval nose intake with four .50s round it, a deep fuselage, the framed
+  canopy running into a tall spine, a 38.5 degree swept wing with slight anhedral (a .50 in each root), and four pylons for bombs or HVARs.
+- **Fiat G.91R/1**: Italy's NATO light strike fighter. The camera nose over the oval intake, four .50s beside it, a small swept wing with one
+  fence a side, a small ventral fin and four pylons.
+- **Mirage IIIC**: the Mach 2 tailless delta. Long radome, D-shaped side intakes with half-cone shock bodies, a conically cambered 60 degree
+  delta with elevons, one afterburning Atar 9B and two DEFA 30 mm. Sidewinders, a Matra R.530 (drawn with the Sparrow's airframe) or two bombs.
+- **Vautour IIB**: the bomber. Glazed bombardier's nose and the pilot's bubble canopy, two Atar 101s in nacelles through the swept mid wing,
+  bicycle gear with outriggers in the nacelles, four 450 kg bombs in the bay and two under the wings, and no guns. AI pilots fly it as a level bomber.
+
+---
+
 ## Wingmen
 
 **AI pairs.** Armed AI fighters of one side fly as a lead and a wingman (`updatePairs` in `src/game/wingmen.ts`, behaviour in `AIPilot.wingmanDecide`). The wing holds a fighting-wing slot while climbing or patrolling (the lead cruises at about 70% throttle and eases off while the wing catches up), takes the lead's target and comes in from the far side of it, and breaks off and rejoins when a fight takes it too far from the lead. Cover is mutual: a bandit with its nose on the partner's tail is engaged first, and a pilot being chased turns the attacker across its partner's nose instead of just breaking away. A pair splits up when either dies, goes home or takes a squad order, and the survivors look for new partners.
@@ -239,9 +255,9 @@ lowers the render resolution and plants fewer trees.
 
 **Four nations.** Skyfront Island and Trident Isles have four sides, each with its own airfield, bases, ground forces, colours and
 national markings: the **Federation of Verländ** (west, blue), **Republic of Aurelia** (south, gold,
-ringed roundel), **Sotov Union** (east, red, star) and **Republic of Belkara** (north, teal, diamond). Belkara flies only WWII
-props (Italian and French types: MC.200, C.202, Re.2001, CR.42, D.520, MS.406, Potez 631, LeO 451, SM.79), so in a jets match its
-AI still flies them. The missions and the Falklands are fought by two of the other three. Everyone fights everyone. You fly for the nation that built the
+ringed roundel), **Sotov Union** (east, red, star) and **Republic of Belkara** (north, teal, diamond). Belkara flies Italian and French
+types: WWII props (MC.200, C.202, Re.2001, CR.42, D.520, MS.406, Potez 631, LeO 451, SM.79) and jets (F-84F Thunderstreak, Fiat G.91R,
+Mirage IIIC and the Vautour IIB bomber; see Belkaran jets above). The missions and the Falklands are fought by two of the other three. Everyone fights everyone. You fly for the nation that built the
 aircraft you pick, and the AI pilots on each team fly their own nation's types. The match ends when only one team
 is left, or when yours is knocked out (tickets gone or no aircraft left). Teams, nations and aircraft assignments
 live in `src/world/layout.ts` (`TEAMS`, `AIRCRAFT_TEAM`, `AIRFIELDS`, `BASES`, `UNIT_GROUPS`).
@@ -534,7 +550,7 @@ The B-58 uses one: `public/media/b58.glb`, loaded by `src/aircraft/b58.ts`. To c
 /Applications/Blender.app/Contents/MacOS/Blender --background --factory-startup --python tools/b58/export_glb.py
 ```
 
-The fighters, the Tu-22, the Il-28, the Ar 234, the B-66, the B-47, the M-4, the Vulcan and the interceptors are built from one Blender script, `tools/aircraft/model.py` (a design per aircraft),
+The fighters, the Tu-22, the Il-28, the Ar 234, the B-66, the B-47, the M-4, the Vulcan, the Vautour and the interceptors are built from one Blender script, `tools/aircraft/model.py` (a design per aircraft),
 exported by `tools/aircraft/export_glb.py` and loaded by `src/aircraft/glbAircraft.ts`. Add `-- tu22` to
 export just one. `tools/aircraft/preview.py <id> <out_dir>` renders side, front, three-quarter, top and rear views with headless Blender (`pip install bpy`).
 
