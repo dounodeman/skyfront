@@ -17,6 +17,8 @@ export interface GameShell {
   togglePause(): void;
   notify(msg: string): void;
   onOrder?(kind: 'move' | 'attack' | 'amove'): void;
+  /** Visual order marker at a world point (view only). */
+  onOrderAt?(kind: 'move' | 'amove' | 'attack' | 'unload', x: number, y: number, from: { x: number; y: number }): void;
   loop: { timeScale: number };
 }
 
@@ -137,9 +139,11 @@ export class Controls {
     if (this.mode === 'attackmove') {
       issueMove(this.world, this.selection, wx, wy, { attackMove: true, queue, formation: this.formation });
       this.g.onOrder?.('amove');
+      this.g.onOrderAt?.('amove', wx, wy, this.centroid());
     } else if (this.mode === 'unload') {
       issueUnload(this.selection.filter((u) => u.cargo.length > 0), wx, wy);
       this.g.onOrder?.('move');
+      this.g.onOrderAt?.('unload', wx, wy, this.centroid());
     }
     if (!queue) this.mode = 'normal';
     this.onChange();
@@ -157,6 +161,7 @@ export class Controls {
     if (target) {
       issueAttack(this.world, this.selection, target, queue);
       this.g.onOrder?.('attack');
+      this.g.onOrderAt?.('attack', target.x, target.y, this.centroid());
       return;
     }
     const friend = this.pick(wx, wy, (u) => u.team === this.player && !!u.def.transport && !this.selection.includes(u));
@@ -170,6 +175,13 @@ export class Controls {
     }
     issueMove(this.world, this.selection, wx, wy, { queue, formation: this.formation });
     this.g.onOrder?.('move');
+    this.g.onOrderAt?.('move', wx, wy, this.centroid());
+  }
+
+  private centroid() {
+    const s = this.selection;
+    if (!s.length) return { x: 0, y: 0 };
+    return { x: s.reduce((a, u) => a + u.x, 0) / s.length, y: s.reduce((a, u) => a + u.y, 0) / s.length };
   }
 
   // ---------------------------------------------------------------- commands (also used by the command card)

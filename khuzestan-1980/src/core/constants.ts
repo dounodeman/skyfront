@@ -15,4 +15,6 @@ export const SPRITE_SCALE = 1.7;
 export const TEAM_PLAYER = 0;
 export const TEAM_ENEMY = 1;
 export type TeamId = 0 | 1;
-export const TEAM_COLORS = ['#4aa8ff', '#ff5a47'] as const;
+import { TOKENS } from '../ui/theme/tokens';
+/** Team colours come from the design tokens: own forces bone, enemies always signal red. */
+export const TEAM_COLORS = [TOKENS.friendly, TOKENS.enemy] as const;

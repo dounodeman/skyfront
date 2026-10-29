@@ -4,12 +4,16 @@ import { TEAM_PLAYER, TILE } from './core/constants';
 import { FogGrid } from './sim/systems/vision';
 import { GameLoop } from './core/loop';
 import { Renderer } from './render/renderer';
+import { PostFX } from './render/post';
 import type { Unit } from './sim/entity';
 import type { World } from './sim/world';
 import { Controls, type GameShell } from './ui/controls';
 import { Hud } from './ui/hud';
-import { Minimap } from './ui/minimap';
-import { Audio } from './audio/sound';
+import { Radar } from './ui/radar';
+import { Audio, uiSound } from './audio/sound';
+import { switchPanel } from './ui/panel';
+import { applyFactionTheme } from './ui/theme/tokens';
+import { resetLabels } from './ui/labels';
 
 /**
  * Game shell: owns the loop, camera, renderer, input and HUD for one running match.
@@ -19,87 +23,91 @@ export class Game implements GameShell {
   cam = new Camera();
   canvas: HTMLCanvasElement;
   renderer: Renderer;
+  post: PostFX;
   controls: Controls;
   hud: Hud;
-  minimap: Minimap;
+  radar: Radar;
   loop: GameLoop;
   time = 0;
   pausedOverlay: HTMLElement | null = null;
-  /** Hooks other modules (audio, effects, fog) attach to. */
+  /** Hooks other modules attach to. */
   frameHooks: Array<(dt: number) => void> = [];
   onExit: () => void = () => {};
   audio: Audio;
-
+  revealAll = false;
   private session: AbortController;
 
   constructor(public world: World) {
     this.session = newSession();
+    resetLabels();
+    applyFactionTheme(world.teams[0].faction);
     this.canvas = document.getElementById('game') as HTMLCanvasElement;
     if (!world.fog) world.fog = Object.assign(new FogGrid(world.map.w, world.map.h), { team: TEAM_PLAYER as 0 });
-    this.renderer = new Renderer(this.canvas, world, this.cam);
+    this.renderer = new Renderer(this.canvas, world, this.cam, (u) => this.isVisible(u));
+    this.post = new PostFX(document.getElementById('post') as HTMLCanvasElement);
     this.controls = new Controls(this);
-    this.minimap = new Minimap(world, this.cam, this.renderer.terrain.baseCanvas, (u) => this.isVisible(u), (x, y, q) => this.controls.orderAt(x, y, q));
-    this.minimap.fog = this.renderer.fog.canvas;
-    this.hud = new Hud(world, this.controls, this.minimap, TEAM_PLAYER);
+    this.radar = new Radar(world, this.cam, this.renderer.terrain.baseCanvas, (u) => this.isVisible(u), (x, y, q) => this.controls.orderAt(x, y, q), () => uiSound('clack'));
+    this.hud = new Hud(world, this.controls, this.radar, world.teams[0].faction, this.renderer.terrain.baseCanvas, (u) => this.isVisible(u));
     this.hud.onCard('pause', () => this.togglePause());
     this.hud.onCard('help', () => this.showHelp());
+    this.hud.onKey = () => uiSound('click', 0.5);
+    this.hud.log.onLine = (level) => uiSound(level === 'warn' ? 'radiowarn' : 'radio', 0.45);
     this.loop = new GameLoop((dt) => this.world.step(dt), (dt) => this.frame(dt));
     this.audio = new Audio(world, this.cam);
-    // Browsers only allow audio after a user gesture.
     listen(window, 'pointerdown', () => this.audio.unlock());
     listen(window, 'keydown', (e) => { this.audio.unlock(); if (e.key.toLowerCase() === 'm') { this.audio.toggleMute(); this.notify(this.audio.muted ? 'Sound muted' : 'Sound on'); } });
-    listen(window, 'resize', () => this.renderer.resize());
-
-    world.bus.on('status', (e) => { if (e.unit.team === TEAM_PLAYER) this.hud.message(`${e.unit.def.name}: ${e.text}`, 'warn'); });
-    world.bus.on('message', (e) => { if (e.team === undefined || e.team === null || e.team === TEAM_PLAYER) this.hud.message(e.text, e.level ?? 'info'); });
-    // Contact reports for the player (throttled per kind).
-    const lastReport: Record<string, number> = {};
-    world.bus.on('spotted', (e) => {
-      if (e.by !== TEAM_PLAYER) return;
-      const c = e.unit.def.category;
-      const kind = c === 'tank' ? 'Enemy armour spotted' : c === 'heli' ? 'Enemy helicopters spotted' : c === 'aa' ? 'Enemy air defence spotted' : c === 'drone' ? 'Enemy drone overhead' : '';
-      if (!kind || world.time - (lastReport[kind] ?? -999) < 30) return;
-      lastReport[kind] = world.time;
-      this.hud.message(`${kind}: ${e.unit.def.name}`, 'warn');
-    });
+    listen(window, 'resize', () => { this.renderer.resize(); this.post.resize(); });
     world.bus.on('end', (e) => this.showResults(e.winner, e.reason));
   }
 
-  /** Tear down: stop the loop and remove every DOM listener and HUD element of this match. */
-  /** Order acknowledgement (radio blip). */
-  onOrder() { this.audio.ui('blip'); }
+  /** Order acknowledgement: radio squelch. */
+  onOrder() { uiSound('radio', 0.3); }
+  onOrderAt(kind: 'move' | 'amove' | 'attack' | 'unload', x: number, y: number, from: { x: number; y: number }) {
+    this.renderer.feedback.order(kind, x, y, from.x, from.y);
+  }
 
+  /** Tear down: stop the loop and remove every DOM listener and HUD element of this match. */
   dispose() {
     this.loop.stop();
     this.audio.dispose();
     this.session.abort();
     document.getElementById('hud')!.innerHTML = '';
     document.getElementById('screens')!.innerHTML = '';
+    const pc = document.getElementById('post') as HTMLCanvasElement;
+    pc.getContext('2d')!.clearRect(0, 0, pc.width, pc.height);
   }
 
+  /** After-action report: typed sheet with a slammed result stamp. */
   showResults(winner: number | null, reason: string) {
     const w = this.world;
     const won = winner === TEAM_PLAYER;
     const [me, foe] = w.teams;
     const o = document.createElement('div');
     o.className = 'overlay';
-    o.innerHTML = `<div class="panel menu" style="width:520px;text-align:center">
-      <h1 style="font-size:34px;color:${won ? 'var(--good)' : winner === null ? 'var(--accent)' : 'var(--enemy)'}">${won ? 'Victory' : winner === null ? 'Draw' : 'Defeat'}</h1>
-      <div class="tag">${reason} · ${Math.floor(w.time / 60)} min ${Math.floor(w.time % 60)} s</div>
-      <table style="width:100%;font-size:14px;margin:10px 0"><tr><td></td><td class="you">${me.name} (you)</td><td class="foe">${foe.name}</td></tr>
-      <tr><td class="kv">Units lost</td><td>${w.stats.lost[0]}</td><td>${w.stats.lost[1]}</td></tr>
-      <tr><td class="kv">Value lost</td><td>${w.stats.lostValue[0]} pts</td><td>${w.stats.lostValue[1]} pts</td></tr>
-      <tr><td class="kv">Tickets left</td><td>${Math.max(0, Math.ceil(me.tickets))}</td><td>${Math.max(0, Math.ceil(foe.tickets))}</td></tr></table>
-      <div class="row" style="justify-content:center"><button class="btn" data-a="view">View battlefield</button><button class="btn primary" data-a="menu">Main menu</button></div></div>`;
+    const verdict = won ? 'VICTORY' : winner === null ? 'STALEMATE' : 'DEFEAT';
+    o.innerHTML = `<div class="sheet report">
+      <div class="formno">FORM AAR-1 · AFTER-ACTION REPORT · ${me.name.toUpperCase()} COMMAND</div>
+      <h1 style="margin-top:6px">${reason}</h1>
+      <div class="field">Duration</div><div class="typed">${Math.floor(w.time / 60)} MIN ${Math.floor(w.time % 60)} SEC</div>
+      <div class="field">Losses</div>
+      <div class="line hdr"><span></span><span>SIDE</span><span class="r">UNITS</span><span class="r">VALUE</span></div>
+      <div class="line"><span></span><span>${me.name.toUpperCase()} (YOU)</span><span class="r">${w.stats.lost[0]}</span><span class="r">${w.stats.lostValue[0]}</span></div>
+      <div class="line"><span></span><span>${foe.name.toUpperCase()}</span><span class="r">${w.stats.lost[1]}</span><span class="r">${w.stats.lostValue[1]}</span></div>
+      <div class="field">Tickets remaining</div><div class="typed">${Math.max(0, Math.ceil(me.tickets))} / ${Math.max(0, Math.ceil(foe.tickets))}</div>
+      <div style="margin-top:18px"><button class="btn" data-a="view">View battlefield</button><button class="btn go" data-a="menu">Return to map table</button></div>
+      <span class="stamp slam ${won ? 'green' : ''}">${verdict}</span></div>`;
     listen(o, 'click', (ev) => {
       const a = (ev.target as HTMLElement).dataset.a;
+      if (a) uiSound('click');
       if (a === 'view') o.remove();
       if (a === 'menu') this.onExit();
     });
     document.getElementById('screens')!.appendChild(o);
+    setTimeout(() => { o.querySelector('.slam')?.classList.add('go'); }, 250);
+    setTimeout(() => uiSound('stamp'), 520);
   }
 
-  /** Fog-of-war predicate (replaced when fog is enabled). */
+  /** Fog-of-war predicate. */
   isVisible(u: Unit): boolean {
     if (this.revealAll || u.team === TEAM_PLAYER || !this.world.fog) return true;
     if (!u.alive) {
@@ -109,12 +117,10 @@ export class Game implements GameShell {
     }
     return u.seenAt[TEAM_PLAYER] >= this.world.time - 0.5;
   }
-  revealAll = false;
 
   notify(msg: string) { this.hud.message(msg); }
 
   start() {
-    // Start the camera over the player's units.
     const mine = this.world.units.filter((u) => u.team === TEAM_PLAYER);
     if (mine.length) {
       const x = mine.reduce((s, u) => s + u.x, 0) / mine.length, y = mine.reduce((s, u) => s + u.y, 0) / mine.length;
@@ -128,8 +134,10 @@ export class Game implements GameShell {
 
   private frame(dt: number) {
     this.time += dt;
-    this.renderer.effects.update(this.loop.paused ? 0 : dt * this.loop.timeScale);
     this.controls.update(dt);
+    const simDt = this.loop.paused ? 0 : dt * this.loop.timeScale;
+    this.renderer.effects.update(simDt);
+    this.renderer.feedback.update(simDt);
     for (const h of this.frameHooks) h(dt);
     this.audio.update();
     this.renderer.draw({
@@ -141,29 +149,20 @@ export class Game implements GameShell {
       showPaths: true,
       cursorMode: this.controls.mode,
     });
-    this.minimapTimer -= dt;
-    if (this.minimapTimer <= 0) { this.minimap.draw(); this.minimapTimer = 0.1; }
-    this.hud.update(dt);
+    this.post.draw();
+    this.hud.update(dt, this.time);
     this.canvas.style.cursor = this.controls.mode !== 'normal' ? 'cell' : this.controls.hoverId && this.world.get(this.controls.hoverId)?.team !== TEAM_PLAYER && this.controls.selection.length ? 'crosshair' : 'default';
   }
-  private minimapTimer = 0;
 
   togglePause() {
     if (this.world.over) return;
     this.loop.paused = !this.loop.paused;
+    uiSound('clack');
     if (this.loop.paused) {
-      const o = document.createElement('div');
-      o.className = 'overlay';
-      o.innerHTML = `<div class="panel menu" style="width:420px;text-align:center"><h1 style="font-size:26px">Paused</h1>
-        <div class="row" style="justify-content:center;margin-top:16px;flex-direction:column">
-        <button class="btn primary" data-a="resume">Resume</button>
-        <button class="btn" data-a="help">Controls</button>
-        <button class="btn" data-a="quit">Quit to menu</button></div></div>`;
-      listen(o, 'click', (e) => {
-        const a = (e.target as HTMLElement).dataset.a;
-        if (a === 'resume') this.togglePause();
-        else if (a === 'help') this.showHelp();
-        else if (a === 'quit') { this.togglePause(); this.onExit(); }
+      const o = switchPanel({
+        title: 'Paused',
+        speed: { get: () => this.loop.timeScale, set: (v) => { this.loop.timeScale = v; } },
+        actions: [['resume', 'Resume', () => this.togglePause()], ['help', 'Field manual', () => this.showHelp()], ['quit', 'Quit to map table', () => { this.togglePause(); this.onExit(); }]],
       });
       document.getElementById('screens')!.appendChild(o);
       this.pausedOverlay = o;
@@ -177,26 +176,27 @@ export class Game implements GameShell {
     const o = document.createElement('div');
     o.className = 'overlay';
     o.style.zIndex = '70';
-    o.innerHTML = `<div class="panel menu"><h1 style="font-size:24px">Controls</h1>${HELP_HTML}<div class="row"><button class="btn primary">Close</button></div></div>`;
-    o.querySelector('button')!.addEventListener('click', () => o.remove());
+    o.innerHTML = `<div class="sheet" style="width:720px;transform:rotate(-0.6deg)"><div class="formno">FM 80-2 · FIELD MANUAL · QUICK REFERENCE CARD</div><h1 style="margin:6px 0 12px">Controls</h1>${HELP_HTML}<div style="margin-top:14px"><button class="btn">Close</button></div></div>`;
+    o.querySelector('button')!.addEventListener('click', () => { uiSound('paper'); o.remove(); });
     document.getElementById('screens')!.appendChild(o);
+    uiSound('paper');
   }
 }
 
-export const HELP_HTML = `<div class="keys">
-<div><kbd>Left-click</kbd> select · <kbd>drag</kbd> box-select</div>
-<div><kbd>Shift</kbd>+click add/remove</div>
-<div><kbd>Double-click</kbd> select all of type on screen</div>
-<div><kbd>Right-click</kbd> move / attack / board transport</div>
-<div><kbd>Shift</kbd>+right-click queue waypoint</div>
-<div><kbd>Q</kbd> attack-move, then left-click</div>
-<div><kbd>X</kbd> stop · <kbd>H</kbd> hold position</div>
-<div><kbd>F</kbd> cycle formation (line/column/wedge/box)</div>
-<div><kbd>E</kbd> dismount here · <kbd>U</kbd> unload at point</div>
-<div><kbd>Hold C</kbd> point turrets at cursor</div>
-<div><kbd>Ctrl+1–9</kbd> set group · <kbd>1–9</kbd> recall (twice: centre)</div>
-<div><kbd>WASD</kbd>/arrows/screen edge pan · <kbd>wheel</kbd> zoom</div>
-<div><kbd>Space</kbd> centre on selection</div>
-<div><kbd>[</kbd> / <kbd>]</kbd> game speed · <kbd>Esc</kbd>/<kbd>P</kbd> pause · <kbd>M</kbd> mute</div>
-<div>Minimap: left-click pan, right-click order</div>
+export const HELP_HTML = `<div class="keys2">
+<div><kbd>LMB</kbd> select · drag to box-select</div>
+<div><kbd>SHIFT</kbd>+click add / remove</div>
+<div><kbd>DBL-CLICK</kbd> select all of type on screen</div>
+<div><kbd>RMB</kbd> move / attack / board transport</div>
+<div><kbd>SHIFT</kbd>+RMB queue waypoint</div>
+<div><kbd>Q</kbd> attack-move, then click</div>
+<div><kbd>X</kbd> halt · <kbd>H</kbd> hold position</div>
+<div><kbd>F</kbd> cycle formation</div>
+<div><kbd>E</kbd> dismount · <kbd>U</kbd> unload at point</div>
+<div><kbd>C</kbd> (hold) turrets follow cursor</div>
+<div><kbd>CTRL+1–9</kbd> set group · <kbd>1–9</kbd> recall</div>
+<div><kbd>WASD</kbd> / edge pan · wheel zoom</div>
+<div><kbd>SPACE</kbd> centre on selection</div>
+<div><kbd>[</kbd> <kbd>]</kbd> speed · <kbd>ESC</kbd> panel · <kbd>M</kbd> mute</div>
+<div>Radar: LMB pan · RMB order · switches set layers</div>
 </div>`;

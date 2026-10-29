@@ -35,7 +35,8 @@ npm run build      # type-check + production build into dist/
 | Camera | **WASD** / arrow keys / screen edge to pan, mouse wheel to zoom, **Space** centres on the selection |
 | Minimap | left-click / drag pans, right-click orders the selection |
 | Game speed | **[** / **]** (0.25× – 8×) |
-| Pause menu / mute | **Esc** or **P** / **M** |
+| Pause / settings panel, mute | **Esc** or **P** / **M** |
+| Radar layers | switches under the scope: terrain / fog / contacts |
 
 Hover any unit, or any row on the purchase screen, to see its **intel card**: its real name, role, key
 numbers and a one-line historical note. All cards are also collected under *Intel cards* in the main menu.
@@ -114,6 +115,63 @@ historically clean.
 Recon drones never fire and extend your fog-of-war vision. Loitering munitions orbit until you order an
 attack, then dive onto the target with a top-attack warhead.
 
+## Visual design: a 1980 command post
+
+The interface is styled as a Cold War command post: a recon-photo map table, a grease-pencil acetate
+overlay and a green phosphor radar scope. The goal is tactile, analog and slightly worn, never a web
+dashboard.
+
+- **Design tokens.** Every colour, font stack and faction theme lives in `src/ui/theme/tokens.ts`.
+  CSS reads them as custom properties; canvas code imports them directly.
+  - Palette: sand, olive drab, khaki, oil black and bone.
+  - Sharp accents, used sparingly: signal red (enemies and danger), amber (warnings and selection),
+    phosphor green (radar).
+- **Type.** Fonts are bundled locally through Fontsource (`src/ui/theme/fonts.ts`):
+  - Allerta Stencil / Stardos Stencil for headers and labels;
+  - Special Elite for typewritten intel text;
+  - Share Tech Mono for numbers.
+- **Surfaces.** All textures are procedural (`src/ui/theme/textures.ts`): paper grain and fibres,
+  brushed and scratched paint, oil stains, canvas weave, coffee rings, rivets. Panels are hard-edged
+  chamfered or notched plates; there are no rounded cards, soft shadows or blur.
+- **HUD.** Hardware bolted to the screen edges:
+  - a notched status strip;
+  - a radio-teletype log that types out contact reports ("T-55 #3 — CONTACT, ARMOR, BEARING 040")
+    with a squelch-and-static burst;
+  - a bottom console holding:
+    - the radar-scope minimap (phosphor sweep, decaying blips, layer switches);
+    - a unit readout with a top-down damage schematic (hull, turret, engine, tracks and crew light
+      amber, then red), segmented gauges, and weapon keys whose reload shows as a clock-wipe;
+    - an analog drone video monitor (later-era tier);
+    - mechanical command keys.
+- **In the world.**
+  - Selection uses amber corner brackets, with a tick-marked range ring.
+  - Move orders drop a stencilled chevron; attacks drop a red crosshair.
+  - Combat effects: tracers, muzzle bloom, shell casings, fading tread marks, HE shockwave rings,
+    spall flashes, camera shake scaled to calibre, heat haze over burning wrecks, and charred ground
+    under hulls.
+  - Stencilled callouts mark events (PENETRATION, RICOCHET, SUPPRESSED, CREW BAILED, MOBILITY KILL).
+  - Last-known enemy positions are grease-pencil ghosts.
+  - Fog of war looks like an unrevised paper map.
+  - Lighting is graded for dusk, dust and night, with green night-vision patches around units that
+    have night sights.
+- **Readability.** When zoomed out, units become NATO-style symbols: bone rectangles for your units,
+  signal-red diamonds for the enemy. Segmented integrity and suppression strips and an ammo warning
+  stay legible at any zoom.
+- **Factions.** Each side has its own plating colour, paper colour, accent, invented abstract emblem,
+  console markings and radio callsign, so switching sides changes the whole interface.
+- **Menus.**
+  - The main menu is the map table itself; the folder, telegram, switch panel, binder and manual card
+    on it are the menu options.
+  - Faction select is a pair of dossier folders that swing open into the setup form.
+  - The force purchase is a typewritten requisition form with a points ledger and an APPROVED stamp.
+  - Pause and settings are a metal switch panel.
+  - Results arrive as a stamped after-action report.
+- **Settings.** Every effect can be toggled: film grain, vignette, scope scanlines, heat haze, camera
+  shake, callouts and sound, plus a volume dial. **Clean HUD** is an accessibility switch that
+  removes textures, grain and scanlines. Settings are saved in the browser when storage is available.
+- **Dev shortcut.** `?quick=iraq` or `?quick=iran` (optionally with `&era=1986`, `&light=2` or
+  `&dust=1`) skips the menus and starts a skirmish.
+
 ## Adding a unit (data only)
 
 Everything about a unit lives in `src/data/units/*.ts`. Weapons are in `src/data/weapons.ts`, ammunition
@@ -184,8 +242,11 @@ src/
              commands API, AI, match setup, scenario runner
     systems/ run in order every step: vision → orders → transport → movement → air → infantry →
              combat → turrets → projectiles → fires → supply → objectives (+ AI, scenario script)
-  render/    canvas renderer: cached procedural terrain, procedural sprites, effects/particles, fog
-  ui/        input/selection/control groups, HUD (selection panel, command card, intel cards), minimap, menus
+  render/    canvas renderer: procedural terrain and sprites, NATO symbols, effects, feedback overlay
+             (orders, callouts, ghosts, shake), paper-map fog and grading, post effects (grain, vignette)
+  ui/        input/selection/control groups, HUD (console, radar scope, radio log, damage schematic,
+             drone monitor, intel dossiers), menus (map table, dossiers, requisition), settings,
+             theme/ (design tokens, fonts, procedural textures)
   audio/     WebAudio synthesised sounds driven by simulation events
 tools/       headless runners (balance duels, AI matches, scenario) and the README balance-table generator
 ```

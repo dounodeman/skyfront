@@ -1,4 +1,9 @@
 import './style.css';
+import { applyTokens } from './ui/theme/tokens';
+import { loadFonts } from './ui/theme/fonts';
+import { installTextures } from './ui/theme/textures';
+import { initSettings } from './ui/settings';
+import { unlockAudio } from './audio/sound';
 import { Rng } from './core/rng';
 import { AI_PRESET } from './data/aiPresets';
 import { STARTER_MAP } from './data/maps/starter';
@@ -53,4 +58,25 @@ export function run(world: World, difficulty: SkirmishSettings['difficulty'], mo
   (window as any).game = game;
 }
 
-toMenu();
+/** Dev shortcut: ?quick=iraq|iran[&era=1986][&light=2][&dust=1] jumps straight into a skirmish. */
+function quickStart(q: URLSearchParams) {
+  Object.assign(settings, {
+    faction: (q.get('quick') === 'iran' ? 'iran' : 'iraq'), era: Number(q.get('era') ?? 1980), light: Number(q.get('light') ?? 0), dust: q.get('dust') === '1',
+  });
+  const s = settings;
+  const pf = buildForce(rosterFor(s.faction, s.era), s.budget, 'balanced', new Rng(4));
+  startSkirmish(pf);
+}
+
+async function boot() {
+  applyTokens('iraq');
+  installTextures();
+  initSettings();
+  await loadFonts();
+  // Audio may only start inside a user gesture.
+  window.addEventListener('pointerdown', unlockAudio);
+  window.addEventListener('keydown', unlockAudio);
+  const q = new URLSearchParams(location.search);
+  if (q.get('quick')) quickStart(q); else toMenu();
+}
+void boot();

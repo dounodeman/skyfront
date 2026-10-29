@@ -35,6 +35,23 @@ export class TerrainRenderer {
 
   get baseCanvas() { return this.base; }
 
+  /** High-frequency sand detail (grain, pebbles, wind ripples) tiled in world space when zoomed in. */
+  private detail: CanvasPattern | null = null;
+  private detailPattern(ctx: CanvasRenderingContext2D) {
+    if (this.detail) return this.detail;
+    const c = document.createElement('canvas');
+    c.width = c.height = 256;
+    const x = c.getContext('2d')!;
+    let seed = 99;
+    const r = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+    for (let i = 0; i < 2600; i++) { x.fillStyle = r() < 0.5 ? `rgba(70,55,30,${r() * 0.35})` : `rgba(255,248,225,${r() * 0.3})`; x.fillRect(r() * 256, r() * 256, 1 + r() * 1.2, 1 + r() * 1.2); }
+    for (let i = 0; i < 40; i++) { x.fillStyle = `rgba(90,75,50,${0.25 + r() * 0.3})`; x.beginPath(); x.arc(r() * 256, r() * 256, 0.8 + r() * 1.6, 0, 6.3); x.fill(); }
+    x.strokeStyle = 'rgba(120,95,55,0.13)'; x.lineWidth = 1.2;
+    for (let i = 0; i < 18; i++) { const y = r() * 256, x0 = r() * 256; x.beginPath(); x.moveTo(x0, y); x.quadraticCurveTo(x0 + 30, y - 4, x0 + 70, y + 2); x.stroke(); }
+    this.detail = ctx.createPattern(c, 'repeat');
+    return this.detail;
+  }
+
   private buildFields() {
     const { w, h } = this.map;
     const mk = (pred: (t: number) => boolean) => {
@@ -129,6 +146,19 @@ export class TerrainRenderer {
     const worldW = this.map.w * TILE, worldH = this.map.h * TILE;
     ctx.imageSmoothingEnabled = true;
     ctx.drawImage(this.base, sx0, sy0, worldW * cam.zoom, worldH * cam.zoom);
+    if (cam.zoom > 1) {
+      const p = this.detailPattern(ctx);
+      if (p) {
+        ctx.save();
+        ctx.globalAlpha = Math.min(0.9, (cam.zoom - 1) * 0.6);
+        ctx.translate(sx0, sy0);
+        ctx.scale(cam.zoom / 8, cam.zoom / 8); // pattern: 8 px per metre
+        ctx.fillStyle = p;
+        const b = cam.bounds();
+        ctx.fillRect(Math.max(0, b.x0) * 8, Math.max(0, b.y0) * 8, (Math.min(worldW, b.x1) - Math.max(0, b.x0)) * 8, (Math.min(worldH, b.y1) - Math.max(0, b.y0)) * 8);
+        ctx.restore();
+      }
+    }
 
     const tx0 = Math.max(0, Math.floor(b.x0 / TILE) - 1), tx1 = Math.min(this.map.w - 1, Math.ceil(b.x1 / TILE) + 1);
     const ty0 = Math.max(0, Math.floor(b.y0 / TILE) - 1), ty1 = Math.min(this.map.h - 1, Math.ceil(b.y1 / TILE) + 1);

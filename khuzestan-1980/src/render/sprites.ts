@@ -1,6 +1,8 @@
 import { SPRITE_SCALE, TEAM_COLORS } from '../core/constants';
 import type { FactionId, UnitDef } from '../data/units/types';
 import type { Unit } from '../sim/entity';
+import { drawNato } from './nato';
+import { TOKENS, FONTS } from '../ui/theme/tokens';
 
 /**
  * Procedural vector sprites. Everything is drawn from the SpriteSpec in the unit's data,
@@ -43,39 +45,47 @@ export function drawUnit(ctx: CanvasRenderingContext2D, u: Unit, sx: number, sy:
   const def = u.def;
   const k = f.zoom * SPRITE_SCALE;
   const sizePx = Math.max(def.sprite.length, def.sprite.width) * k;
-  const team = TEAM_COLORS[u.team];
-  const isAir = u.isAir;
-
   ctx.save();
   ctx.translate(sx, sy);
-
-  // Team underlay – a coloured pad so allegiance reads at any zoom.
-  if (!isAir) {
-    ctx.fillStyle = team + '40';
-    ctx.beginPath();
-    ctx.ellipse(0, 0, Math.max(sizePx * 0.62, 6), Math.max(sizePx * 0.62, 6), 0, 0, 6.3);
-    ctx.fill();
-  }
-
   if (sizePx < ICON_THRESHOLD && !u.wreck) {
-    drawIcon(ctx, u, Math.max(ICON_THRESHOLD, sizePx) * 0.5, team, f);
+    // Zoomed out: NATO-style symbol. Enemies are always signal-red diamonds.
+    drawNato(ctx, 0, 0, Math.max(19, sizePx * 1.25), def, u.team !== 0, u.alive ? 1 : 0.5);
   } else {
+    ctx.save();
     ctx.scale(k, k);
     ctx.rotate(u.heading);
     if (u.wreck) drawWreckBody(ctx, u);
-    else switch (def.sprite.kind) {
-      case 'tank': drawTank(ctx, u, f); break;
-      case 'apc': drawApc(ctx, u, f); break;
-      case 'wheeled': drawWheeled(ctx, u, f); break;
-      case 'jeep': drawJeep(ctx, u, f); break;
-      case 'aa': drawAA(ctx, u, f); break;
-      case 'gun': drawGun(ctx, u, f); break;
-      case 'heli': drawHeli(ctx, u, f); break;
-      case 'drone': drawDrone(ctx, u, f); break;
-      case 'infantry': ctx.rotate(-u.heading); drawInfantry(ctx, u, f); break;
-    }
+    else drawBody(ctx, u, f);
+    ctx.restore();
+    if (u.alive) teamMarker(ctx, u, sizePx);
   }
   ctx.restore();
+}
+
+/** Small allegiance mark beside each sprite: bone square (own) or red diamond (enemy). */
+function teamMarker(ctx: CanvasRenderingContext2D, u: Unit, sizePx: number) {
+  const r = Math.max(3.5, Math.min(6, sizePx * 0.12));
+  const x = sizePx * 0.5 + 2, y = -sizePx * 0.5 + 2;
+  ctx.beginPath();
+  if (u.team === 0) ctx.rect(x - r, y - r, r * 2, r * 2);
+  else { ctx.moveTo(x, y - r * 1.3); ctx.lineTo(x + r * 1.3, y); ctx.lineTo(x, y + r * 1.3); ctx.lineTo(x - r * 1.3, y); ctx.closePath(); }
+  ctx.fillStyle = u.team === 0 ? TOKENS.friendly : TOKENS.enemy; ctx.fill();
+  ctx.strokeStyle = TOKENS.oil; ctx.lineWidth = 1.5; ctx.stroke();
+}
+
+/** Draws a unit body in local metres (+x forward). Exported for dossier blueprints. */
+export function drawBody(ctx: CanvasRenderingContext2D, u: Unit, f: SpriteFlags) {
+  switch (u.def.sprite.kind) {
+    case 'tank': drawTank(ctx, u, f); break;
+    case 'apc': drawApc(ctx, u, f); break;
+    case 'wheeled': drawWheeled(ctx, u, f); break;
+    case 'jeep': drawJeep(ctx, u, f); break;
+    case 'aa': drawAA(ctx, u, f); break;
+    case 'gun': drawGun(ctx, u, f); break;
+    case 'heli': drawHeli(ctx, u, f); break;
+    case 'drone': drawDrone(ctx, u, f); break;
+    case 'infantry': ctx.rotate(-u.heading); drawInfantry(ctx, u, f); break;
+  }
 }
 
 /** Ground shadow for aircraft, drawn in a separate pass beneath everything. */
@@ -88,7 +98,8 @@ export function drawAirShadow(ctx: CanvasRenderingContext2D, u: Unit, sx: number
   ctx.globalAlpha = Math.max(0.1, 0.22 - alt * 0.001);
   ctx.fillStyle = '#000';
   const s = u.def.sprite;
-  ctx.scale(k, k);
+  const shrink = Math.max(0.55, 1 - alt / 500); // higher = smaller, fainter shadow
+  ctx.scale(k * shrink, k * shrink);
   ctx.rotate(u.heading);
   if (s.kind === 'drone') {
     ctx.beginPath(); ctx.ellipse(0, 0, s.length * 0.5, s.width * 0.5, 0, 0, 6.3); ctx.fill();
@@ -102,30 +113,6 @@ export function drawAirShadow(ctx: CanvasRenderingContext2D, u: Unit, sx: number
     }
   }
   ctx.restore();
-}
-
-// ------------------------------------------------------------------ icons
-function drawIcon(ctx: CanvasRenderingContext2D, u: Unit, r: number, team: string, f: SpriteFlags) {
-  ctx.rotate(u.isInfantry ? 0 : u.heading);
-  ctx.fillStyle = team; ctx.strokeStyle = '#0b0f14'; ctx.lineWidth = Math.max(1.2, r * 0.18);
-  const cat = u.def.category;
-  ctx.beginPath();
-  if (cat === 'infantry') { ctx.arc(0, 0, r * 0.75, 0, 6.3); }
-  else if (cat === 'heli') {
-    ctx.moveTo(-r, -r * 0.55); ctx.lineTo(r, r * 0.55); ctx.moveTo(-r, r * 0.55); ctx.lineTo(r, -r * 0.55);
-    ctx.stroke();
-    ctx.lineWidth = Math.max(2.2, r * 0.38); ctx.strokeStyle = team; ctx.stroke();
-    ctx.beginPath(); ctx.arc(0, 0, r * 0.35, 0, 6.3); ctx.fillStyle = team; ctx.fill(); ctx.strokeStyle = '#0b0f14'; ctx.lineWidth = 1.2; ctx.stroke();
-    return;
-  } else if (cat === 'drone') { ctx.moveTo(r, 0); ctx.lineTo(0, r * 0.7); ctx.lineTo(-r, 0); ctx.lineTo(0, -r * 0.7); ctx.closePath(); ctx.fillStyle = team + 'aa'; }
-  else if (cat === 'aa') { ctx.moveTo(r, 0); ctx.lineTo(-r * 0.8, r * 0.85); ctx.lineTo(-r * 0.8, -r * 0.85); ctx.closePath(); }
-  else if (cat === 'tank') { rrect(ctx, -r, -r * 0.6, r * 2, r * 1.2, r * 0.25); }
-  else if (cat === 'atgm' || cat === 'jeep') { ctx.moveTo(r, 0); ctx.lineTo(0, r * 0.7); ctx.lineTo(-r, 0); ctx.lineTo(0, -r * 0.7); ctx.closePath(); }
-  else { rrect(ctx, -r, -r * 0.5, r * 2, r, r * 0.3); }
-  ctx.fill(); ctx.stroke();
-  if (cat === 'tank') { ctx.fillStyle = '#0b0f14'; ctx.fillRect(0, -r * 0.1, r * 1.3, r * 0.2); }
-  if (cat === 'apc') { ctx.fillStyle = '#0b0f14'; ctx.beginPath(); ctx.arc(r * 0.1, 0, r * 0.25, 0, 6.3); ctx.fill(); }
-  if (cat === 'infantry' && u.inf && u.inf.state === 'broken') { ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(-r * 0.5, -r * 0.5); ctx.lineTo(r * 0.5, r * 0.5); ctx.stroke(); }
 }
 
 // ------------------------------------------------------------------ vehicles
@@ -495,28 +482,69 @@ function drawInfantry(ctx: CanvasRenderingContext2D, u: Unit, f: SpriteFlags) {
 }
 
 // ------------------------------------------------------------------ overlays
+/** Segmented status strip under a unit: integrity, suppression (infantry), ammo warning. */
 export function drawBars(ctx: CanvasRenderingContext2D, u: Unit, sx: number, sy: number, zoom: number, extra = false) {
   const k = zoom * SPRITE_SCALE;
-  const w = Math.max(22, Math.min(54, Math.max(u.def.sprite.length, u.def.sprite.width) * k * 0.9));
-  const y = sy - Math.max(u.def.sprite.length, u.def.sprite.width) * k * 0.5 - 8;
-  ctx.fillStyle = 'rgba(0,0,0,0.7)'; ctx.fillRect(sx - w / 2 - 1, y - 1, w + 2, 5);
+  const size = Math.max(19, Math.max(u.def.sprite.length, u.def.sprite.width) * k);
+  const segs = 5, sw = 6, gap = 2;
+  const w = segs * sw + (segs - 1) * gap;
+  const x0 = Math.round(sx - w / 2), y0 = Math.round(sy + size * 0.55 + 6);
   const f = u.hpFrac;
-  ctx.fillStyle = f > 0.6 ? '#6fd36f' : f > 0.3 ? '#e0c04a' : '#e0553f';
-  ctx.fillRect(sx - w / 2, y, w * f, 3);
-  if (extra && u.inf) {
-    ctx.fillStyle = 'rgba(0,0,0,0.7)'; ctx.fillRect(sx - w / 2 - 1, y + 5, w + 2, 4);
-    ctx.fillStyle = u.inf.state === 'broken' ? '#e0553f' : '#6aa8ff'; ctx.fillRect(sx - w / 2, y + 6, w * (u.inf.morale / 100), 2);
+  const on = Math.ceil(f * segs - 0.001);
+  const col = f > 0.6 ? TOKENS.bone : f > 0.3 ? TOKENS.amber : TOKENS.signal;
+  ctx.fillStyle = TOKENS.oil; ctx.fillRect(x0 - 2, y0 - 2, w + 4, 8);
+  for (let i = 0; i < segs; i++) { ctx.fillStyle = i < on ? col : '#3a372d'; ctx.fillRect(x0 + i * (sw + gap), y0, sw, 4); }
+  let y = y0 + 6;
+  if (u.inf && (extra || u.inf.suppression > 15)) {
+    const s = Math.round((u.inf.suppression / 100) * segs);
+    ctx.fillStyle = TOKENS.oil; ctx.fillRect(x0 - 2, y, w + 4, 6);
+    for (let i = 0; i < segs; i++) { ctx.fillStyle = i < s ? TOKENS.amber : '#3a372d'; ctx.fillRect(x0 + i * (sw + gap), y + 1, sw, 3); }
+    y += 6;
+  }
+  // Ammo warning: primary weapon nearly or completely empty.
+  const pw = u.weapons[0];
+  if (pw && u.team === 0) {
+    let n = 0, m = 0;
+    for (const id in pw.ammo) { n += pw.ammo[id]; m += pw.ammoMax[id]; }
+    if (m > 0 && n / m < 0.25) {
+      ctx.fillStyle = n <= 0 ? TOKENS.signal : TOKENS.amber;
+      ctx.fillRect(x0 + w + 5, y0 - 3, 11, 10);
+      ctx.fillStyle = TOKENS.oil; ctx.font = `9px ${FONTS.mono}`; ctx.textAlign = 'center'; ctx.fillText('A', x0 + w + 10.5, y0 + 5);
+    }
   }
 }
 
+/** Corner brackets (selection = amber, hover = thin bone). Never circles. */
 export function drawSelection(ctx: CanvasRenderingContext2D, u: Unit, sx: number, sy: number, zoom: number, hover: boolean) {
   const k = zoom * SPRITE_SCALE;
-  const r = Math.max(10, Math.max(u.def.sprite.length, u.def.sprite.width) * k * 0.58 + 2);
+  const h = Math.max(13, Math.max(u.def.sprite.length, u.def.sprite.width) * k * 0.62 + 3);
+  const c = Math.max(5, h * 0.42);
   ctx.save();
-  ctx.translate(sx, sy);
-  ctx.strokeStyle = hover ? 'rgba(255,255,255,0.7)' : '#7dff9b';
-  ctx.lineWidth = hover ? 1.2 : 1.8;
-  ctx.setLineDash(hover ? [] : [5, 3]);
-  ctx.beginPath(); ctx.arc(0, 0, r, 0, 6.3); ctx.stroke();
+  ctx.lineCap = 'square';
+  const path = () => {
+    ctx.beginPath();
+    ctx.moveTo(sx - h, sy - h + c); ctx.lineTo(sx - h, sy - h); ctx.lineTo(sx - h + c, sy - h);
+    ctx.moveTo(sx + h - c, sy - h); ctx.lineTo(sx + h, sy - h); ctx.lineTo(sx + h, sy - h + c);
+    ctx.moveTo(sx + h, sy + h - c); ctx.lineTo(sx + h, sy + h); ctx.lineTo(sx + h - c, sy + h);
+    ctx.moveTo(sx - h + c, sy + h); ctx.lineTo(sx - h, sy + h); ctx.lineTo(sx - h, sy + h - c);
+  };
+  path(); ctx.strokeStyle = TOKENS.oil; ctx.lineWidth = hover ? 3 : 4.5; ctx.stroke();
+  path(); ctx.strokeStyle = hover ? TOKENS.bone : TOKENS.amber; ctx.lineWidth = hover ? 1.2 : 2.2; ctx.stroke();
+  ctx.restore();
+}
+
+/** Weapon range ring with tick marks (every 10°, long ticks every 45°). */
+export function drawRangeRing(ctx: CanvasRenderingContext2D, sx: number, sy: number, rPx: number, color: string = TOKENS.amber) {
+  ctx.save();
+  ctx.strokeStyle = color; ctx.globalAlpha = 0.45; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.arc(sx, sy, rPx, 0, 6.3); ctx.stroke();
+  ctx.globalAlpha = 0.7;
+  ctx.beginPath();
+  for (let d = 0; d < 360; d += 10) {
+    const a = (d * Math.PI) / 180, l = d % 45 === 0 ? 9 : 4;
+    ctx.moveTo(sx + Math.cos(a) * rPx, sy + Math.sin(a) * rPx);
+    ctx.lineTo(sx + Math.cos(a) * (rPx - l), sy + Math.sin(a) * (rPx - l));
+  }
+  ctx.stroke();
   ctx.restore();
 }
