@@ -5,6 +5,7 @@ import type { Era, FactionId } from '../data/units/types';
 import { buildMap } from './mapgen';
 import { defaultSystems } from './systems';
 import { board, freeSlots } from './systems/transport';
+import { installMatchRules } from './systems/objectives';
 import type { Unit } from './entity';
 import { World, type Environment } from './world';
 
@@ -39,6 +40,7 @@ export function createWorld(cfg: MatchConfig): World {
     { id: 1, faction: ef, name: FACTION_NAMES[ef], tickets, ticketsMax: tickets, isHuman: false },
   ], cfg.seed ?? Math.floor(Math.random() * 1e9));
   w.systems = defaultSystems();
+  installMatchRules(w);
   w.env = { light: cfg.light, dust: cfg.dust, era: cfg.era };
   const teamOfFaction = (f: FactionId | null): TeamId | null => (f === null ? null : f === pf ? 0 : 1);
   w.depots = [

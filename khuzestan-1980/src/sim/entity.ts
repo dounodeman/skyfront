@@ -145,13 +145,13 @@ export class Unit {
       this.inf = { men: sq.men, maxMen: sq.men, hpPerMan: sq.hpPerMan, suppression: 0, morale: sq.moraleBase, state: 'ok', cover: 0 };
     }
     if (def.air) {
-      this.air = { altitude: def.air.altitude, targetAlt: def.air.altitude, landed: false, orbitX: x, orbitY: y, rotorPhase: Math.random() * 6, landTimer: 0 };
+      this.air = { altitude: def.air.altitude, targetAlt: def.air.altitude, landed: false, orbitX: x, orbitY: y, rotorPhase: (id * 1.7) % 6, landTimer: 0 };
     }
     for (const m of def.weapons) {
       const wd = WEAPONS[m.weapon];
       if (!wd) throw new Error(`Unit ${def.id}: unknown weapon ${m.weapon}`);
       for (const a of Object.keys(m.ammo)) if (!AMMO[a]) throw new Error(`Unit ${def.id}: unknown ammo ${a}`);
-      this.weapons.push({ mount: m, def: wd, ammo: { ...m.ammo }, ammoMax: { ...m.ammo }, cooldown: 1 + Math.random(), aim: heading, targetId: 0, lastFired: -999 });
+      this.weapons.push({ mount: m, def: wd, ammo: { ...m.ammo }, ammoMax: { ...m.ammo }, cooldown: 1 + ((id * 0.618034) % 1), aim: heading, targetId: 0, lastFired: -999 });
     }
   }
 

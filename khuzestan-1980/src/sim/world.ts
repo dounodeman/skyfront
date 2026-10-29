@@ -59,6 +59,8 @@ export class World {
   fog: (import('./systems/vision').FogGrid & { team: TeamId }) | null = null;
   over = false;
   winner: TeamId | null = null;
+  /** Match statistics per team. */
+  stats = { lost: [0, 0], lostValue: [0, 0], kills: [0, 0] };
   /** Free-form per-match data for scenario scripts. */
   vars: Record<string, number | string | boolean> = {};
   private nextId = 1;

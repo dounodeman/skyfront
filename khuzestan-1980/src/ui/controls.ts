@@ -1,3 +1,4 @@
+import { listen } from './events';
 import type { Camera } from '../core/camera';
 import { TEAM_PLAYER } from '../core/constants';
 import { FORMATIONS, issueAttack, issueBoard, issueHold, issueMove, issueStop, issueUnload, type FormationId } from '../sim/commands';
@@ -37,15 +38,15 @@ export class Controls {
   constructor(private g: GameShell) {
     const c = g.canvas;
     // Pointer events + capture so a drag that leaves the canvas still ends cleanly.
-    c.addEventListener('pointerdown', (e) => { c.setPointerCapture(e.pointerId); this.onDown(e); });
-    c.addEventListener('pointerup', (e) => { if (c.hasPointerCapture(e.pointerId)) c.releasePointerCapture(e.pointerId); this.onUp(e); });
-    window.addEventListener('pointermove', (e) => this.onMove(e));
-    c.addEventListener('contextmenu', (e) => e.preventDefault());
-    c.addEventListener('wheel', (e) => { e.preventDefault(); g.cam.zoomAt(e.clientX, e.clientY, e.deltaY < 0 ? 1.15 : 1 / 1.15); }, { passive: false });
-    window.addEventListener('keydown', (e) => this.onKey(e, true));
-    window.addEventListener('keyup', (e) => this.onKey(e, false));
-    window.addEventListener('blur', () => this.keys.clear());
-    document.addEventListener('mouseleave', () => { this.mouse.inside = false; });
+    listen(c, 'pointerdown', (e) => { c.setPointerCapture(e.pointerId); this.onDown(e); });
+    listen(c, 'pointerup', (e) => { if (c.hasPointerCapture(e.pointerId)) c.releasePointerCapture(e.pointerId); this.onUp(e); });
+    listen(window, 'pointermove', (e) => this.onMove(e));
+    listen(c, 'contextmenu', (e) => e.preventDefault());
+    listen(c, 'wheel', (e) => { e.preventDefault(); g.cam.zoomAt(e.clientX, e.clientY, e.deltaY < 0 ? 1.15 : 1 / 1.15); }, { passive: false });
+    listen(window, 'keydown', (e) => this.onKey(e, true));
+    listen(window, 'keyup', (e) => this.onKey(e, false));
+    listen(window, 'blur', () => this.keys.clear());
+    listen(document, 'mouseleave', () => { this.mouse.inside = false; });
   }
 
   get player() { return TEAM_PLAYER; }

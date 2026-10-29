@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "balance": "tsx tools/balance-table.ts",
-    "sim": "tsx tools/headless-sim.ts"
+    "sim": "tsx tools/headless-sim.ts",
+    "aimatch": "tsx tools/ai-match.ts"
   },
   "devDependencies": {
     "@types/node": "^26.6.6",

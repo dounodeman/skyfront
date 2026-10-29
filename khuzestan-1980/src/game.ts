@@ -1,3 +1,4 @@
+import { listen, newSession } from './ui/events';
 import { Camera } from './core/camera';
 import { TEAM_PLAYER, TILE } from './core/constants';
 import { FogGrid } from './sim/systems/vision';
@@ -27,7 +28,10 @@ export class Game implements GameShell {
   frameHooks: Array<(dt: number) => void> = [];
   onExit: () => void = () => {};
 
+  private session: AbortController;
+
   constructor(public world: World) {
+    this.session = newSession();
     this.canvas = document.getElementById('game') as HTMLCanvasElement;
     if (!world.fog) world.fog = Object.assign(new FogGrid(world.map.w, world.map.h), { team: TEAM_PLAYER as 0 });
     this.renderer = new Renderer(this.canvas, world, this.cam);
@@ -38,10 +42,51 @@ export class Game implements GameShell {
     this.hud.onCard('pause', () => this.togglePause());
     this.hud.onCard('help', () => this.showHelp());
     this.loop = new GameLoop((dt) => this.world.step(dt), (dt) => this.frame(dt));
-    window.addEventListener('resize', () => this.renderer.resize());
+    listen(window, 'resize', () => this.renderer.resize());
 
     world.bus.on('status', (e) => { if (e.unit.team === TEAM_PLAYER) this.hud.message(`${e.unit.def.name}: ${e.text}`, 'warn'); });
     world.bus.on('message', (e) => { if (e.team === undefined || e.team === null || e.team === TEAM_PLAYER) this.hud.message(e.text, e.level ?? 'info'); });
+    // Contact reports for the player (throttled per kind).
+    const lastReport: Record<string, number> = {};
+    world.bus.on('spotted', (e) => {
+      if (e.by !== TEAM_PLAYER) return;
+      const c = e.unit.def.category;
+      const kind = c === 'tank' ? 'Enemy armour spotted' : c === 'heli' ? 'Enemy helicopters spotted' : c === 'aa' ? 'Enemy air defence spotted' : c === 'drone' ? 'Enemy drone overhead' : '';
+      if (!kind || world.time - (lastReport[kind] ?? -999) < 30) return;
+      lastReport[kind] = world.time;
+      this.hud.message(`${kind}: ${e.unit.def.name}`, 'warn');
+    });
+    world.bus.on('end', (e) => this.showResults(e.winner, e.reason));
+  }
+
+  /** Tear down: stop the loop and remove every DOM listener and HUD element of this match. */
+  dispose() {
+    this.loop.stop();
+    this.session.abort();
+    document.getElementById('hud')!.innerHTML = '';
+    document.getElementById('screens')!.innerHTML = '';
+  }
+
+  showResults(winner: number | null, reason: string) {
+    const w = this.world;
+    const won = winner === TEAM_PLAYER;
+    const [me, foe] = w.teams;
+    const o = document.createElement('div');
+    o.className = 'overlay';
+    o.innerHTML = `<div class="panel menu" style="width:520px;text-align:center">
+      <h1 style="font-size:34px;color:${won ? 'var(--good)' : winner === null ? 'var(--accent)' : 'var(--enemy)'}">${won ? 'Victory' : winner === null ? 'Draw' : 'Defeat'}</h1>
+      <div class="tag">${reason} · ${Math.floor(w.time / 60)} min ${Math.floor(w.time % 60)} s</div>
+      <table style="width:100%;font-size:14px;margin:10px 0"><tr><td></td><td class="you">${me.name} (you)</td><td class="foe">${foe.name}</td></tr>
+      <tr><td class="kv">Units lost</td><td>${w.stats.lost[0]}</td><td>${w.stats.lost[1]}</td></tr>
+      <tr><td class="kv">Value lost</td><td>${w.stats.lostValue[0]} pts</td><td>${w.stats.lostValue[1]} pts</td></tr>
+      <tr><td class="kv">Tickets left</td><td>${Math.max(0, Math.ceil(me.tickets))}</td><td>${Math.max(0, Math.ceil(foe.tickets))}</td></tr></table>
+      <div class="row" style="justify-content:center"><button class="btn" data-a="view">View battlefield</button><button class="btn primary" data-a="menu">Main menu</button></div></div>`;
+    listen(o, 'click', (ev) => {
+      const a = (ev.target as HTMLElement).dataset.a;
+      if (a === 'view') o.remove();
+      if (a === 'menu') this.onExit();
+    });
+    document.getElementById('screens')!.appendChild(o);
   }
 
   /** Fog-of-war predicate (replaced when fog is enabled). */
@@ -103,7 +148,7 @@ export class Game implements GameShell {
         <button class="btn primary" data-a="resume">Resume</button>
         <button class="btn" data-a="help">Controls</button>
         <button class="btn" data-a="quit">Quit to menu</button></div></div>`;
-      o.addEventListener('click', (e) => {
+      listen(o, 'click', (e) => {
         const a = (e.target as HTMLElement).dataset.a;
         if (a === 'resume') this.togglePause();
         else if (a === 'help') this.showHelp();

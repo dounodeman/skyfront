@@ -1,3 +1,4 @@
+import { listen } from './events';
 import { TEAM_COLORS } from '../core/constants';
 import { AMMO } from '../data/ammo';
 import type { UnitDef } from '../data/units/types';
@@ -66,7 +67,7 @@ export class Hud {
     this.root.append(this.top, this.feed, bottom, this.tip, this.statusLine);
     this.buildCard();
     controls.onChange = () => { this.lastSelKey = ''; this.timer = 0; };
-    window.addEventListener('mousemove', (e) => { this.tipPos = { x: e.clientX, y: e.clientY }; this.placeTip(); });
+    listen(window, 'mousemove', (e) => { this.tipPos = { x: e.clientX, y: e.clientY }; this.placeTip(); });
   }
 
   message(text: string, level: 'info' | 'warn' | 'good' = 'info') {
@@ -108,7 +109,7 @@ export class Hud {
       const b = el('button', 'cmd', `<span class="k">${key}</span>${name}`);
       b.title = tip;
       b.dataset.cmd = id;
-      b.addEventListener('click', () => {
+      listen(b, 'click', () => {
         const h = this.cardHandlers[id];
         if (h) h(); else this.controls.exec(id);
       });
@@ -167,9 +168,9 @@ export class Hud {
       for (const u of s) {
         const c = el('div', 'chip', `<span class="nm">${u.def.name}</span><span class="kv">${u.inf ? `${Math.ceil(u.inf.men)} men` : u.def.category}</span><span class="hb"><i></i></span>`);
         c.dataset.id = String(u.id);
-        c.addEventListener('click', (e) => this.controls.setSelection((e as MouseEvent).shiftKey ? s.filter((x) => x !== u) : [u]));
-        c.addEventListener('mouseenter', () => { this.selHover = true; this.intel(u.def); });
-        c.addEventListener('mouseleave', () => { this.selHover = false; this.intel(null); });
+        listen(c, 'click', (e) => this.controls.setSelection((e as MouseEvent).shiftKey ? s.filter((x) => x !== u) : [u]));
+        listen(c, 'mouseenter', () => { this.selHover = true; this.intel(u.def); });
+        listen(c, 'mouseleave', () => { this.selHover = false; this.intel(null); });
         grid.appendChild(c);
       }
       this.lastSelKey = key;
@@ -184,8 +185,8 @@ export class Hud {
   private bindDetail(u: Unit) {
     const h = this.sel.querySelector<HTMLElement>('h3');
     if (h) {
-      h.addEventListener('mouseenter', () => { this.selHover = true; this.intel(u.def); });
-      h.addEventListener('mouseleave', () => { this.selHover = false; this.intel(null); });
+      listen(h, 'mouseenter', () => { this.selHover = true; this.intel(u.def); });
+      listen(h, 'mouseleave', () => { this.selHover = false; this.intel(null); });
     }
   }
 

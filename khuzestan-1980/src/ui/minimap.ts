@@ -1,3 +1,4 @@
+import { listen } from './events';
 import { TEAM_COLORS, WORLD_H, WORLD_W } from '../core/constants';
 import type { Camera } from '../core/camera';
 import type { World } from '../sim/world';
@@ -21,14 +22,14 @@ export class Minimap {
       const r = this.canvas.getBoundingClientRect();
       return [((e.clientX - r.left) / r.width) * WORLD_W, ((e.clientY - r.top) / r.height) * WORLD_H];
     };
-    this.canvas.addEventListener('mousedown', (e) => {
+    listen(this.canvas, 'mousedown', (e) => {
       const [wx, wy] = toWorld(e);
       if (e.button === 0) { this.dragging = true; this.cam.centerOn(wx, wy); }
       else if (e.button === 2) this.onOrder(wx, wy, e.shiftKey);
     });
-    window.addEventListener('mousemove', (e) => { if (this.dragging) { const [wx, wy] = toWorld(e); this.cam.centerOn(wx, wy); } });
-    window.addEventListener('mouseup', () => { this.dragging = false; });
-    this.canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+    listen(window, 'mousemove', (e) => { if (this.dragging) { const [wx, wy] = toWorld(e); this.cam.centerOn(wx, wy); } });
+    listen(window, 'mouseup', () => { this.dragging = false; });
+    listen(this.canvas, 'contextmenu', (e) => e.preventDefault());
   }
 
   draw() {

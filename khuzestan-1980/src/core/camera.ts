@@ -33,9 +33,11 @@ export class Camera {
     this.clampToWorld();
   }
   centerOn(wx: number, wy: number) { this.x = wx; this.y = wy; this.clampToWorld(); }
+  /** Keep the view inside the map (centre it when zoomed out further than the map). */
   clampToWorld() {
-    this.x = clamp(this.x, 0, WORLD_W);
-    this.y = clamp(this.y, 0, WORLD_H);
+    const hw = this.viewW / 2 / this.zoom, hh = this.viewH / 2 / this.zoom;
+    this.x = hw * 2 >= WORLD_W ? WORLD_W / 2 : clamp(this.x, hw, WORLD_W - hw);
+    this.y = hh * 2 >= WORLD_H ? WORLD_H / 2 : clamp(this.y, hh - 40, WORLD_H - hh + 180); // room for the HUD bars
   }
   /** Visible world rectangle. */
   bounds() {

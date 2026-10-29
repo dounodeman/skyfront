@@ -105,6 +105,23 @@ export class Renderer {
 
   private drawObjectives() {
     const { ctx, cam, world } = this;
+    // Supply depots
+    world.depots.forEach((d, team) => {
+      const [sx, sy] = cam.worldToScreen(d.x, d.y);
+      if (sx < -80 || sy < -80 || sx > cam.viewW + 80 || sy > cam.viewH + 80) return;
+      const r = 140 * cam.zoom;
+      ctx.save();
+      ctx.strokeStyle = TEAM_COLORS[team] + '66'; ctx.lineWidth = 1.5; ctx.setLineDash([4, 6]);
+      ctx.beginPath(); ctx.arc(sx, sy, r, 0, 6.3); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle = '#3b3326'; ctx.strokeStyle = TEAM_COLORS[team]; ctx.lineWidth = 2;
+      ctx.fillRect(sx - 9, sy - 9, 18, 18); ctx.strokeRect(sx - 9, sy - 9, 18, 18);
+      ctx.strokeStyle = '#c9b27a'; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(sx - 9, sy - 9); ctx.lineTo(sx + 9, sy + 9); ctx.moveTo(sx + 9, sy - 9); ctx.lineTo(sx - 9, sy + 9); ctx.stroke();
+      ctx.font = '600 11px Segoe UI, sans-serif'; ctx.textAlign = 'center'; ctx.fillStyle = '#e8e2c8'; ctx.strokeStyle = '#000c'; ctx.lineWidth = 3;
+      const label = team === 0 ? 'Supply depot (rearm / repair)' : 'Enemy depot';
+      ctx.strokeText(label, sx, sy + 24); ctx.fillText(label, sx, sy + 24);
+      ctx.restore();
+    });
     for (const o of world.objectives) {
       const [sx, sy] = cam.worldToScreen(o.x, o.y);
       const r = o.radius * cam.zoom;
