@@ -3,6 +3,8 @@ import { TEAM_COLORS, TILE } from '../core/constants';
 import type { Unit } from '../sim/entity';
 import type { World } from '../sim/world';
 import { TerrainRenderer } from './terrainRender';
+import { Effects } from './effects';
+import { FogRenderer } from './fog';
 import { drawAirShadow, drawBars, drawSelection, drawUnit, type SpriteFlags } from './sprites';
 
 export interface DrawState {
@@ -20,11 +22,15 @@ export interface DrawState {
 export class Renderer {
   readonly ctx: CanvasRenderingContext2D;
   terrain: TerrainRenderer;
+  effects: Effects;
+  fog: FogRenderer;
   private dpr = 1;
 
   constructor(private canvas: HTMLCanvasElement, public world: World, public cam: Camera) {
     this.ctx = canvas.getContext('2d')!;
     this.terrain = new TerrainRenderer(world.map);
+    this.effects = new Effects(world);
+    this.fog = new FogRenderer(world);
     this.resize();
   }
 
@@ -42,6 +48,7 @@ export class Renderer {
     ctx.fillStyle = '#0b0d09';
     ctx.fillRect(0, 0, cam.viewW, cam.viewH);
     this.terrain.draw(ctx, cam);
+    this.effects.drawDecals(ctx, cam);
 
     const b = cam.bounds();
     const margin = 30;
@@ -56,6 +63,8 @@ export class Renderer {
     for (const u of wrecks) { const [sx, sy] = cam.worldToScreen(u.x, u.y); drawUnit(ctx, u, sx, sy, flags); }
     ground.sort((a, c) => a.y - c.y);
     for (const u of ground) { const [sx, sy] = cam.worldToScreen(u.x, u.y); drawUnit(ctx, u, sx, sy, flags); }
+    this.effects.draw(ctx, cam, false);
+    this.effects.drawProjectiles(ctx, cam);
     for (const u of air) { const [sx, sy] = cam.worldToScreen(u.x, u.y); drawAirShadow(ctx, u, sx, sy, cam.zoom); }
     air.sort((a, c) => a.altitude - c.altitude);
     for (const u of air) {
@@ -63,6 +72,9 @@ export class Renderer {
       // Lift the sprite slightly with altitude for a parallax hint.
       drawUnit(ctx, u, sx, sy - u.altitude * 0.06 * cam.zoom, flags);
     }
+
+    this.effects.draw(ctx, cam, true);
+    this.fog.draw(ctx, cam);
 
     // Overlays: bars, selection, orders.
     for (const u of [...ground, ...air]) {

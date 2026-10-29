@@ -1,5 +1,6 @@
 import { Camera } from './core/camera';
-import { TEAM_PLAYER } from './core/constants';
+import { TEAM_PLAYER, TILE } from './core/constants';
+import { FogGrid } from './sim/systems/vision';
 import { GameLoop } from './core/loop';
 import { Renderer } from './render/renderer';
 import type { Unit } from './sim/entity';
@@ -28,9 +29,11 @@ export class Game implements GameShell {
 
   constructor(public world: World) {
     this.canvas = document.getElementById('game') as HTMLCanvasElement;
+    if (!world.fog) world.fog = Object.assign(new FogGrid(world.map.w, world.map.h), { team: TEAM_PLAYER as 0 });
     this.renderer = new Renderer(this.canvas, world, this.cam);
     this.controls = new Controls(this);
     this.minimap = new Minimap(world, this.cam, this.renderer.terrain.baseCanvas, (u) => this.isVisible(u), (x, y, q) => this.controls.orderAt(x, y, q));
+    this.minimap.fog = this.renderer.fog.canvas;
     this.hud = new Hud(world, this.controls, this.minimap, TEAM_PLAYER);
     this.hud.onCard('pause', () => this.togglePause());
     this.hud.onCard('help', () => this.showHelp());
@@ -43,7 +46,13 @@ export class Game implements GameShell {
 
   /** Fog-of-war predicate (replaced when fog is enabled). */
   isVisible(u: Unit): boolean {
-    return u.team === TEAM_PLAYER || !u.alive || u.seenAt[TEAM_PLAYER] >= this.world.time - 0.5 || this.revealAll;
+    if (this.revealAll || u.team === TEAM_PLAYER || !this.world.fog) return true;
+    if (!u.alive) {
+      // Wrecks stay on the map once their tile has been seen.
+      const i = Math.floor(u.y / TILE) * this.world.map.w + Math.floor(u.x / TILE);
+      return this.world.fog.vis[i] > 0;
+    }
+    return u.seenAt[TEAM_PLAYER] >= this.world.time - 0.5;
   }
   revealAll = false;
 
@@ -64,6 +73,7 @@ export class Game implements GameShell {
 
   private frame(dt: number) {
     this.time += dt;
+    this.renderer.effects.update(this.loop.paused ? 0 : dt * this.loop.timeScale);
     this.controls.update(dt);
     for (const h of this.frameHooks) h(dt);
     this.renderer.draw({

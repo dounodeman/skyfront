@@ -55,6 +55,8 @@ export class World {
   /** Supply depot positions per team (metres). */
   depots: [{ x: number; y: number }, { x: number; y: number }] = [{ x: 0, y: 0 }, { x: 0, y: 0 }];
   systems: System[] = [];
+  /** Tile fog of war for the human team (null = no fog, e.g. headless sims). */
+  fog: (import('./systems/vision').FogGrid & { team: TeamId }) | null = null;
   over = false;
   winner: TeamId | null = null;
   /** Free-form per-match data for scenario scripts. */

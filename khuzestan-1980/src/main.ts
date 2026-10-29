@@ -15,6 +15,8 @@ function sandbox() {
   ]);
   world.systems = defaultSystems();
   for (let i = 0; i < 4; i++) world.spawn('iq_t55', 0, 22 * TILE + i * 14, 60 * TILE + i * 18, 0);
+  // Opposing platoon dug in near the central bridge (stand-in until the Iranian roster lands).
+  for (let i = 0; i < 3; i++) world.spawn('iq_t55', 1, 92 * TILE + i * 10, 58 * TILE + i * 40, Math.PI);
   const g = new Game(world);
   g.start();
   (window as any).game = g;

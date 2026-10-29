@@ -36,5 +36,5 @@ export const TERRAIN: TerrainDef[] = [
   /* Building */ { name: 'Building', color: '#b9a98a', speed: { tracked: 0, wheeled: 0, foot: 0.5, amphibious: 0 }, cover: 0.62, opacity: 1, hp: 140, becomes: 7 },
   /* Rubble */ { name: 'Rubble', color: '#9a8f7a', speed: { tracked: 0.5, wheeled: 0.3, foot: 0.65, amphibious: 0.5 }, cover: 0.3, opacity: 0.1 },
   /* Trench */ { name: 'Trench', color: '#a08a58', speed: { tracked: 0.45, wheeled: 0.25, foot: 0.8, amphibious: 0.45 }, cover: 0.75, opacity: 0 },
-  /* Dune */   { name: 'Dune', color: '#d6bf86', speed: { tracked: 0.75, wheeled: 0.5, foot: 0.85, amphibious: 0.75 }, cover: 0.2, opacity: 0.45 },
+  /* Dune */   { name: 'Dune', color: '#d6bf86', speed: { tracked: 0.75, wheeled: 0.5, foot: 0.85, amphibious: 0.75 }, cover: 0.2, opacity: 0.22 },
 ];

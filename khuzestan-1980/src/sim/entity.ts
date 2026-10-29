@@ -1,5 +1,5 @@
 import type { Vec } from '../core/math';
-import type { TeamId } from '../core/constants';
+import { SPRITE_SCALE, type TeamId } from '../core/constants';
 import { AMMO } from '../data/ammo';
 import { WEAPONS, type WeaponDef } from '../data/weapons';
 import type { TargetClass, UnitDef, WeaponMount } from '../data/units/types';
@@ -109,8 +109,16 @@ export class Unit {
   seenAt: [number, number] = [-999, -999];
   /** Time of last shot fired (drives visibility: firing reveals position). */
   lastShotTime = -999;
-  /** Current auto-engage target. */
+  /** Current auto-engage target (primary turret/hull weapon). */
   targetId = 0;
+  /** Hull heading the unit wants while stationary (face threats with frontal armour). */
+  faceWant: number | null = null;
+  /** True while an attack-move is paused because something is in range. */
+  engaged = false;
+  /** Last known position of the attack-order target. */
+  lastKnown: { x: number; y: number } | null = null;
+  /** Remaining crew bailed out / unit abandoned. */
+  abandoned = false;
   /** Ticks guiding a wire/radio missile (must stay still). */
   guiding = 0;
   /** Name suffix to tell units apart in lists. */
@@ -153,8 +161,9 @@ export class Unit {
   /** Rough radius in metres for collision/selection. */
   get radius() {
     const s = this.def.sprite;
-    if (this.inf) return 4.5;
-    return Math.max(s.length, s.width) * 0.5 + 0.5;
+    if (this.inf) return 5;
+    // Sprites are drawn SPRITE_SCALE larger than life; collision follows what the player sees.
+    return Math.max(s.length, s.width) * 0.5 * SPRITE_SCALE + 0.5;
   }
   get targetClass(): TargetClass { return targetClassOf(this.def); }
   get altitude() { return this.air ? this.air.altitude : 0; }

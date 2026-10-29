@@ -4,6 +4,9 @@ import { TERRAIN } from '../../data/terrain';
 import type { Unit } from '../entity';
 import type { World } from '../world';
 
+/** Global pacing knob: data speeds are near real-world; this scales them for play. */
+export const SPEED_SCALE = 1.3;
+
 /** Condition multipliers on top-speed from damage. */
 function damageSpeedFactor(u: Unit): number {
   let f = 1;
@@ -31,7 +34,8 @@ function stepGround(w: World, u: Unit, dt: number) {
   let desired = 0;
   const hasPath = mob.pathI < mob.path.length;
   const o = u.orders[0];
-  const moving = hasPath && !!o && (o.type === 'move' || o.type === 'attack' || o.type === 'board' || o.type === 'unload');
+  const halted = u.engaged && o?.type === 'move' && o.attackMove;
+  const moving = hasPath && !!o && !halted && (o.type === 'move' || o.type === 'attack' || o.type === 'board' || o.type === 'unload');
   if (moving && u.canMove) {
     const wp = mob.path[mob.pathI];
     const dx = wp.x - u.x, dy = wp.y - u.y;
@@ -46,10 +50,14 @@ function stepGround(w: World, u: Unit, dt: number) {
       const pivot = u.def.moveClass === 'tracked' || u.def.moveClass === 'foot' ? 1 : Math.max(0.35, Math.min(1, u.speed / (m.speed * 0.5)));
       u.heading = turnToward(u.heading, want, m.turnRate * DEG * dt * pivot);
       const tmul = w.map.speedAt(u.def.moveClass, u.x, u.y);
-      desired = m.speed * Math.min(tmul, 1.8) * damageSpeedFactor(u);
+      desired = m.speed * SPEED_SCALE * Math.min(tmul, 1.8) * damageSpeedFactor(u);
       if (diff > 0.9) desired *= 0.12; else if (diff > 0.45) desired *= 0.55;
       if (last) desired *= Math.min(1, d / 18 + 0.25);
     }
+  }
+  // Stationary vehicles turn to face threats (presenting frontal armour) or to bring hull weapons to bear.
+  if (!moving && u.faceWant !== null && u.canMove && !u.inf && u.speed < 0.5 && u.def.moveClass !== 'wheeled') {
+    u.heading = turnToward(u.heading, u.faceWant, m.turnRate * DEG * dt * 0.7);
   }
   // Accelerate / brake (brakes harder than it accelerates).
   const a = (desired > u.speed ? m.accel : m.accel * 2.2) * dt;
@@ -69,7 +77,7 @@ function stepGround(w: World, u: Unit, dt: number) {
     u.y = Math.max(2, Math.min(w.map.h * TILE - 2, u.y));
 
     // Fuel burn scales with throttle.
-    if (mob.fuelMax > 0) mob.fuel = Math.max(0, mob.fuel - dt * (u.speed / m.speed));
+    if (mob.fuelMax > 0) mob.fuel = Math.max(0, mob.fuel - dt * (u.speed / (m.speed * SPEED_SCALE)));
 
     const t = TERRAIN[w.map.at(u.x, u.y)];
     // Heavy vehicles can bog down in marsh.
