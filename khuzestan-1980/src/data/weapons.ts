@@ -64,8 +64,11 @@ export const WEAPONS: Record<string, WeaponDef> = Object.fromEntries([
   W({ id: 'gdf35', name: '35mm twin AA gun', range: 1450, reload: 0.4, burst: 5, spread: 1.2, accuracy: 0.62, targets: AIR, sound: 'flak' }),
   W({ id: 'vulcan', name: '20mm M168 Vulcan', range: 1100, reload: 0.2, burst: 12, spread: 1.8, accuracy: 0.52, targets: AIR, sound: 'flak' }),
   // Infantry weapons
-  W({ id: 'ak47', name: '7.62mm AK-47', range: 350, reload: 0.5, burst: 6, spread: 4, accuracy: 0.4, targets: AIR, sound: 'rifle' }),
-  W({ id: 'g3', name: '7.62mm G3', range: 400, reload: 0.5, burst: 5, spread: 3, accuracy: 0.45, targets: AIR, sound: 'rifle' }),
+  W({ id: 'ak47', name: '7.62mm AK-47', range: 360, reload: 0.5, burst: 6, spread: 4, accuracy: 0.43, targets: AIR, sound: 'rifle' }),
+  W({ id: 'g3', name: '7.62mm G3', range: 380, reload: 0.5, burst: 5, spread: 3, accuracy: 0.47, targets: AIR, sound: 'rifle' }),
+  W({ id: 'irr_rifles', name: '7.62mm rifles (volunteers)', range: 340, reload: 0.5, burst: 6, spread: 4.5, accuracy: 0.33, targets: AIR, sound: 'rifle' }),
+  W({ id: 'akm_elite', name: '7.62mm AKM (trained)', range: 380, reload: 0.45, burst: 6, spread: 3.2, accuracy: 0.55, targets: AIR, sound: 'rifle' }),
+  W({ id: 'militia', name: 'Mixed rifles', range: 320, reload: 0.55, burst: 6, spread: 5, accuracy: 0.28, targets: AIR, sound: 'rifle' }),
   W({ id: 'pkm', name: '7.62mm PKM', range: 700, reload: 0.35, burst: 6, spread: 2.5, accuracy: 0.5, targets: AIR, sound: 'mg' }),
   W({ id: 'mg3', name: '7.62mm MG3', range: 700, reload: 0.3, burst: 8, spread: 2.8, accuracy: 0.5, targets: AIR, sound: 'mg' }),
   W({ id: 'rpg7', name: 'RPG-7', range: 350, minRange: 30, reload: 6, accuracy: 0.6, sound: 'rocket' }),

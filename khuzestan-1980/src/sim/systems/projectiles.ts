@@ -60,10 +60,10 @@ function impact(w: World, p: Projectile) {
   if (p.hits > 0 && t && t.alive && t.onMap) {
     applyHit(w, t, p.ammo, p.angle, range, p.hits, shooter, p.team);
     if (p.ammo.blast > 0) applySplash(w, p.x, p.y, p.ammo, p.team, t, p.air);
-    else if (t.inf) applySplash(w, p.x, p.y, p.ammo, p.team, t);
+    else if (t.inf) applySplash(w, p.x, p.y, p.ammo, p.team, t, false, p.rounds - p.hits);
   } else {
     w.bus.emit({ type: 'impact', x: p.x, y: p.y, kind: p.air ? 'air' : 'miss', ammoId: p.ammo.id, size: p.ammo.caliber });
-    applySplash(w, p.x, p.y, p.ammo, p.team, null, p.air);
+    applySplash(w, p.x, p.y, p.ammo, p.team, null, p.air, p.rounds);
   }
   if (p.ammo.blast >= 6 && !p.air) w.bus.emit({ type: 'explosion', x: p.x, y: p.y, size: Math.min(1.6, p.ammo.blast / 12) });
 }

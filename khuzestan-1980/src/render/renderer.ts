@@ -82,6 +82,15 @@ export class Renderer {
       const sel = st.selected.has(u.id), hov = st.hoverId === u.id;
       if (sel || hov) drawSelection(ctx, u, sx, sy, cam.zoom, !sel && hov);
       if (sel || hov || u.hpFrac < 0.995) drawBars(ctx, u, sx, sy, cam.zoom, sel);
+      if (u.cargo.length && u.team === 0) {
+        // Passenger badge: number of squads aboard.
+        const r = 7, bx = sx + 12, by = sy - 12 - (u.isAir ? u.altitude * 0.06 * cam.zoom : 0);
+        ctx.fillStyle = '#0b0f14'; ctx.beginPath(); ctx.arc(bx, by, r, 0, 6.3); ctx.fill();
+        ctx.strokeStyle = '#7dff9b'; ctx.lineWidth = 1.2; ctx.stroke();
+        ctx.fillStyle = '#e8ffe9'; ctx.font = '700 10px Segoe UI, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(String(u.cargo.length), bx, by + 0.5);
+        ctx.textBaseline = 'alphabetic';
+      }
     }
     if (st.showPaths) this.drawOrders(st);
     this.drawObjectives();
@@ -107,9 +116,11 @@ export class Renderer {
       ctx.beginPath(); ctx.arc(sx, sy, r, 0, 6.3); ctx.fill(); ctx.stroke();
       ctx.setLineDash([]);
       // Capture progress arc
-      const p = (o.progress + 1) / 2;
-      ctx.lineWidth = 5; ctx.strokeStyle = TEAM_COLORS[0]; ctx.beginPath(); ctx.arc(sx, sy, r + 6, -Math.PI / 2, -Math.PI / 2 + 6.283 * p); ctx.stroke();
-      ctx.strokeStyle = TEAM_COLORS[1]; ctx.beginPath(); ctx.arc(sx, sy, r + 6, -Math.PI / 2 + 6.283 * p, -Math.PI / 2 + 6.283); ctx.stroke();
+      // Capture progress: arc length = control strength, colour = side holding the edge.
+      if (Math.abs(o.progress) > 0.01) {
+        ctx.lineWidth = 5; ctx.strokeStyle = TEAM_COLORS[o.progress > 0 ? 0 : 1];
+        ctx.beginPath(); ctx.arc(sx, sy, r + 6, -Math.PI / 2, -Math.PI / 2 + 6.283 * Math.abs(o.progress)); ctx.stroke();
+      }
       // Flag + label
       ctx.fillStyle = col; ctx.strokeStyle = '#000'; ctx.lineWidth = 1;
       ctx.beginPath(); ctx.moveTo(sx, sy - 22); ctx.lineTo(sx + 16, sy - 17); ctx.lineTo(sx, sy - 12); ctx.closePath(); ctx.fill(); ctx.stroke();

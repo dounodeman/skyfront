@@ -207,7 +207,7 @@ export function startFire(w: World, u: Unit) {
 /**
  * Blast at (x,y): damages soft targets and buildings, suppresses infantry. `exclude` already took a direct hit.
  */
-export function applySplash(w: World, x: number, y: number, a: AmmoDef, team: TeamId, exclude: Unit | null, airBurst = false) {
+export function applySplash(w: World, x: number, y: number, a: AmmoDef, team: TeamId, exclude: Unit | null, airBurst = false, rounds = 1) {
   const r = Math.max(a.blast, 6);
   const suppR = Math.max(10, a.blast * 1.6);
   w.spatial.forEachNear(x, y, suppR, (u) => {
@@ -215,7 +215,7 @@ export function applySplash(w: World, x: number, y: number, a: AmmoDef, team: Te
     if (u.isAir && !airBurst && u.altitude > 8) return;
     const d = dist(x, y, u.x, u.y);
     if (u.inf) {
-      if (u.team !== team && u.inf.state !== 'broken') u.inf.suppression = Math.min(100, u.inf.suppression + a.supp * (1 - d / suppR) * (1 - u.inf.cover * 0.5));
+      if (u.team !== team && u.inf.state !== 'broken') u.inf.suppression = Math.min(100, u.inf.suppression + a.supp * rounds * (1 - d / suppR) * (1 - u.inf.cover * 0.5));
       if (a.blast > 0 && d < r) damageInfantry(w, u, a.blastDamage * (1 - d / r) * 0.8 * (1 - u.inf.cover * 0.65), team);
     } else if (a.blast > 0 && d < r * 0.6 && u.def.armor && armorRef(u) < 25) {
       // Light-skinned vehicles suffer from near misses.

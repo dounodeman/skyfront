@@ -1,3 +1,209 @@
 import type { UnitDef } from './types';
-/** Iranian 1980 roster (filled in milestone 3). */
-export const IRAN_UNITS: UnitDef[] = [];
+import { infantry } from './helpers';
+
+/** Iranian roster (1980): Western equipment of the Imperial army plus the revolutionary IRGC and Basij. */
+export const IRAN_UNITS: UnitDef[] = [
+  // ------------------------------------------------------------------ tanks
+  {
+    id: 'ir_chieftain', faction: 'iran', era: 1980, name: 'Chieftain', category: 'tank', moveClass: 'tracked', role: 'assault', cost: 185,
+    intel: {
+      realName: 'Chieftain Mk 3/5 main battle tank',
+      role: 'Heavy MBT: long-range 120mm gun and thick frontal armour.',
+      note: 'Outranged and outarmoured every Iraqi tank head-on, but the underpowered, temperamental L60 engine left many broken down or bogged in the Khuzestan mud.',
+    },
+    hp: 130,
+    armor: { hull: { f: 245, s: 70, r: 40 }, turret: { f: 320, s: 140, r: 60 } },
+    turretShare: 0.45, ammoVulnerability: 0.12,
+    crew: ['commander', 'gunner', 'loader', 'driver'],
+    mobility: { speed: 5.2, turnRate: 30, accel: 1.5, fuel: 750, reliability: 0.7, bogRisk: 0.55, moveFirePenalty: 0.35 },
+    turret: { rate: 18 },
+    weapons: [
+      { weapon: 'l11', mount: 'turret', primary: true, ammo: { apds120: 18, hesh120: 22 } },
+      { weapon: 'l8a1', mount: 'turret', ammo: { ball762m: 1500 } },
+    ],
+    vision: { range: 1200, night: 0.55, signature: 1.05 },
+    sprite: {
+      kind: 'tank', length: 7.5, width: 3.5, tracks: true,
+      turret: { radius: 1.6, x: -0.2, gunLength: 6.2, gunWidth: 0.28, shape: 'wide' },
+      extras: ['skirts', 'ir', 'stowage'],
+    },
+    tags: ['armor', 'mbt'],
+  },
+  {
+    id: 'ir_m60a1', faction: 'iran', era: 1980, name: 'M60A1', category: 'tank', moveClass: 'tracked', role: 'assault', cost: 150,
+    intel: {
+      realName: 'M60A1 Patton main battle tank',
+      role: 'Main battle tank with the accurate 105mm M68 gun.',
+      note: 'Reliable and well protected for its day, though its tall silhouette was easy to spot on the flat Khuzestan plain.',
+    },
+    hp: 115,
+    armor: { hull: { f: 215, s: 75, r: 40 }, turret: { f: 250, s: 130, r: 60 } },
+    turretShare: 0.45, ammoVulnerability: 0.35,
+    crew: ['commander', 'gunner', 'loader', 'driver'],
+    mobility: { speed: 6.5, turnRate: 34, accel: 1.9, fuel: 900, reliability: 0.9, bogRisk: 0.45, moveFirePenalty: 0.35 },
+    turret: { rate: 20 },
+    weapons: [
+      { weapon: 'm68', mount: 'turret', primary: true, ammo: { apds105: 20, heat105: 12, he105: 18 } },
+      { weapon: 'm73', mount: 'turret', ammo: { ball762m: 1500 } },
+      { weapon: 'm2', mount: 'free', ammo: { bullet127: 600 } },
+    ],
+    vision: { range: 1150, night: 0.5, signature: 1.1 },
+    sprite: {
+      kind: 'tank', length: 6.95, width: 3.63, tracks: true,
+      turret: { radius: 1.6, x: -0.1, gunLength: 5.4, gunWidth: 0.26, shape: 'wide' },
+      extras: ['ir'],
+    },
+    tags: ['armor', 'mbt'],
+  },
+  {
+    id: 'ir_m48', faction: 'iran', era: 1980, name: 'M47/M48', category: 'tank', moveClass: 'tracked', role: 'assault', cost: 100,
+    intel: {
+      realName: 'M47 / M48 Patton medium tank',
+      role: 'Older 90mm-gun medium tank – second-line armour.',
+      note: 'Many Iranian M47s had been rebuilt in the 1970s; they lacked the punch of newer designs but were a match for the T-55 at short range.',
+    },
+    hp: 105,
+    armor: { hull: { f: 190, s: 76, r: 30 }, turret: { f: 200, s: 100, r: 50 } },
+    turretShare: 0.45, ammoVulnerability: 0.35,
+    crew: ['commander', 'gunner', 'loader', 'driver'],
+    mobility: { speed: 5.8, turnRate: 32, accel: 1.8, fuel: 800, reliability: 0.85, bogRisk: 0.45, moveFirePenalty: 0.3 },
+    turret: { rate: 16 },
+    weapons: [
+      { weapon: 'm41', mount: 'turret', primary: true, ammo: { ap90: 16, heat90: 10, he90: 20 } },
+      { weapon: 'm73', mount: 'turret', ammo: { ball762m: 1500 } },
+      { weapon: 'm2', mount: 'free', ammo: { bullet127: 500 } },
+    ],
+    vision: { range: 1050, night: 0.3, signature: 1.1 },
+    sprite: {
+      kind: 'tank', length: 6.9, width: 3.6, tracks: true,
+      turret: { radius: 1.55, x: -0.1, gunLength: 4.9, gunWidth: 0.24, shape: 'round', brake: true },
+    },
+    tags: ['armor', 'mbt'],
+  },
+  {
+    id: 'ir_scorpion', faction: 'iran', era: 1980, name: 'Scorpion', category: 'tank', moveClass: 'tracked', role: 'scout', cost: 80,
+    intel: {
+      realName: 'FV101 Scorpion light tank',
+      role: 'Fast reconnaissance light tank.',
+      note: 'Aluminium-hulled and very quick; its 76mm gun fired mainly HESH and HE, useful against light vehicles and positions but not against tank armour.',
+    },
+    hp: 60,
+    armor: { hull: { f: 30, s: 16, r: 12 }, turret: { f: 30, s: 16, r: 12 } },
+    turretShare: 0.35, ammoVulnerability: 0.2,
+    crew: ['commander', 'gunner', 'driver'],
+    mobility: { speed: 10, turnRate: 55, accel: 3.2, fuel: 750, reliability: 0.85, bogRisk: 0.05, moveFirePenalty: 0.35 },
+    turret: { rate: 24 },
+    weapons: [
+      { weapon: 'l23', mount: 'turret', primary: true, ammo: { hesh76: 28, heat76s: 6 } },
+      { weapon: 'l8a1', mount: 'turret', ammo: { ball762m: 2000 } },
+    ],
+    vision: { range: 1200, night: 0.45, signature: 0.75 },
+    sprite: {
+      kind: 'tank', length: 4.8, width: 2.2, tracks: true,
+      turret: { radius: 1.0, x: -0.4, gunLength: 2.3, gunWidth: 0.2, shape: 'round' },
+    },
+    tags: ['light'],
+  },
+  // ------------------------------------------------------------------ APC / support vehicles
+  {
+    id: 'ir_m113', faction: 'iran', era: 1980, name: 'M113', category: 'apc', moveClass: 'amphibious', role: 'apc', cost: 55,
+    intel: {
+      realName: 'M113 armoured personnel carrier',
+      role: 'Tracked "battle taxi" with a .50-cal machine gun.',
+      note: 'Simple, reliable and amphibious; its aluminium hull kept out small arms and shell splinters but little else.',
+    },
+    hp: 60,
+    armor: { hull: { f: 22, s: 18, r: 15 } },
+    ammoVulnerability: 0.1,
+    crew: ['commander', 'driver'],
+    mobility: { speed: 8, turnRate: 50, accel: 2.6, fuel: 900, reliability: 0.93, bogRisk: 0.05, moveFirePenalty: 0.4 },
+    weapons: [{ weapon: 'm2', mount: 'free', primary: true, ammo: { bullet127: 2000 } }],
+    vision: { range: 950, night: 0.2, signature: 0.85 },
+    transport: { capacity: 1 },
+    sprite: { kind: 'apc', length: 4.86, width: 2.69, tracks: true },
+    tags: ['light', 'transport', 'amphibious'],
+  },
+  {
+    id: 'ir_tow', faction: 'iran', era: 1980, name: 'TOW jeep', category: 'atgm', moveClass: 'wheeled', role: 'at', cost: 70,
+    intel: {
+      realName: 'M151 jeep with M220 TOW launcher',
+      role: 'Mobile long-range anti-tank missile carrier.',
+      note: 'The wire-guided TOW out-ranged every Iraqi tank gun; the crew had to keep the target in the sight for the whole flight, unprotected in an open jeep.',
+    },
+    hp: 25,
+    armor: { hull: { f: 0, s: 0, r: 0 } },
+    crew: ['commander', 'gunner', 'driver'],
+    mobility: { speed: 11, turnRate: 60, accel: 3.5, fuel: 900, reliability: 0.92, bogRisk: 0, moveFirePenalty: 0.2 },
+    turret: { rate: 45 },
+    weapons: [{ weapon: 'tow_l', mount: 'turret', primary: true, ammo: { tow: 6 } }],
+    vision: { range: 1300, night: 0.2, signature: 0.65 },
+    sprite: { kind: 'jeep', length: 3.4, width: 1.6, turret: { radius: 0.4, x: -0.6, gunLength: 1.2, gunWidth: 0.25, shape: 'box' }, extras: ['launcher'] },
+    tags: ['soft', 'atgm'],
+  },
+  {
+    id: 'ir_aa35', faction: 'iran', era: 1980, name: 'Oerlikon 35mm', category: 'aa', moveClass: 'foot', role: 'aa', cost: 45,
+    intel: {
+      realName: 'Oerlikon GDF twin 35mm towed AA gun',
+      role: 'Towed anti-aircraft gun defending bases and bridges.',
+      note: 'Iran bought Swiss twin 35mm guns in the 1970s and later copied them as the Samavat; heavier-hitting than the 23mm guns on the Iraqi side.',
+    },
+    hp: 35,
+    armor: { hull: { f: 6, s: 0, r: 0 } },
+    crew: ['gunner', 'loader', 'commander'],
+    mobility: { speed: 1.4, turnRate: 35, accel: 1, fuel: 0, reliability: 1, bogRisk: 0, moveFirePenalty: 0 },
+    weapons: [{ weapon: 'gdf35', mount: 'free', primary: true, ammo: { hei35: 700 } }],
+    vision: { range: 1200, night: 0.2, signature: 0.65 },
+    sprite: { kind: 'gun', length: 5.0, width: 2.2, turret: { radius: 0.5, x: 0, gunLength: 3.0, gunWidth: 0.12, shape: 'box' } },
+    tags: ['aa', 'towed'],
+  },
+  // ------------------------------------------------------------------ infantry
+  infantry({
+    id: 'ir_rifle', faction: 'iran', era: 1980, name: 'Rifle squad', role: 'rifle', cost: 28,
+    intel: { realName: 'Iranian Army rifle squad (G3)', role: 'Regular infantry of the former Imperial army.', note: 'Purges after the revolution had thinned its officer corps, but the army\'s trained conscripts with G3 rifles still formed the core of the 1980 defence.' },
+    squad: { men: 9, hpPerMan: 10, moraleBase: 60, moraleResilience: 0.5 },
+    weapons: [{ weapon: 'g3', mount: 'free', primary: true, ammo: { ball762: 2600 } }],
+  }),
+  infantry({
+    id: 'ir_mg3', faction: 'iran', era: 1980, name: 'MG3 team', role: 'mg', cost: 32,
+    intel: { realName: 'MG3 machine-gun team', role: 'High rate-of-fire suppression.', note: 'The MG3\'s 1,200 rounds a minute gave it a distinctive tearing sound and devastating suppressive effect.' },
+    squad: { men: 3, hpPerMan: 10, moraleBase: 60, moraleResilience: 0.55 },
+    weapons: [{ weapon: 'mg3', mount: 'free', primary: true, ammo: { ball762m: 3000 } }],
+    vision: { range: 700 },
+  }),
+  infantry({
+    id: 'ir_rr', faction: 'iran', era: 1980, name: '106mm RR team', role: 'at', cost: 40,
+    intel: { realName: 'M40 106mm recoilless rifle team', role: 'Medium-range anti-tank team.', note: 'A heavy crew-served weapon with a huge back-blast that betrayed its position – but it could kill a T-62 frontally at 800 metres.' },
+    squad: { men: 4, hpPerMan: 10, moraleBase: 60, moraleResilience: 0.55 },
+    weapons: [
+      { weapon: 'm40', mount: 'free', primary: true, ammo: { m344: 8 } },
+      { weapon: 'g3', mount: 'free', ammo: { ball762: 600 } },
+    ],
+    mobility: { speed: 2.7 },
+  }),
+  infantry({
+    id: 'ir_rpg', faction: 'iran', era: 1980, name: 'RPG-7 team', role: 'at', cost: 38,
+    intel: { realName: 'RPG-7 anti-tank team', role: 'Short-range anti-armour team.', note: 'Iran fielded RPG-7s alongside Western weapons; in the hands of IRGC volunteers they became the main anti-tank weapon of close fighting in Khorramshahr.' },
+    squad: { men: 4, hpPerMan: 10, moraleBase: 60, moraleResilience: 0.55 },
+    weapons: [
+      { weapon: 'rpg7', mount: 'free', primary: true, ammo: { pg7: 10 } },
+      { weapon: 'g3', mount: 'free', ammo: { ball762: 800 } },
+    ],
+  }),
+  infantry({
+    id: 'ir_irgc', faction: 'iran', era: 1980, name: 'IRGC squad', role: 'elite', cost: 22,
+    intel: { realName: 'IRGC (Pasdaran) volunteer squad', role: 'Cheap, lightly trained, highly motivated assault infantry.', note: 'Formed in 1979, the Revolutionary Guards were poorly equipped in 1980 but fought with determination – holding out in Khorramshahr for over a month.' },
+    squad: { men: 10, hpPerMan: 9, moraleBase: 88, moraleResilience: 0.9 },
+    weapons: [
+      { weapon: 'irr_rifles', mount: 'free', primary: true, ammo: { ball762: 2400 } },
+      { weapon: 'rpg7', mount: 'free', ammo: { pg7: 3 } },
+    ],
+    mobility: { speed: 3.3 },
+  }),
+  infantry({
+    id: 'ir_basij', faction: 'iran', era: 1980, name: 'Basij militia', role: 'militia', cost: 14,
+    intel: { realName: 'Basij militia', role: 'Cheap mass infantry of volunteers.', note: 'A volunteer militia raised from late 1979; minimal training and mixed small arms, relying on numbers and commitment.' },
+    squad: { men: 10, hpPerMan: 7, moraleBase: 70, moraleResilience: 0.65 },
+    weapons: [{ weapon: 'militia', mount: 'free', primary: true, ammo: { ball762: 2000 } }],
+    vision: { range: 600, signature: 0.85 },
+  }),
+];
