@@ -9,6 +9,7 @@ import type { World } from './sim/world';
 import { Controls, type GameShell } from './ui/controls';
 import { Hud } from './ui/hud';
 import { Minimap } from './ui/minimap';
+import { Audio } from './audio/sound';
 
 /**
  * Game shell: owns the loop, camera, renderer, input and HUD for one running match.
@@ -27,6 +28,7 @@ export class Game implements GameShell {
   /** Hooks other modules (audio, effects, fog) attach to. */
   frameHooks: Array<(dt: number) => void> = [];
   onExit: () => void = () => {};
+  audio: Audio;
 
   private session: AbortController;
 
@@ -42,6 +44,10 @@ export class Game implements GameShell {
     this.hud.onCard('pause', () => this.togglePause());
     this.hud.onCard('help', () => this.showHelp());
     this.loop = new GameLoop((dt) => this.world.step(dt), (dt) => this.frame(dt));
+    this.audio = new Audio(world, this.cam);
+    // Browsers only allow audio after a user gesture.
+    listen(window, 'pointerdown', () => this.audio.unlock());
+    listen(window, 'keydown', (e) => { this.audio.unlock(); if (e.key.toLowerCase() === 'm') { this.audio.toggleMute(); this.notify(this.audio.muted ? 'Sound muted' : 'Sound on'); } });
     listen(window, 'resize', () => this.renderer.resize());
 
     world.bus.on('status', (e) => { if (e.unit.team === TEAM_PLAYER) this.hud.message(`${e.unit.def.name}: ${e.text}`, 'warn'); });
@@ -60,8 +66,12 @@ export class Game implements GameShell {
   }
 
   /** Tear down: stop the loop and remove every DOM listener and HUD element of this match. */
+  /** Order acknowledgement (radio blip). */
+  onOrder() { this.audio.ui('blip'); }
+
   dispose() {
     this.loop.stop();
+    this.audio.dispose();
     this.session.abort();
     document.getElementById('hud')!.innerHTML = '';
     document.getElementById('screens')!.innerHTML = '';
@@ -121,6 +131,7 @@ export class Game implements GameShell {
     this.renderer.effects.update(this.loop.paused ? 0 : dt * this.loop.timeScale);
     this.controls.update(dt);
     for (const h of this.frameHooks) h(dt);
+    this.audio.update();
     this.renderer.draw({
       selected: this.controls.selectedIds,
       hoverId: this.controls.hoverId,
@@ -186,6 +197,6 @@ export const HELP_HTML = `<div class="keys">
 <div><kbd>Ctrl+1–9</kbd> set group · <kbd>1–9</kbd> recall (twice: centre)</div>
 <div><kbd>WASD</kbd>/arrows/screen edge pan · <kbd>wheel</kbd> zoom</div>
 <div><kbd>Space</kbd> centre on selection</div>
-<div><kbd>[</kbd> / <kbd>]</kbd> game speed · <kbd>Esc</kbd>/<kbd>P</kbd> pause</div>
+<div><kbd>[</kbd> / <kbd>]</kbd> game speed · <kbd>Esc</kbd>/<kbd>P</kbd> pause · <kbd>M</kbd> mute</div>
 <div>Minimap: left-click pan, right-click order</div>
 </div>`;

@@ -149,8 +149,17 @@ export class Hud {
     const [a, b] = w.teams;
     const tk = (tm: typeof a, col: string) => `<span class="tickets"><span style="color:${col}">${tm.name}</span><span class="tbar"><i style="width:${pct(tm.tickets / tm.ticketsMax)};background:${col}"></i></span>${Math.ceil(tm.tickets)}</span>`;
     const objs = w.objectives.map((o) => `<span style="color:${o.owner === null ? '#ccc' : TEAM_COLORS[o.owner]}">■</span>`).join('');
+    let right = `${tk(a, TEAM_COLORS[0])}${tk(b, TEAM_COLORS[1])}`;
+    if (w.vars.timeLimit) {
+      // Scenario: countdown and the attacker's hold timer replace the ticket bars.
+      const left = Math.max(0, Number(w.vars.timeLimit) - w.time);
+      const att = Number(w.vars.attacker);
+      const hold = Number(w.vars.holdTimer ?? 0);
+      right = `<span>Time left <b>${String(Math.floor(left / 60)).padStart(2, '0')}:${String(Math.floor(left % 60)).padStart(2, '0')}</b></span>`
+        + `<span style="color:${TEAM_COLORS[att]}">${w.teams[att].name} attacking${hold > 0 ? ` – holding all objectives ${Math.floor(hold)}s` : ''}</span>`;
+    }
     this.top.innerHTML = `<b>KHUZESTAN 1980</b><span>${clock}</span><span class="kv">Era ${w.env.era === 1986 ? '1986+' : w.env.era} · ${light}</span>`
-      + `<span class="sp"></span>${objs ? `<span>Objectives ${objs}</span>` : ''}${tk(a, TEAM_COLORS[0])}${tk(b, TEAM_COLORS[1])}`;
+      + `<span class="sp"></span>${objs ? `<span>Objectives ${objs}</span>` : ''}${right}`;
   }
 
   private renderSelection() {

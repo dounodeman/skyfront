@@ -28,7 +28,7 @@ function show(html: string): HTMLElement {
   return d;
 }
 
-export function mainMenu(actions: { skirmish: () => void; scenario: () => void }) {
+export function mainMenu(actions: { skirmish: () => void; scenario: () => void; codex: () => void }) {
   const d = show(`<div class="panel menu">
     <h1>Khuzestan 1980</h1>
     <div class="tag">A top-down combined-arms tactics game · September 1980, the opening weeks of the Iran–Iraq War on the Khuzestan front.<br>
@@ -36,6 +36,7 @@ export function mainMenu(actions: { skirmish: () => void; scenario: () => void }
     <div class="row" style="flex-direction:column;align-items:flex-start">
       <button class="btn primary" data-a="skirmish">Skirmish vs AI</button>
       <button class="btn" data-a="scenario">Scenario: The Border Crossing</button>
+      <button class="btn" data-a="codex">Intel cards (unit codex)</button>
       <button class="btn" data-a="help">Controls</button>
     </div>
     <h2>About</h2>
@@ -47,6 +48,7 @@ export function mainMenu(actions: { skirmish: () => void; scenario: () => void }
     const a = (e.target as HTMLElement).dataset.a;
     if (a === 'skirmish') actions.skirmish();
     if (a === 'scenario') actions.scenario();
+    if (a === 'codex') actions.codex();
     if (a === 'help') {
       const o = document.createElement('div');
       o.className = 'overlay';
@@ -175,4 +177,48 @@ export function purchaseScreen(s: SkirmishSettings, start: (force: ForceEntry[])
   // Start with a sensible balanced force the player can edit.
   for (const f of buildForce(roster, s.budget, 'balanced', new Rng(7))) counts.set(f.defId, f.count);
   refresh();
+}
+
+/** Scenario briefing with side choice. */
+export function scenarioBriefing(def: import('../data/scenarios/types').ScenarioDef, start: (side: FactionId, difficulty: Difficulty) => void, back: () => void) {
+  let side: FactionId = def.attacker;
+  let diff: Difficulty = 'normal';
+  const render = () => {
+    const b = def.briefing[side];
+    const d = show(`<div class="panel menu">
+      <h1 style="font-size:26px">${def.name}</h1><div class="tag">${def.date} · ${def.map.name} · ${Math.round(def.timeLimit / 60)} minutes</div>
+      ${choice('Play as', 'side', [['iraq', 'Iraq – assault'], ['iran', 'Iran – delaying defence']], side)}
+      <h2>${b.title}</h2><div style="line-height:1.55;font-size:14px">${b.text}</div>
+      ${choice('Enemy AI', 'diff', [['easy', 'Easy'], ['normal', 'Normal'], ['hard', 'Hard']], diff)}
+      <div class="kv" style="margin-top:8px">Victory: the attacker must hold ${def.required.length} objectives together for ${def.holdFor} s before the time runs out; otherwise the defender wins.</div>
+      <div class="row" style="margin-top:16px"><button class="btn" data-a="back">Back</button><button class="btn primary" data-a="go">Begin</button></div></div>`);
+    d.addEventListener('click', (e) => {
+      const t = e.target as HTMLElement;
+      if (t.dataset.k === 'side') { side = t.dataset.v as FactionId; render(); }
+      if (t.dataset.k === 'diff') { diff = t.dataset.v as Difficulty; render(); }
+      if (t.dataset.a === 'go') start(side, diff);
+      if (t.dataset.a === 'back') back();
+    });
+  };
+  render();
+}
+
+/** Unit codex: every intel card, grouped by side; era filter shows when units become available. */
+export function codex(back: () => void) {
+  let faction: FactionId = 'iraq';
+  const render = () => {
+    const units = rosterFor(faction, 1986);
+    const d = show(`<div class="panel menu" style="width:min(1150px,96vw)">
+      <h1 style="font-size:26px">Intel cards</h1>
+      ${choice('Side', 'f', [['iraq', 'Iraq'], ['iran', 'Iran']], faction)}
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;max-height:62vh;overflow:auto;margin-top:10px">
+      ${units.map((u) => `<div class="panel" style="padding:10px 12px;font-size:12px;position:static">${intelCardHTML(u).replace('<h4>', '<h4 style="margin:0;color:var(--accent);font-size:14px">')}</div>`).join('')}
+      </div><div class="row" style="margin-top:14px"><button class="btn" data-a="back">Back</button></div></div>`);
+    d.addEventListener('click', (e) => {
+      const t = e.target as HTMLElement;
+      if (t.dataset.k === 'f') { faction = t.dataset.v as FactionId; render(); }
+      if (t.dataset.a === 'back') back();
+    });
+  };
+  render();
 }

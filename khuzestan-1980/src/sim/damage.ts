@@ -110,6 +110,11 @@ export function applyHit(w: World, u: Unit, a: AmmoDef, shotAngle: number, range
   const hasTurretArmor = !!def.armor?.turret;
   const turretHit = hasTurretArmor && w.rng.chance(def.turretShare ?? 0.4);
   const prof = turretHit ? def.armor!.turret! : def.armor?.hull ?? { f: 0, s: 0, r: 0 };
+  // Dug-in (hull-down) vehicles in prepared positions: most shots aimed at the hull hit the berm.
+  if (!turretHit && u.ai.dugIn && !u.mob.moving && !u.isAir && w.rng.chance(0.6)) {
+    w.bus.emit({ type: 'impact', x: u.x, y: u.y, kind: 'ground', ammoId: a.id, size: a.caliber });
+    return;
+  }
   const { facing, obliq } = facingOf(turretHit ? u.turretAngle : u.heading, shotAngle);
   const eff = effectiveArmor(plate(prof, facing), obliq, a);
   const pen = penAt(a, rangeM) * w.rng.range(0.9, 1.1);

@@ -22,6 +22,7 @@ function signature(w: World, e: Unit): number {
   let s = e.def.vision.signature;
   if (e.mob.moving) s *= 1.15;
   else if (e.inf && e.inf.cover > 0.2) s *= 1 - e.inf.cover * 0.6;
+  else if (e.ai.dugIn && !e.isAir) s *= 0.6; // dug-in vehicles: hull-down, camouflaged
   if (w.time - e.lastShotTime < 3) s *= w.env.light === 2 ? 2.4 : 1.5; // muzzle flash / dust
   if (e.isAir && e.altitude > 15) s *= 1.25;
   return s;

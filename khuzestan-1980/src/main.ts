@@ -8,7 +8,9 @@ import { AIController, aiBudgetFactor } from './sim/ai';
 import { buildForce } from './sim/forcebuilder';
 import { createWorld, other } from './sim/setup';
 import type { World } from './sim/world';
-import { mainMenu, purchaseScreen, skirmishSetup, type SkirmishSettings } from './ui/menus';
+import { codex, mainMenu, purchaseScreen, scenarioBriefing, skirmishSetup, type SkirmishSettings } from './ui/menus';
+import { BORDER_SCENARIO } from './data/scenarios/border';
+import { createScenarioWorld } from './sim/scenario';
 
 /** App shell: menus → setup → purchase → match → results → menu. */
 let game: Game | null = null;
@@ -16,7 +18,7 @@ const settings: SkirmishSettings = { faction: 'iraq', era: 1980, light: 0, dust:
 
 function toMenu() {
   if (game) { game.dispose(); game = null; }
-  mainMenu({ skirmish: setup, scenario: () => scenario() });
+  mainMenu({ skirmish: setup, scenario: () => scenario(), codex: () => codex(toMenu) });
 }
 
 function setup() { skirmishSetup(settings, (s) => purchaseScreen(s, startSkirmish, setup), toMenu); }
@@ -33,12 +35,17 @@ function startSkirmish(force: Parameters<Parameters<typeof purchaseScreen>[1]>[0
   run(world, s.difficulty);
 }
 
-/** Scripted scenario hook (milestone 6). */
-function scenario() { setup(); }
+function scenario() {
+  scenarioBriefing(BORDER_SCENARIO, (side, difficulty) => {
+    const world = createScenarioWorld(BORDER_SCENARIO, side);
+    // The AI defends if it is the defending side.
+    run(world, difficulty, side === BORDER_SCENARIO.attacker ? 'defend' : 'attack');
+  }, toMenu);
+}
 
-export function run(world: World, difficulty: SkirmishSettings['difficulty']) {
+export function run(world: World, difficulty: SkirmishSettings['difficulty'], mode: 'attack' | 'defend' = 'attack') {
   document.getElementById('screens')!.innerHTML = '';
-  const ai = new AIController(world, 1, difficulty);
+  const ai = new AIController(world, 1, difficulty, mode);
   world.systems.push(ai.system);
   game = new Game(world);
   game.onExit = toMenu;

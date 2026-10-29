@@ -46,7 +46,8 @@ export class AIController {
   primary: Objective | null = null;
   private objTimer = 0;
 
-  constructor(private w: World, readonly team: TeamId, readonly difficulty: Difficulty = 'normal') {
+  /** 'attack' = take objectives; 'defend' = hold positions and counter-attack threatened objectives. */
+  constructor(private w: World, readonly team: TeamId, readonly difficulty: Difficulty = 'normal', readonly mode: 'attack' | 'defend' = 'attack') {
     this.p = PARAMS[difficulty];
     this.timer = 2;
   }
@@ -83,8 +84,10 @@ export class AIController {
       // Passengers bail out of a crippled transport rather than die inside it.
       if (u.cargo.length && !u.isAir && (u.mob.immobilized || u.hpFrac < 0.4) && u.orders[0]?.type !== 'unload') { issueUnload([u]); continue; }
       if (this.handleRetreat(u, depot)) continue;
+      // Defenders form up behind the threatened objective instead of charging through it.
+      const back = this.mode === 'defend' ? 160 : 0;
       switch (role) {
-        case 'armor': case 'mech': this.advance(u, obj, role === 'mech' ? 60 : 0); break;
+        case 'armor': case 'mech': this.advance(u, obj, (role === 'mech' ? 60 : 0) + back); break;
         case 'inf': this.infantry(u, obj, enemies); break;
         case 'aa': this.escort(u, ground, depot); break;
         case 'gunship': this.gunship(u, enemies, obj, depot); break;
@@ -93,7 +96,7 @@ export class AIController {
         case 'strike': this.strike(u, enemies); break;
       }
     }
-    if (this.p.focus) this.focusFire(units.filter((u) => roleOf(u) === 'armor' && u.ai.task !== 'retreat'), enemies);
+    if (this.p.focus) this.focusFire(units.filter((u) => roleOf(u) === 'armor' && u.ai.task !== 'retreat' && !u.ai.dugIn), enemies);
   }
 
   // ------------------------------------------------------------------ strategy
@@ -103,6 +106,15 @@ export class AIController {
     // Defend an owned objective that is being taken.
     const threatened = w.objectives.find((o) => o.owner === this.team && Math.abs(o.progress) < 0.9);
     if (threatened) { this.primary = threatened; return; }
+    if (this.mode === 'defend') {
+      // Defenders react to the objective with the most enemies near it, or retake a lost one.
+      const lost = w.objectives.find((o) => o.owner !== this.team);
+      const pressed = w.objectives.filter((o) => o.owner === this.team)
+        .map((o) => ({ o, n: enemies.filter((e) => dist(e.x, e.y, o.x, o.y) < o.radius + 400).length }))
+        .sort((a, b) => b.n - a.n)[0];
+      this.primary = pressed && pressed.n > 0 ? pressed.o : lost ?? null;
+      return;
+    }
     if (this.primary && this.primary.owner !== this.team && this.objTimer > 0) return;
     let best: Objective | null = null, bestScore = Infinity;
     for (const o of w.objectives) {
@@ -130,7 +142,7 @@ export class AIController {
   }
 
   private advance(u: Unit, o: Objective | null, back: number) {
-    if (!o) return;
+    if (!o || u.ai.dugIn) return;
     if (u.orders[0]?.type === 'attack') return; // busy with focus fire
     const target = this.slot(u, o, back);
     const cur = u.orders[0];
@@ -180,7 +192,7 @@ export class AIController {
         }
       }
     }
-    if (u.ai.coverUntil > now) return; // holding in cover
+    if (u.ai.coverUntil > now || u.ai.dugIn) return; // holding in cover / dug in
     // Cover timer over: push on (attack-move) – but give the next cover check a grace period.
     if (u.ai.task === 'cover') { u.ai.task = ''; u.ai.taskObj = ''; u.ai.coverUntil = now - 0.01; u.ai.noCoverUntil = now + 20; }
     this.advance(u, o, 0);
