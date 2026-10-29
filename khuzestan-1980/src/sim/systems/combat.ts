@@ -105,7 +105,16 @@ function hitChance(w: World, u: Unit, ws: WeaponState, t: Unit, d: number, a: Am
   if (u.mob.moving && !u.isAir) p *= u.def.mobility.moveFirePenalty;
   if (u.isAir && u.speed > 15 && a.kind !== 'ATGM') p *= 0.75;
   if (t.mob.moving && a.kind !== 'ATGM' && a.kind !== 'SAM') p *= 0.8;
-  if (airborne(t) && a.kind !== 'SAM') p *= Math.max(0.35, 1 - t.speed / 90);
+  if (airborne(t) && a.kind !== 'SAM') {
+    p *= Math.max(0.35, 1 - t.speed / 90);
+    // Rifles and machine guns not built for air defence rarely hit a moving helicopter.
+    if (a.kind === 'BULLET' && !u.def.tags?.includes('aa')) p *= 0.35;
+  }
+  if (a.guided === 'ir') {
+    // Early heat-seekers needed a view of the hot exhaust: tail-on shots are far more likely to hit.
+    const rel = Math.abs(angleDiff(t.heading, angleTo(t.x, t.y, u.x, u.y)));
+    p *= rel > 2.2 ? 1.25 : rel < 0.9 ? 0.7 : 1;
+  }
   if (!t.inf && !t.isAir) {
     const s = t.def.sprite;
     p *= Math.max(0.55, Math.min(1.15, (s.length * s.width) / 18));

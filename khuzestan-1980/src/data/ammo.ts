@@ -71,7 +71,7 @@ export const AMMO: Record<string, AmmoDef> = Object.fromEntries([
   A({ id: 'ball762m', name: '7.62mm belt', kind: 'BULLET', caliber: 7.62, pen: 8, penFalloff: 0.5, damage: 2.6, speed: 820, supp: 2.0, canHitAir: true, tracer: '#ffe9a8' }),
   A({ id: 'bullet127', name: '12.7mm', kind: 'BULLET', caliber: 12.7, pen: 22, penFalloff: 0.35, damage: 5.5, speed: 850, supp: 3.2, canHitAir: true, tracer: '#ffd48a' }),
   A({ id: 'bullet145', name: '14.5mm', kind: 'BULLET', caliber: 14.5, pen: 32, penFalloff: 0.3, damage: 8, speed: 990, supp: 4, canHitAir: true, tracer: '#ffd48a' }),
-  A({ id: 'flak23', name: '23mm HEI-T', kind: 'FLAK', caliber: 23, pen: 28, penFalloff: 0.3, damage: 9, blast: 2.5, blastDamage: 8, speed: 970, supp: 5, canHitAir: true, tracer: '#ff9a6a' }),
+  A({ id: 'flak23', name: '23mm HEI-T', kind: 'FLAK', caliber: 23, pen: 28, penFalloff: 0.3, damage: 6, blast: 2.5, blastDamage: 8, speed: 970, supp: 5, canHitAir: true, tracer: '#ff9a6a' }),
   A({ id: 'hei20', name: '20mm HEI', kind: 'FLAK', caliber: 20, pen: 20, penFalloff: 0.3, damage: 7, blast: 2, blastDamage: 6, speed: 1050, supp: 4, canHitAir: true, tracer: '#ff9a6a' }),
   A({ id: 'hei35', name: '35mm HEI', kind: 'FLAK', caliber: 35, pen: 40, penFalloff: 0.3, damage: 14, blast: 3.5, blastDamage: 14, speed: 1175, supp: 6, canHitAir: true, tracer: '#ff9a6a' }),
   // ---- Later-era (drone tier) ----

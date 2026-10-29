@@ -7,8 +7,9 @@ import { projectileSystem } from './projectiles';
 import { lifecycleSystem, visionSystem } from './vision';
 import { infantrySystem } from './infantry';
 import { transportSystem } from './transport';
+import { airSystem } from './air';
 
 /** Order in which systems run each simulation step. */
 export function defaultSystems(): System[] {
-  return [visionSystem, ordersSystem, transportSystem, movementSystem, infantrySystem, combatSystem, turretSystem, projectileSystem, lifecycleSystem];
+  return [visionSystem, ordersSystem, transportSystem, movementSystem, airSystem, infantrySystem, combatSystem, turretSystem, projectileSystem, lifecycleSystem];
 }

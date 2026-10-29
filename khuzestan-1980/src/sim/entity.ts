@@ -71,6 +71,8 @@ export interface AirState {
   orbitX: number;
   orbitY: number;
   rotorPhase: number;
+  /** Seconds to stay on the ground after unloading. */
+  landTimer: number;
 }
 
 export class Unit {
@@ -143,7 +145,7 @@ export class Unit {
       this.inf = { men: sq.men, maxMen: sq.men, hpPerMan: sq.hpPerMan, suppression: 0, morale: sq.moraleBase, state: 'ok', cover: 0 };
     }
     if (def.air) {
-      this.air = { altitude: def.air.altitude, targetAlt: def.air.altitude, landed: false, orbitX: x, orbitY: y, rotorPhase: Math.random() * 6 };
+      this.air = { altitude: def.air.altitude, targetAlt: def.air.altitude, landed: false, orbitX: x, orbitY: y, rotorPhase: Math.random() * 6, landTimer: 0 };
     }
     for (const m of def.weapons) {
       const wd = WEAPONS[m.weapon];

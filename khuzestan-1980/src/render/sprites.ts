@@ -82,7 +82,7 @@ export function drawAirShadow(ctx: CanvasRenderingContext2D, u: Unit, sx: number
   const off = alt * 0.28 * zoom;
   ctx.save();
   ctx.translate(sx + off, sy + off * 0.8);
-  ctx.globalAlpha = Math.max(0.12, 0.34 - alt * 0.0012);
+  ctx.globalAlpha = Math.max(0.1, 0.22 - alt * 0.001);
   ctx.fillStyle = '#000';
   const s = u.def.sprite;
   ctx.scale(k, k);
@@ -92,7 +92,7 @@ export function drawAirShadow(ctx: CanvasRenderingContext2D, u: Unit, sx: number
   } else {
     ctx.beginPath(); ctx.ellipse(0, 0, s.length * 0.42, s.width * 0.4, 0, 0, 6.3); ctx.fill();
     if (s.rotor) {
-      ctx.globalAlpha *= 0.55;
+      ctx.globalAlpha *= 0.35;
       if (s.rotor.tandem) {
         for (const dx of [s.length * 0.33, -s.length * 0.33]) { ctx.beginPath(); ctx.arc(dx, 0, s.rotor.radius, 0, 6.3); ctx.fill(); }
       } else { ctx.beginPath(); ctx.arc(s.length * 0.05, 0, s.rotor.radius, 0, 6.3); ctx.fill(); }
@@ -367,7 +367,7 @@ function drawHeli(ctx: CanvasRenderingContext2D, u: Unit, f: SpriteFlags) {
   const L = s.length, W = s.width;
   const R = s.rotor?.radius ?? 5;
   const tandem = s.rotor?.tandem;
-  const spin = u.air && !u.air.landed || (u.air && u.air.landed && u.cargo.length >= 0) ? f.time * 38 + u.id : 0;
+  const spin = f.time * (u.air && u.air.landed ? 14 : 38) + u.id; // rotors idle slower on the ground
 
   if (tandem) {
     // Chinook-style: long box fuselage, two rear/front pylons.
@@ -383,12 +383,13 @@ function drawHeli(ctx: CanvasRenderingContext2D, u: Unit, f: SpriteFlags) {
     ctx.fillStyle = p.base; ctx.fillRect(-L * 0.53, -0.07, 0.9, 0.14); // fin
     // Wings with pods
     if (s.extras?.includes('wings')) {
-      ctx.fillStyle = p.dark; ctx.fillRect(-0.7, -W * 0.82, 1.5, W * 1.64);
-      if (s.extras.includes('pods')) { ctx.fillStyle = p.metal; for (const y of [-W * 0.7, -W * 0.45, W * 0.45, W * 0.7]) { ctx.beginPath(); ctx.ellipse(0.4, y, 0.9, 0.22, 0, 0, 6.3); ctx.fill(); } }
+      const span = L * 0.19; // stub-wing half span
+      ctx.fillStyle = p.dark; ctx.fillRect(-0.7, -span, 1.5, span * 2);
+      if (s.extras.includes('pods')) { ctx.fillStyle = p.metal; for (const y of [-span * 0.85, -span * 0.55, span * 0.55, span * 0.85]) { ctx.beginPath(); ctx.ellipse(0.4, y, 0.9, 0.28, 0, 0, 6.3); ctx.fill(); } }
     }
     // Fuselage
     ctx.beginPath(); ctx.ellipse(L * 0.02, 0, L * 0.38, W * 0.5, 0, 0, 6.3);
-    ctx.fillStyle = p.base; ctx.fill(); ctx.strokeStyle = 'rgba(0,0,0,0.5)'; ctx.lineWidth = 0.1; ctx.stroke();
+    ctx.fillStyle = p.base; ctx.fill(); ctx.strokeStyle = 'rgba(0,0,0,0.75)'; ctx.lineWidth = 0.18; ctx.stroke();
     patches(ctx, u, p, L * 0.7, W);
     // Canopy glass
     ctx.fillStyle = p.glass; ctx.beginPath(); ctx.ellipse(L * 0.22, 0, L * 0.12, W * 0.34, 0, 0, 6.3); ctx.fill();

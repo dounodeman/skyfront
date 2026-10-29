@@ -51,7 +51,7 @@ export const WEAPONS: Record<string, WeaponDef> = Object.fromEntries([
   W({ id: 'tow_l', name: 'TOW launcher', range: 2000, minRange: 100, reload: 9, accuracy: 0.85, guidesStationary: true, sound: 'missile' }),
   W({ id: 'hot_l', name: 'HOT launcher', range: 2000, minRange: 150, reload: 8, accuracy: 0.85, guidesStationary: true, sound: 'missile' }),
   W({ id: 'swatter_l', name: 'Falanga launcher', range: 1800, minRange: 200, reload: 10, accuracy: 0.7, guidesStationary: true, sound: 'missile' }),
-  W({ id: 'strela_l', name: 'Strela-2 launcher', range: 1500, minRange: 150, reload: 9, accuracy: 0.55, targets: AIR_ONLY, sound: 'missile' }),
+  W({ id: 'strela_l', name: 'Strela-2 launcher', range: 1500, minRange: 150, reload: 9, accuracy: 0.68, targets: AIR_ONLY, sound: 'missile' }),
   // Rockets and heli guns
   W({ id: 'ub32', name: 'UB-32 rocket pod', range: 1000, minRange: 200, reload: 2.2, burst: 6, pellets: 6, spread: 3.5, accuracy: 0.5, sound: 'rocket' }),
   W({ id: 'ub16', name: 'UB-16 rocket pod', range: 950, minRange: 200, reload: 2.5, burst: 4, pellets: 4, spread: 3.5, accuracy: 0.5, sound: 'rocket' }),
@@ -59,10 +59,10 @@ export const WEAPONS: Record<string, WeaponDef> = Object.fromEntries([
   W({ id: 'yakb', name: '12.7mm YaKB-12.7', range: 850, reload: 0.3, burst: 8, spread: 1.4, accuracy: 0.6, sound: 'hmg' }),
   W({ id: 'm197', name: '20mm M197', range: 950, reload: 0.25, burst: 10, spread: 1.6, accuracy: 0.6, sound: 'hmg' }),
   // Anti-aircraft guns
-  W({ id: 'zu23', name: '23mm ZU-23-2', range: 1200, reload: 0.25, burst: 6, spread: 1.8, accuracy: 0.5, targets: AIR, sound: 'flak' }),
-  W({ id: 'zsu234', name: '23mm AZP-23 Amur', range: 1300, reload: 0.2, burst: 10, spread: 1.4, accuracy: 0.6, targets: AIR, sound: 'flak' }),
-  W({ id: 'gdf35', name: '35mm twin AA gun', range: 1450, reload: 0.4, burst: 5, spread: 1.2, accuracy: 0.62, targets: AIR, sound: 'flak' }),
-  W({ id: 'vulcan', name: '20mm M168 Vulcan', range: 1100, reload: 0.2, burst: 12, spread: 1.8, accuracy: 0.52, targets: AIR, sound: 'flak' }),
+  W({ id: 'zu23', name: '23mm ZU-23-2', range: 1200, reload: 0.25, burst: 6, spread: 1.8, accuracy: 0.14, targets: AIR, sound: 'flak' }),
+  W({ id: 'zsu234', name: '23mm AZP-23 Amur', range: 1300, reload: 0.2, burst: 10, spread: 1.4, accuracy: 0.16, targets: AIR, sound: 'flak' }),
+  W({ id: 'gdf35', name: '35mm twin AA gun', range: 1450, reload: 0.4, burst: 5, spread: 1.2, accuracy: 0.2, targets: AIR, sound: 'flak' }),
+  W({ id: 'vulcan', name: '20mm M168 Vulcan', range: 1100, reload: 0.2, burst: 12, spread: 1.8, accuracy: 0.14, targets: AIR, sound: 'flak' }),
   // Infantry weapons
   W({ id: 'ak47', name: '7.62mm AK-47', range: 360, reload: 0.5, burst: 6, spread: 4, accuracy: 0.43, targets: AIR, sound: 'rifle' }),
   W({ id: 'g3', name: '7.62mm G3', range: 380, reload: 0.5, burst: 5, spread: 3, accuracy: 0.47, targets: AIR, sound: 'rifle' }),
