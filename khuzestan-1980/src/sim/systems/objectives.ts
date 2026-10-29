@@ -23,6 +23,7 @@ export function isCombatant(u: Unit) {
 export function installMatchRules(w: World) {
   w.stats = { lost: [0, 0], lostValue: [0, 0], kills: [0, 0] };
   w.bus.on('kill', (e) => {
+    if (e.unit.ai.detonated) return; // a loitering munition that hit its target is not a loss
     const t = e.unit.team;
     w.stats.lost[t]++;
     w.stats.lostValue[t] += e.unit.def.cost;

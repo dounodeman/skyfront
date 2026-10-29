@@ -4,6 +4,7 @@ import { TEAM_PLAYER } from '../core/constants';
 import { FORMATIONS, issueAttack, issueBoard, issueHold, issueMove, issueStop, issueUnload, type FormationId } from '../sim/commands';
 import type { Unit } from '../sim/entity';
 import type { World } from '../sim/world';
+import { airLift } from '../render/sprites';
 
 export type CursorMode = 'normal' | 'attackmove' | 'unload';
 
@@ -70,7 +71,7 @@ export class Controls {
     let best: Unit | null = null, bestScore = 1e9;
     for (const u of this.world.units) {
       if (!u.onMap || !u.alive || !this.g.isVisible(u) || !filter(u)) continue;
-      const d = Math.hypot(u.x - wx, u.y - wy);
+      const d = Math.hypot(u.x - wx, u.y - airLift(u) - wy);
       const lim = Math.max(u.radius, px);
       if (d > lim) continue;
       const score = d / lim + (u.isAir ? -0.2 : 0);

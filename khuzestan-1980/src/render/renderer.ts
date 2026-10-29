@@ -5,7 +5,7 @@ import type { World } from '../sim/world';
 import { TerrainRenderer } from './terrainRender';
 import { Effects } from './effects';
 import { FogRenderer } from './fog';
-import { drawAirShadow, drawBars, drawSelection, drawUnit, type SpriteFlags } from './sprites';
+import { airLift, drawAirShadow, drawBars, drawSelection, drawUnit, type SpriteFlags } from './sprites';
 
 export interface DrawState {
   selected: Set<number>;
@@ -70,7 +70,7 @@ export class Renderer {
     for (const u of air) {
       const [sx, sy] = cam.worldToScreen(u.x, u.y);
       // Lift the sprite slightly with altitude for a parallax hint.
-      drawUnit(ctx, u, sx, sy - u.altitude * 0.06 * cam.zoom, flags);
+      drawUnit(ctx, u, sx, sy - airLift(u) * cam.zoom, flags);
     }
 
     this.effects.draw(ctx, cam, true);
@@ -78,13 +78,13 @@ export class Renderer {
 
     // Overlays: bars, selection, orders.
     for (const u of [...ground, ...air]) {
-      const [sx, sy] = cam.worldToScreen(u.x, u.y);
+      const [sx, sy] = cam.worldToScreen(u.x, u.y - airLift(u));
       const sel = st.selected.has(u.id), hov = st.hoverId === u.id;
       if (sel || hov) drawSelection(ctx, u, sx, sy, cam.zoom, !sel && hov);
       if (sel || hov || u.hpFrac < 0.995) drawBars(ctx, u, sx, sy, cam.zoom, sel);
       if (u.cargo.length && u.team === 0) {
         // Passenger badge: number of squads aboard.
-        const r = 7, bx = sx + 12, by = sy - 12 - (u.isAir ? u.altitude * 0.06 * cam.zoom : 0);
+        const r = 7, bx = sx + 12, by = sy - 12;
         ctx.fillStyle = '#0b0f14'; ctx.beginPath(); ctx.arc(bx, by, r, 0, 6.3); ctx.fill();
         ctx.strokeStyle = '#7dff9b'; ctx.lineWidth = 1.2; ctx.stroke();
         ctx.fillStyle = '#e8ffe9'; ctx.font = '700 10px Segoe UI, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';

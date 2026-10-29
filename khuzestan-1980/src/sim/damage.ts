@@ -50,7 +50,7 @@ export function killUnit(w: World, u: Unit, killerTeam: TeamId | null, brewUp: b
   u.alive = false;
   u.speed = 0;
   u.orders.length = 0;
-  if (!u.inf) { u.wreck = true; u.wreckTime = w.time; }
+  if (!u.inf && u.def.category !== 'drone') { u.wreck = true; u.wreckTime = w.time; }
   if (u.air) { u.air.altitude = 0; u.air.targetAlt = 0; } // aircraft crash where they are
   // Passengers: some die with the vehicle, survivors bail out.
   if (u.cargo.length) {

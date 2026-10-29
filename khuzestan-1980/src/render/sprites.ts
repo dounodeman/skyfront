@@ -33,6 +33,9 @@ function rrect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h
 
 export interface SpriteFlags { selected: boolean; hover: boolean; time: number; zoom: number; friendlyView: boolean }
 
+/** World-space upward offset (metres) used to draw aircraft above their shadow; capped so high drones stay near their ground position. */
+export const airLift = (u: Unit) => (u.isAir ? Math.min(u.altitude, 60) * 0.06 : 0);
+
 /** Pixel length below which a unit is drawn as a map icon instead of a full sprite. */
 export const ICON_THRESHOLD = 15;
 
@@ -495,7 +498,7 @@ function drawInfantry(ctx: CanvasRenderingContext2D, u: Unit, f: SpriteFlags) {
 export function drawBars(ctx: CanvasRenderingContext2D, u: Unit, sx: number, sy: number, zoom: number, extra = false) {
   const k = zoom * SPRITE_SCALE;
   const w = Math.max(22, Math.min(54, Math.max(u.def.sprite.length, u.def.sprite.width) * k * 0.9));
-  const y = sy - Math.max(u.def.sprite.length, u.def.sprite.width) * k * 0.5 - 8 - (u.isAir ? u.altitude * 0.1 * zoom : 0);
+  const y = sy - Math.max(u.def.sprite.length, u.def.sprite.width) * k * 0.5 - 8;
   ctx.fillStyle = 'rgba(0,0,0,0.7)'; ctx.fillRect(sx - w / 2 - 1, y - 1, w + 2, 5);
   const f = u.hpFrac;
   ctx.fillStyle = f > 0.6 ? '#6fd36f' : f > 0.3 ? '#e0c04a' : '#e0553f';

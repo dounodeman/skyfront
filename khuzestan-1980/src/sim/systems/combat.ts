@@ -21,6 +21,9 @@ export function canFight(u: Unit): boolean {
 
 function airborne(u: Unit) { return u.isAir && u.altitude > 12; }
 
+/** Slant range: altitude counts, so a drone at 280 m is out of reach of rifles directly below it. */
+export const slant = (u: Unit, t: Unit) => Math.hypot(t.x - u.x, t.y - u.y, t.altitude - u.altitude);
+
 /** Best ammunition for this target and its expected value (0 = this weapon cannot hurt it). */
 export function chooseAmmo(ws: WeaponState, t: Unit, d: number): { id: string; score: number } {
   let best = '', bestScore = 0;
@@ -65,7 +68,7 @@ function validFor(w: World, u: Unit, ws: WeaponState, t: Unit | undefined, check
   if (!t || !t.alive || !t.onMap || t.team === u.team) return false;
   if (!spotted(w, u.team, t)) return false;
   if (!domainOk(ws, t)) return false;
-  const d = dist(u.x, u.y, t.x, t.y);
+  const d = slant(u, t);
   if (d > ws.def.range || d < (ws.def.minRange ?? 0)) return false;
   if (chooseAmmo(ws, t, d).score <= 0) return false;
   if (checkLos && !lineOfFire(w, u, t)) return false;
@@ -78,7 +81,7 @@ function pickTarget(w: World, u: Unit, ws: WeaponState, forced: Unit | undefined
   w.spatial.forEachNear(u.x, u.y, ws.def.range, (t) => {
     if (t.team === u.team || !t.alive) return;
     if (!validFor(w, u, ws, t, false)) return;
-    const d = dist(u.x, u.y, t.x, t.y);
+    const d = slant(u, t);
     let s = chooseAmmo(ws, t, d).score / (1 + d / 500);
     // Threat weighting: tanks and AT weapons first for anti-armour guns, damaged targets for focus fire.
     if (t.def.category === 'tank') s *= 1.25;
@@ -153,7 +156,7 @@ export function muzzle(u: Unit, ws: WeaponState): { x: number; y: number; a: num
 }
 
 function fire(w: World, u: Unit, ws: WeaponState, t: Unit) {
-  const d = dist(u.x, u.y, t.x, t.y);
+  const d = slant(u, t);
   const { id } = chooseAmmo(ws, t, d);
   if (!id) return;
   const a = AMMO[id];
@@ -201,7 +204,7 @@ export function combatSystem(w: World, dt: number) {
     const retarget = (w.tick + u.id) % 12 === 0;
     const o = u.orders[0];
     const forced = o?.type === 'attack' ? w.alive(o.targetId) : undefined;
-    const holdFire = u.def.spotter;
+    const holdFire = u.def.spotter || u.def.kamikaze; // recon drones never shoot; loitering munitions dive instead
     if (holdFire) continue;
 
     let turretTarget: Unit | undefined;
